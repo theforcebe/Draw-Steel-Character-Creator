@@ -1132,26 +1132,26 @@ export function getArmorOverlay(weight: ArmorWeight, hasShield: boolean, color: 
                Q${tx + 1} ${ty - padH * 0.3} ${tx + padW} ${ty - padH * 0.2}
                L${tx + padW + 2} ${ty + padH * 0.4}
                Q${tx + padW * 0.5} ${ty + padH * 0.8} ${tx - 1} ${ty + padH * 0.6}Z"
-        fill="${color}" opacity="0.75"/>
+        fill="${color}"/>
       <path d="M${tx + 1} ${ty + padH * 0.2} Q${tx + padW * 0.5} ${ty - padH * 0.1} ${tx + padW} ${ty}"
-        stroke="${lightColor}" stroke-width="0.6" fill="none" opacity="0.4"/>
+        stroke="${lightColor}" stroke-width="0.6" fill="none" opacity="0.5"/>
       <!-- right shoulder pad -->
       <path d="M${tx + tw + 1} ${ty + padH * 0.6}
                Q${tx + tw - 1} ${ty - padH * 0.3} ${tx + tw - padW} ${ty - padH * 0.2}
                L${tx + tw - padW - 2} ${ty + padH * 0.4}
                Q${tx + tw - padW * 0.5} ${ty + padH * 0.8} ${tx + tw + 1} ${ty + padH * 0.6}Z"
-        fill="${color}" opacity="0.75"/>
+        fill="${color}"/>
       <!-- chest strap -->
       <path d="M${cx - tw * 0.3} ${ty + th * 0.1}
                L${cx + tw * 0.3} ${ty + th * 0.1}
                L${cx + tw * 0.28} ${ty + th * 0.2}
                L${cx - tw * 0.28} ${ty + th * 0.2}Z"
-        fill="${darkColor}" opacity="0.45"/>
+        fill="${darkColor}"/>
       <!-- strap buckle -->
-      <rect x="${cx - 1.5}" y="${ty + th * 0.1}" width="3" height="3" rx="0.5" fill="#c9a84c" opacity="0.7"/>
+      <rect x="${cx - 1.5}" y="${ty + th * 0.1}" width="3" height="3" rx="0.5" fill="#c9a84c"/>
       <!-- bracers -->
-      <rect x="${model.handR.x - 4}" y="${model.handR.y - 14}" width="7" height="8" rx="2" fill="${midColor}" opacity="0.55"/>
-      <rect x="${model.handL.x - 3}" y="${model.handL.y - 14}" width="7" height="8" rx="2" fill="${midColor}" opacity="0.55"/>`;
+      <rect x="${model.handR.x - 4}" y="${model.handR.y - 14}" width="7" height="8" rx="2" fill="${midColor}"/>
+      <rect x="${model.handL.x - 3}" y="${model.handL.y - 14}" width="7" height="8" rx="2" fill="${midColor}"/>`;
   } else if (weight === 'medium') {
     // Scale/chain mail: breastplate + pronounced pauldrons + belt
     const padW = tw * 0.25;
@@ -1161,33 +1161,33 @@ export function getArmorOverlay(weight: ArmorWeight, hasShield: boolean, color: 
                L${tx + tw * 0.85} ${ty + 2}
                L${tx + tw * 0.88} ${ty + th * 0.7}
                Q${cx} ${ty + th * 0.78} ${tx + tw * 0.12} ${ty + th * 0.7}Z"
-        fill="${color}" opacity="0.55"/>
+        fill="${color}"/>
       <!-- chest plate center ridge -->
-      <line x1="${cx}" y1="${ty + 4}" x2="${cx}" y2="${ty + th * 0.55}" stroke="${lightColor}" stroke-width="1" opacity="0.35"/>
+      <line x1="${cx}" y1="${ty + 4}" x2="${cx}" y2="${ty + th * 0.55}" stroke="${lightColor}" stroke-width="1" opacity="0.5"/>
       <!-- scale pattern -->
       <path d="M${tx + tw * 0.2} ${ty + th * 0.25} Q${cx} ${ty + th * 0.2} ${tx + tw * 0.8} ${ty + th * 0.25}"
-        stroke="${darkColor}" stroke-width="0.8" fill="none" opacity="0.4"/>
+        stroke="${darkColor}" stroke-width="0.8" fill="none" opacity="0.5"/>
       <path d="M${tx + tw * 0.2} ${ty + th * 0.38} Q${cx} ${ty + th * 0.33} ${tx + tw * 0.8} ${ty + th * 0.38}"
-        stroke="${darkColor}" stroke-width="0.8" fill="none" opacity="0.35"/>
+        stroke="${darkColor}" stroke-width="0.8" fill="none" opacity="0.45"/>
       <path d="M${tx + tw * 0.22} ${ty + th * 0.51} Q${cx} ${ty + th * 0.46} ${tx + tw * 0.78} ${ty + th * 0.51}"
-        stroke="${darkColor}" stroke-width="0.8" fill="none" opacity="0.3"/>
+        stroke="${darkColor}" stroke-width="0.8" fill="none" opacity="0.4"/>
       <!-- left pauldron -->
       <path d="M${tx - 2} ${ty + padW * 0.5}
                Q${tx} ${ty - padW * 0.4} ${tx + padW * 1.2} ${ty - padW * 0.3}
                L${tx + padW * 1.3} ${ty + padW * 0.5}
                Q${tx + padW * 0.6} ${ty + padW * 0.7} ${tx - 2} ${ty + padW * 0.5}Z"
-        fill="${darkColor}" opacity="0.8"/>
+        fill="${darkColor}"/>
       <path d="M${tx} ${ty + padW * 0.15} Q${tx + padW * 0.6} ${ty - padW * 0.2} ${tx + padW * 1.1} ${ty - padW * 0.1}"
-        stroke="${lightColor}" stroke-width="0.6" fill="none" opacity="0.3"/>
+        stroke="${lightColor}" stroke-width="0.6" fill="none" opacity="0.4"/>
       <!-- right pauldron -->
       <path d="M${tx + tw + 2} ${ty + padW * 0.5}
                Q${tx + tw} ${ty - padW * 0.4} ${tx + tw - padW * 1.2} ${ty - padW * 0.3}
                L${tx + tw - padW * 1.3} ${ty + padW * 0.5}
                Q${tx + tw - padW * 0.6} ${ty + padW * 0.7} ${tx + tw + 2} ${ty + padW * 0.5}Z"
-        fill="${darkColor}" opacity="0.8"/>
+        fill="${darkColor}"/>
       <!-- belt -->
-      <rect x="${tx}" y="${ty + th * 0.72}" width="${tw}" height="${th * 0.08}" rx="1.5" fill="${darkColor}" opacity="0.7"/>
-      <rect x="${cx - 2}" y="${ty + th * 0.71}" width="4" height="${th * 0.1}" rx="1" fill="#c9a84c" opacity="0.7"/>`;
+      <rect x="${tx}" y="${ty + th * 0.72}" width="${tw}" height="${th * 0.08}" rx="1.5" fill="${darkColor}"/>
+      <rect x="${cx - 2}" y="${ty + th * 0.71}" width="4" height="${th * 0.1}" rx="1" fill="#c9a84c"/>`;
   } else if (weight === 'heavy') {
     // Full plate: cuirass + gorget + massive pauldrons + faulds + vambraces
     const padW = tw * 0.28;
@@ -1197,57 +1197,57 @@ export function getArmorOverlay(weight: ArmorWeight, hasShield: boolean, color: 
                L${tx + tw * 0.9} ${ty - 2}
                L${tx + tw * 0.95} ${ty + th * 0.75}
                Q${cx} ${ty + th * 0.85} ${tx + tw * 0.05} ${ty + th * 0.75}Z"
-        fill="${color}" opacity="0.6"/>
+        fill="${color}"/>
       <!-- chest plate ridge -->
-      <line x1="${cx}" y1="${ty + 2}" x2="${cx}" y2="${ty + th * 0.6}" stroke="${lightColor}" stroke-width="1.2" opacity="0.3"/>
+      <line x1="${cx}" y1="${ty + 2}" x2="${cx}" y2="${ty + th * 0.6}" stroke="${lightColor}" stroke-width="1.2" opacity="0.45"/>
       <!-- pectoral lines -->
       <path d="M${cx} ${ty + th * 0.12}
                Q${tx + tw * 0.3} ${ty + th * 0.18} ${tx + tw * 0.15} ${ty + th * 0.3}"
-        stroke="${lightColor}" stroke-width="0.8" fill="none" opacity="0.25"/>
+        stroke="${lightColor}" stroke-width="0.8" fill="none" opacity="0.35"/>
       <path d="M${cx} ${ty + th * 0.12}
                Q${tx + tw * 0.7} ${ty + th * 0.18} ${tx + tw * 0.85} ${ty + th * 0.3}"
-        stroke="${lightColor}" stroke-width="0.8" fill="none" opacity="0.25"/>
+        stroke="${lightColor}" stroke-width="0.8" fill="none" opacity="0.35"/>
       <!-- rivet lines -->
       <line x1="${tx + tw * 0.15}" y1="${ty + th * 0.42}" x2="${tx + tw * 0.85}" y2="${ty + th * 0.42}"
-        stroke="${lightColor}" stroke-width="0.6" opacity="0.2"/>
+        stroke="${lightColor}" stroke-width="0.6" opacity="0.3"/>
       <line x1="${tx + tw * 0.18}" y1="${ty + th * 0.56}" x2="${tx + tw * 0.82}" y2="${ty + th * 0.56}"
-        stroke="${lightColor}" stroke-width="0.5" opacity="0.18"/>
+        stroke="${lightColor}" stroke-width="0.5" opacity="0.25"/>
       <!-- gorget (neck guard) -->
       <path d="M${cx - tw * 0.18} ${ty - 4}
                Q${cx} ${ty - 8} ${cx + tw * 0.18} ${ty - 4}
                Q${cx + tw * 0.15} ${ty} ${cx} ${ty - 1}
                Q${cx - tw * 0.15} ${ty} ${cx - tw * 0.18} ${ty - 4}Z"
-        fill="${darkColor}" opacity="0.75"/>
+        fill="${darkColor}"/>
       <!-- left pauldron (massive) -->
       <path d="M${tx - 3} ${ty + padW * 0.4}
                Q${tx - 1} ${ty - padW * 0.55} ${tx + padW * 1.4} ${ty - padW * 0.4}
                L${tx + padW * 1.5} ${ty + padW * 0.5}
                Q${tx + padW * 0.7} ${ty + padW * 0.8} ${tx - 3} ${ty + padW * 0.4}Z"
-        fill="${darkColor}" opacity="0.85"/>
+        fill="${darkColor}"/>
       <path d="M${tx - 1} ${ty} Q${tx + padW * 0.7} ${ty - padW * 0.3} ${tx + padW * 1.3} ${ty - padW * 0.15}"
-        stroke="${lightColor}" stroke-width="0.7" fill="none" opacity="0.3"/>
+        stroke="${lightColor}" stroke-width="0.7" fill="none" opacity="0.4"/>
       <path d="M${tx} ${ty + padW * 0.2} Q${tx + padW * 0.6} ${ty} ${tx + padW * 1.2} ${ty + padW * 0.1}"
-        stroke="${lightColor}" stroke-width="0.5" fill="none" opacity="0.2"/>
+        stroke="${lightColor}" stroke-width="0.5" fill="none" opacity="0.3"/>
       <!-- right pauldron (massive) -->
       <path d="M${tx + tw + 3} ${ty + padW * 0.4}
                Q${tx + tw + 1} ${ty - padW * 0.55} ${tx + tw - padW * 1.4} ${ty - padW * 0.4}
                L${tx + tw - padW * 1.5} ${ty + padW * 0.5}
                Q${tx + tw - padW * 0.7} ${ty + padW * 0.8} ${tx + tw + 3} ${ty + padW * 0.4}Z"
-        fill="${darkColor}" opacity="0.85"/>
+        fill="${darkColor}"/>
       <!-- faulds (hip plates) -->
-      <rect x="${tx + tw * 0.05}" y="${ty + th * 0.72}" width="${tw * 0.9}" height="${th * 0.12}" rx="1.5" fill="${midColor}" opacity="0.55"/>
+      <rect x="${tx + tw * 0.05}" y="${ty + th * 0.72}" width="${tw * 0.9}" height="${th * 0.12}" rx="1.5" fill="${midColor}"/>
       <line x1="${cx - tw * 0.15}" y1="${ty + th * 0.72}" x2="${cx - tw * 0.15}" y2="${ty + th * 0.84}"
-        stroke="${darkColor}" stroke-width="0.8" opacity="0.4"/>
+        stroke="${darkColor}" stroke-width="0.8" opacity="0.5"/>
       <line x1="${cx + tw * 0.15}" y1="${ty + th * 0.72}" x2="${cx + tw * 0.15}" y2="${ty + th * 0.84}"
-        stroke="${darkColor}" stroke-width="0.8" opacity="0.4"/>
+        stroke="${darkColor}" stroke-width="0.8" opacity="0.5"/>
       <!-- belt -->
-      <rect x="${tx}" y="${ty + th * 0.68}" width="${tw}" height="${th * 0.06}" rx="1" fill="${darkColor}" opacity="0.8"/>
-      <rect x="${cx - 2.5}" y="${ty + th * 0.67}" width="5" height="${th * 0.08}" rx="1.2" fill="#c9a84c" opacity="0.8"/>
+      <rect x="${tx}" y="${ty + th * 0.68}" width="${tw}" height="${th * 0.06}" rx="1" fill="${darkColor}"/>
+      <rect x="${cx - 2.5}" y="${ty + th * 0.67}" width="5" height="${th * 0.08}" rx="1.2" fill="#c9a84c"/>
       <!-- vambraces -->
-      <rect x="${model.handR.x - 5}" y="${model.handR.y - 16}" width="9" height="10" rx="2.5" fill="${midColor}" opacity="0.6"/>
+      <rect x="${model.handR.x - 5}" y="${model.handR.y - 16}" width="9" height="10" rx="2.5" fill="${midColor}"/>
       <line x1="${model.handR.x - 3}" y1="${model.handR.y - 14}" x2="${model.handR.x + 2}" y2="${model.handR.y - 14}"
-        stroke="${lightColor}" stroke-width="0.5" opacity="0.3"/>
-      <rect x="${model.handL.x - 4}" y="${model.handL.y - 16}" width="9" height="10" rx="2.5" fill="${midColor}" opacity="0.6"/>`;
+        stroke="${lightColor}" stroke-width="0.5" opacity="0.4"/>
+      <rect x="${model.handL.x - 4}" y="${model.handL.y - 16}" width="9" height="10" rx="2.5" fill="${midColor}"/>`;
   }
 
   if (hasShield) {
@@ -1264,15 +1264,15 @@ export function getArmorOverlay(weight: ArmorWeight, hasShield: boolean, color: 
                L${shX + shW * 0.5} ${shY + shH * 0.6}
                L${shX + shW * 0.1} ${shY + shH * 0.4}
                L${shX} ${shY - shH * 0.2}Z"
-        fill="${color}" opacity="0.85" stroke="${darkColor}" stroke-width="1"/>
+        fill="${color}" stroke="${darkColor}" stroke-width="1"/>
       <!-- shield boss -->
-      <circle cx="${shX + shW * 0.5}" cy="${shY + shH * 0.05}" r="${shW * 0.2}" fill="${darkColor}" opacity="0.6"/>
-      <circle cx="${shX + shW * 0.5}" cy="${shY + shH * 0.05}" r="${shW * 0.1}" fill="${lightColor}" opacity="0.4"/>
+      <circle cx="${shX + shW * 0.5}" cy="${shY + shH * 0.05}" r="${shW * 0.2}" fill="${darkColor}"/>
+      <circle cx="${shX + shW * 0.5}" cy="${shY + shH * 0.05}" r="${shW * 0.1}" fill="${lightColor}" opacity="0.6"/>
       <!-- shield cross -->
       <line x1="${shX + shW * 0.5}" y1="${shY - shH * 0.3}" x2="${shX + shW * 0.5}" y2="${shY + shH * 0.5}"
-        stroke="${lightColor}" stroke-width="1" opacity="0.3"/>
+        stroke="${lightColor}" stroke-width="1" opacity="0.4"/>
       <line x1="${shX + shW * 0.1}" y1="${shY + shH * 0.05}" x2="${shX + shW * 0.9}" y2="${shY + shH * 0.05}"
-        stroke="${lightColor}" stroke-width="1" opacity="0.3"/>`;
+        stroke="${lightColor}" stroke-width="1" opacity="0.4"/>`;
   }
 
   svg += '</g>';
