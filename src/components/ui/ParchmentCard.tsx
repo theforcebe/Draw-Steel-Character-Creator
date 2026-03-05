@@ -16,8 +16,8 @@ export function ParchmentCard({
   compact = false,
 }: ParchmentCardProps) {
   const classes = [
-    'card transition-all duration-200',
-    compact ? 'px-3 py-2.5' : 'px-5 py-4',
+    'card transition-all duration-300',
+    compact ? 'px-4 py-3' : 'px-5 py-4',
     selected ? 'card-selected' : '',
     hoverable ? 'card-hover' : '',
     onClick ? 'cursor-pointer' : '',
