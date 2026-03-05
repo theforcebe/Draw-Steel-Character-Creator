@@ -99,8 +99,8 @@ export function CharacterPreview() {
           <div>
             <p className="font-heading text-[0.55rem] uppercase tracking-wider text-gold-muted mb-1">Traits</p>
             <div className="flex flex-wrap gap-1">
-              {character.selectedTraits.map((t) => (
-                <span key={t.name} className="badge text-[0.5rem]">{t.name}</span>
+              {character.selectedTraits.map((t, i) => (
+                <span key={`${t.name}-${i}`} className="badge text-[0.5rem]">{t.previousLifeTrait || t.name}</span>
               ))}
             </div>
           </div>

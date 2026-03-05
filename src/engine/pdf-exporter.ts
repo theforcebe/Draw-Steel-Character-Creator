@@ -199,19 +199,52 @@ interface AncestryTrait {
   description?: string;
 }
 
-function getAncestryTraitDescriptions(ancestryId: string, traitNames: string[]): string {
+interface SelectedTraitInput {
+  name: string;
+  cost: number;
+  previousLifeTrait?: string;
+  damageType?: string;
+  abilityChoice?: string;
+}
+
+function getAncestryTraitDescriptions(
+  ancestryId: string,
+  formerLifeAncestryId: string | null,
+  selectedTraits: SelectedTraitInput[],
+): string {
   const ancestries = ancestriesData.ancestries as unknown as Record<string, { purchasedTraits?: AncestryTrait[]; signatureTraits?: AncestryTrait[] }>;
   const ancestry = ancestries[ancestryId];
-  if (!ancestry) return traitNames.join(', ');
+  if (!ancestry) return selectedTraits.map((t) => t.previousLifeTrait || t.name).join(', ');
 
   const allTraits = [...(ancestry.signatureTraits ?? []), ...(ancestry.purchasedTraits ?? [])];
+
+  // Also gather former ancestry traits for Previous Life resolution
+  const formerAncestry = formerLifeAncestryId ? ancestries[formerLifeAncestryId] : null;
+  const formerTraits = formerAncestry
+    ? [...(formerAncestry.signatureTraits ?? []), ...(formerAncestry.purchasedTraits ?? [])]
+    : [];
+
   const lines: string[] = [];
-  for (const name of traitNames) {
-    const trait = allTraits.find((t) => t.name === name);
-    if (trait?.description) {
-      lines.push(`${trait.name}: ${trait.description}`);
+  for (const selected of selectedTraits) {
+    // For Previous Life traits, use the chosen trait name and look up from former ancestry
+    if (selected.previousLifeTrait) {
+      const resolvedName = selected.previousLifeTrait;
+      const trait = formerTraits.find((t) => t.name === resolvedName);
+      let line = trait?.description
+        ? `${resolvedName}: ${trait.description}`
+        : resolvedName;
+      // Append sub-choices
+      if (selected.damageType) line += ` [${selected.damageType}]`;
+      if (selected.abilityChoice) line += ` [${selected.abilityChoice}]`;
+      lines.push(line);
     } else {
-      lines.push(name);
+      const trait = allTraits.find((t) => t.name === selected.name);
+      let line = trait?.description
+        ? `${trait.name}: ${trait.description}`
+        : selected.name;
+      if (selected.damageType) line += ` [${selected.damageType}]`;
+      if (selected.abilityChoice) line += ` [${selected.abilityChoice}]`;
+      lines.push(line);
     }
   }
   return lines.join('\n\n');
@@ -515,7 +548,8 @@ export async function exportCharacterPdf(character: CharacterData): Promise<void
   if (character.ancestryId && character.selectedTraits.length > 0) {
     const traitDescriptions = getAncestryTraitDescriptions(
       character.ancestryId,
-      character.selectedTraits.map((t) => t.name),
+      character.formerLifeAncestryId ?? null,
+      character.selectedTraits,
     );
     safeSetText(form, 'Traits List', traitDescriptions);
   }

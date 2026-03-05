@@ -237,10 +237,8 @@ export function ReviewStep() {
                   if (t.runeChoice) extras.push(`Rune: ${t.runeChoice}`);
                   if (t.abilityChoice) extras.push(`Ability: ${t.abilityChoice}`);
                   if (t.skillChoices?.length) extras.push(`Skills: ${t.skillChoices.join(', ')}`);
-                  // Show the chosen trait name as the display name for Previous Life
-                  const displayName = t.previousLifeTrait
-                    ? `${t.previousLifeTrait} (via Previous Life)`
-                    : t.name;
+                  // For Previous Life, show the chosen trait name directly
+                  const displayName = t.previousLifeTrait || t.name;
                   return (
                     <span key={`${t.name}-${i}`} className="font-body text-sm text-cream">
                       {displayName}{t.cost > 0 ? ` (${t.cost}pt)` : ''}
