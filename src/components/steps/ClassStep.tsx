@@ -158,7 +158,7 @@ export function ClassStep() {
                 }
               }}
               className={[
-                'relative overflow-hidden rounded-lg p-6 cursor-pointer',
+                'relative overflow-hidden rounded-2xl p-6 cursor-pointer',
                 'bg-gradient-to-br from-surface-light to-surface border-2 transition-all duration-300',
                 'hover:scale-[1.02] hover:shadow-xl',
                 isSelected

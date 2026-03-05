@@ -24,7 +24,7 @@ function SavedCharacterCard({
   const d = entry.data;
   const date = new Date(entry.savedAt);
   return (
-    <div className="flex items-center justify-between gap-3 rounded-lg border border-gold-dark/30 bg-surface-light px-4 py-3">
+    <div className="flex items-center justify-between gap-3 rounded-2xl border border-gold/[0.12] bg-surface-light/60 px-5 py-3.5">
       <div className="min-w-0 flex-1">
         <p className="font-heading text-sm font-semibold text-gold-light truncate">
           {entry.name}
@@ -40,14 +40,14 @@ function SavedCharacterCard({
       <div className="flex gap-2 shrink-0">
         <button
           type="button"
-          className="rounded bg-gold/20 px-3 py-1.5 font-heading text-xs font-semibold text-gold-light hover:bg-gold/30 transition-colors"
+          className="rounded-xl bg-gold/15 px-3.5 py-1.5 font-heading text-xs font-semibold text-gold-light hover:bg-gold/25 transition-colors"
           onClick={() => onLoad(entry.data)}
         >
           Load
         </button>
         <button
           type="button"
-          className="rounded bg-crimson/15 px-3 py-1.5 font-heading text-xs font-semibold text-crimson hover:bg-crimson/25 transition-colors"
+          className="rounded-xl bg-crimson/10 px-3.5 py-1.5 font-heading text-xs font-semibold text-crimson hover:bg-crimson/20 transition-colors"
           onClick={() => onDelete(entry.id)}
         >
           Delete
@@ -119,10 +119,10 @@ export function WelcomeStep() {
               key={lvl}
               onClick={() => setLevel(lvl)}
               className={[
-                'flex h-10 w-10 items-center justify-center rounded-md font-heading text-sm font-bold transition-all duration-150',
+                'flex h-10 w-10 items-center justify-center rounded-xl font-heading text-sm font-bold transition-all duration-200',
                 lvl === level
-                  ? 'bg-gold text-surface shadow-lg shadow-gold/30 scale-110'
-                  : 'bg-surface-light text-cream-dark/70 border border-gold-dark/20 hover:border-gold/50 hover:text-gold-light',
+                  ? 'bg-gold text-ink shadow-lg shadow-gold/30 scale-110'
+                  : 'bg-surface-light/60 text-cream-dark/70 border border-gold/[0.12] hover:border-gold/40 hover:text-gold-light',
               ].join(' ')}
             >
               {lvl}
@@ -140,7 +140,7 @@ export function WelcomeStep() {
       {/* Buttons */}
       <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:gap-6">
         <button
-          className="btn-primary min-w-[220px] px-10 py-4 text-lg"
+          className="btn-primary min-w-[220px] rounded-2xl px-10 py-4 text-lg"
           onClick={() => {
             resetCharacter();
             setLevel(level);
@@ -152,7 +152,7 @@ export function WelcomeStep() {
 
         {hasExistingCharacter && (
           <button
-            className="btn-secondary min-w-[220px] px-10 py-4 text-lg"
+            className="btn-secondary min-w-[220px] rounded-2xl px-10 py-4 text-lg"
             onClick={() => nextStep()}
           >
             Continue Building

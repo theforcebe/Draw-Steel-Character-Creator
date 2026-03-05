@@ -45,30 +45,30 @@ function SavedCharactersModal({
   }, []);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/80 backdrop-blur-sm" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/70 backdrop-blur-sm" onClick={onClose}>
       <div
-        className="mx-4 w-full max-w-lg max-h-[80vh] flex flex-col rounded-lg border border-gold-dark/40 bg-surface shadow-2xl"
+        className="mx-4 w-full max-w-lg max-h-[80vh] flex flex-col rounded-3xl border border-gold/[0.12] bg-surface/95 backdrop-blur-xl shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-gold/10 px-5 py-4">
+        <div className="flex items-center justify-between border-b border-gold/[0.12] px-6 py-5">
           <h2 className="font-heading text-lg uppercase tracking-wider text-gold">Saved Characters</h2>
           <button
             type="button"
             onClick={onClose}
-            className="rounded px-2 py-1 font-heading text-sm text-gold-muted hover:text-gold transition-colors"
+            className="rounded-xl px-3 py-1.5 font-heading text-sm text-gold-muted hover:text-gold hover:bg-gold/[0.06] transition-colors"
           >
             Close
           </button>
         </div>
-        <div className="flex-1 overflow-y-auto px-5 py-4">
+        <div className="flex-1 overflow-y-auto px-6 py-5">
           {chars.length === 0 ? (
             <p className="text-center font-body text-sm text-cream-dark/50 italic py-8">
               No saved characters yet.
             </p>
           ) : (
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2.5">
               {chars.map((entry) => (
-                <div key={entry.id} className="flex items-center justify-between gap-3 rounded-lg border border-gold-dark/30 bg-surface-light px-4 py-3">
+                <div key={entry.id} className="flex items-center justify-between gap-3 rounded-2xl border border-gold/[0.12] bg-surface-light/60 px-5 py-3.5">
                   <div className="min-w-0 flex-1">
                     <p className="font-heading text-sm font-semibold text-gold-light truncate">
                       {entry.name}
@@ -84,14 +84,14 @@ function SavedCharactersModal({
                   <div className="flex gap-2 shrink-0">
                     <button
                       type="button"
-                      className="rounded bg-gold/20 px-3 py-1.5 font-heading text-xs font-semibold text-gold-light hover:bg-gold/30 transition-colors"
+                      className="rounded-xl bg-gold/15 px-3.5 py-1.5 font-heading text-xs font-semibold text-gold-light hover:bg-gold/25 transition-colors"
                       onClick={() => { onLoad(entry.data); onClose(); }}
                     >
                       Load
                     </button>
                     <button
                       type="button"
-                      className="rounded bg-crimson/15 px-3 py-1.5 font-heading text-xs font-semibold text-crimson hover:bg-crimson/25 transition-colors"
+                      className="rounded-xl bg-crimson/10 px-3.5 py-1.5 font-heading text-xs font-semibold text-crimson hover:bg-crimson/20 transition-colors"
                       onClick={() => handleDelete(entry.id)}
                     >
                       Delete
@@ -150,13 +150,13 @@ export function WizardLayout({ children }: WizardLayoutProps) {
     <div className="flex h-screen flex-col overflow-hidden">
       {/* Compact Progress Bar */}
       {!isWelcome && (
-        <nav className="shrink-0 border-b border-gold/10 bg-ink/80 px-2 py-2">
-          <div className="mx-auto flex max-w-6xl items-center gap-1">
+        <nav className="shrink-0 px-4 pt-3 pb-2">
+          <div className="mx-auto flex max-w-6xl items-center gap-1 rounded-2xl bg-surface-light/60 backdrop-blur-md border border-gold/[0.08] px-3 py-1.5">
             {/* Nav action buttons */}
             <button
               type="button"
               onClick={handleNewCharacter}
-              className="shrink-0 rounded px-2 py-1 font-heading text-[0.55rem] sm:text-[0.6rem] tracking-wide text-gold-muted hover:text-gold hover:bg-gold/5 transition-all"
+              className="shrink-0 rounded-xl px-2.5 py-1.5 font-heading text-[0.55rem] sm:text-[0.6rem] tracking-wide text-gold-muted hover:text-gold hover:bg-gold/[0.06] transition-all"
               title="New Character"
             >
               + New
@@ -164,12 +164,12 @@ export function WizardLayout({ children }: WizardLayoutProps) {
             <button
               type="button"
               onClick={() => setShowSaved(true)}
-              className="shrink-0 rounded px-2 py-1 font-heading text-[0.55rem] sm:text-[0.6rem] tracking-wide text-gold-muted hover:text-gold hover:bg-gold/5 transition-all"
+              className="shrink-0 rounded-xl px-2.5 py-1.5 font-heading text-[0.55rem] sm:text-[0.6rem] tracking-wide text-gold-muted hover:text-gold hover:bg-gold/[0.06] transition-all"
               title="Saved Characters"
             >
               Saved
             </button>
-            <div className="mx-1 h-4 w-px bg-gold-dark/30" />
+            <div className="mx-1.5 h-4 w-px bg-gold/[0.1]" />
             {WIZARD_STEPS.filter((_, i) => i > 0).map((step, i) => {
               const realIndex = i + 1;
               const isPast = realIndex < currentIndex;
@@ -180,13 +180,13 @@ export function WizardLayout({ children }: WizardLayoutProps) {
                   type="button"
                   onClick={() => isPast && setStep(step)}
                   className={[
-                    'flex-1 py-1 text-center font-heading transition-all duration-200 rounded',
+                    'flex-1 py-1.5 text-center font-heading transition-all duration-250 rounded-xl',
                     'text-[0.55rem] sm:text-[0.6rem] tracking-wide',
                     isCurrent
-                      ? 'bg-gold/15 text-gold-light font-semibold'
+                      ? 'bg-gold/15 text-gold-light font-semibold shadow-sm shadow-gold/10'
                       : isPast
-                        ? 'text-gold-muted hover:text-gold cursor-pointer hover:bg-gold/5'
-                        : 'text-cream-dark/30 cursor-default',
+                        ? 'text-gold-muted hover:text-gold cursor-pointer hover:bg-gold/[0.05]'
+                        : 'text-cream-dark/25 cursor-default',
                   ].join(' ')}
                 >
                   {STEP_LABELS[step]}
@@ -208,20 +208,22 @@ export function WizardLayout({ children }: WizardLayoutProps) {
 
         {/* Sidebar Preview (hidden on welcome + mobile) */}
         {!isWelcome && (
-          <aside className="hidden w-64 shrink-0 overflow-y-auto border-l border-gold/10 bg-ink/50 xl:block">
-            <CharacterPreview />
+          <aside className="hidden w-64 shrink-0 overflow-y-auto xl:block m-3 ml-0">
+            <div className="h-full rounded-2xl bg-surface-light/40 backdrop-blur-md border border-gold/[0.08]">
+              <CharacterPreview />
+            </div>
           </aside>
         )}
       </div>
 
       {/* Bottom Nav */}
       {!isWelcome && (
-        <footer className="shrink-0 border-t border-gold/10 bg-ink/60 px-4 py-2.5">
-          <div className="mx-auto flex max-w-4xl items-center justify-between">
+        <footer className="shrink-0 px-4 pb-3 pt-2">
+          <div className="mx-auto flex max-w-4xl items-center justify-between rounded-2xl bg-surface-light/60 backdrop-blur-md border border-gold/[0.08] px-5 py-2.5">
             <GoldButton variant="secondary" onClick={prevStep}>
               Back
             </GoldButton>
-            <span className="font-heading text-[0.6rem] uppercase tracking-widest text-gold-muted">
+            <span className="font-heading text-[0.6rem] uppercase tracking-widest text-cream-dark/30">
               {currentIndex} / {WIZARD_STEPS.length - 1}
             </span>
             <GoldButton

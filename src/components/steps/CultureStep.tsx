@@ -263,7 +263,7 @@ export function CultureStep() {
       {/* Summary of selected skills */}
       {(selectedEnvSkill || selectedOrgSkill || selectedUpbSkill) && (
         <div className="mx-auto mt-8 max-w-lg">
-          <div className="rounded-lg border border-gold-dark/30 bg-surface-light p-4">
+          <div className="rounded-2xl border border-gold-dark/30 bg-surface-light p-4">
             <h4 className="mb-2 font-heading text-sm uppercase tracking-wider text-gold">
               Culture Skills
             </h4>

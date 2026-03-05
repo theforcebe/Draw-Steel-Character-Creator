@@ -9,7 +9,7 @@ export function BattleCard({ ability }: BattleCardProps) {
   const isSignature = ability.cost === 'Signature';
 
   return (
-    <div className="card rounded-lg flex flex-col gap-0 overflow-hidden">
+    <div className="card rounded-2xl flex flex-col gap-0 overflow-hidden">
       {/* Header: Name + Cost badge */}
       <div className="flex items-start justify-between gap-3 px-4 pt-3.5 pb-2">
         <h3 className="font-heading text-base text-gold tracking-wide leading-tight">
@@ -65,7 +65,7 @@ export function BattleCard({ ability }: BattleCardProps) {
       {hasPowerRoll && (
         <>
           <div className="divider mx-4" />
-          <div className="mx-4 my-2 rounded-md bg-surface/60 border border-gold-dark/10 overflow-hidden">
+          <div className="mx-4 my-2 rounded-xl bg-surface/60 border border-gold-dark/10 overflow-hidden">
             {/* Power roll header */}
             <div className="px-3 py-1.5 bg-surface-lighter/60 border-b border-gold-dark/10">
               <span className="font-heading text-xs text-gold-muted uppercase tracking-wider">

@@ -227,7 +227,7 @@ export function ComplicationStep() {
           {/* Choice UI for selected complication */}
           {selectedName && complication && hasChoices && (
             <div className="mx-auto mt-4 w-full max-w-lg">
-              <div className="rounded-lg border border-gold-dark/30 bg-surface-light p-5">
+              <div className="rounded-2xl border border-gold-dark/30 bg-surface-light p-5">
                 <h4 className="mb-4 font-heading text-sm uppercase tracking-wider text-gold">
                   {selectedName} — Choices
                 </h4>

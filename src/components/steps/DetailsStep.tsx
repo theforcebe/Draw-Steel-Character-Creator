@@ -9,7 +9,7 @@ export function DetailsStep() {
   const setBackstory = useCharacterStore((s) => s.setBackstory);
 
   const inputClasses = [
-    'w-full rounded-lg px-4 py-3',
+    'w-full rounded-2xl px-4 py-3',
     'bg-surface-light border border-gold/20',
     'text-cream font-body text-base placeholder:text-cream-dark/30',
     'focus:outline-none focus:border-gold focus:shadow-[0_0_12px_rgba(201,168,76,0.2)]',

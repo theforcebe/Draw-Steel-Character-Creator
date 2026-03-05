@@ -28,7 +28,7 @@ function DetailRow({ label, value }: { label: string; value: string | number | n
 
 function StatBadge({ label, value }: { label: string; value: number | string | undefined }) {
   return (
-    <div className="flex flex-col items-center gap-1 px-3 py-2 rounded-lg bg-surface-light border border-gold-dark/40">
+    <div className="flex flex-col items-center gap-1 px-3 py-2 rounded-2xl bg-surface-light border border-gold-dark/40">
       <span className="font-heading text-lg font-bold text-gold-light">
         {value !== undefined ? value : '--'}
       </span>

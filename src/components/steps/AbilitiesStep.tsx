@@ -158,7 +158,7 @@ function AbilityCard({
 
       {/* Power Roll + Tiers */}
       {hasPowerRoll && (
-        <div className="mt-1 rounded-md bg-surface/50 border border-gold-dark/10 overflow-hidden">
+        <div className="mt-1 rounded-xl bg-surface/50 border border-gold-dark/10 overflow-hidden">
           {/* Power roll header */}
           <div className="px-3 py-1.5 bg-surface-lighter border-b border-gold-dark/10">
             <span className="font-heading text-xs text-gold-muted uppercase tracking-wider">

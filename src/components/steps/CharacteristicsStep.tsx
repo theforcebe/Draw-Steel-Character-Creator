@@ -126,7 +126,7 @@ export function CharacteristicsStep() {
         <div className="flex flex-wrap items-center justify-center gap-4">
           {Object.entries(fixedStats).map(([stat, value]) => (
             <div key={stat} className="flex flex-col items-center gap-1">
-              <div className="rounded-lg border-2 border-gold/60 bg-gold/10 p-1">
+              <div className="rounded-2xl border-2 border-gold/60 bg-gold/10 p-1">
                 <StatBlock label={capitalize(stat)} value={value} size="md" />
               </div>
               <span className="font-body text-xs uppercase tracking-wider text-gold/70">
@@ -158,7 +158,7 @@ export function CharacteristicsStep() {
                 type="button"
                 onClick={() => handleSelectArray(index)}
                 className={[
-                  'rounded-lg border-2 px-4 py-3 font-heading text-lg tracking-wide transition-all duration-200',
+                  'rounded-2xl border-2 px-4 py-3 font-heading text-lg tracking-wide transition-all duration-200',
                   'hover:scale-[1.03] hover:shadow-md',
                   isSelected
                     ? 'border-gold bg-gold/15 text-gold-light shadow-md shadow-gold/10'
@@ -189,7 +189,7 @@ export function CharacteristicsStep() {
                 <div key={stat} className="flex flex-col items-center gap-1">
                   <div
                     className={[
-                      'rounded-lg border-2 p-1',
+                      'rounded-2xl border-2 p-1',
                       isFixed
                         ? 'border-gold/60 bg-gold/10'
                         : 'border-amber-600/40 bg-surface-lighter',

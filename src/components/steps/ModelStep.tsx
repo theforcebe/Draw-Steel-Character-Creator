@@ -131,7 +131,7 @@ export function ModelStep() {
       <div className="flex flex-col lg:flex-row gap-8 items-start justify-center max-w-4xl mx-auto w-full">
         {/* Model Preview */}
         <div className="flex-shrink-0 flex flex-col items-center gap-4">
-          <div className="relative bg-gradient-to-b from-surface-light/50 to-surface/30 rounded-xl border border-gold/10 p-6">
+          <div className="relative bg-gradient-to-b from-surface-light/50 to-surface/30 rounded-2xl border border-gold/10 p-6">
             <CharacterPortrait character={character} size={220} />
           </div>
           {!ancestryId && (
@@ -141,7 +141,7 @@ export function ModelStep() {
             <button
               type="button"
               onClick={() => exportModelImage(character)}
-              className="mt-2 px-4 py-2 rounded-lg border border-gold/30 font-heading text-xs uppercase tracking-wider text-gold-muted hover:text-gold hover:border-gold/60 transition-all"
+              className="mt-2 px-4 py-2 rounded-2xl border border-gold/30 font-heading text-xs uppercase tracking-wider text-gold-muted hover:text-gold hover:border-gold/60 transition-all"
             >
               Export Model Image
             </button>
@@ -217,10 +217,10 @@ export function ModelStep() {
                     key={h.id}
                     type="button"
                     onClick={() => update({ hairStyle: h.id })}
-                    className={`px-3 py-1.5 rounded-lg font-heading text-xs uppercase tracking-wider border transition-all ${
+                    className={`px-3 py-1.5 rounded-2xl font-heading text-xs uppercase tracking-wider border transition-all ${
                       settings.hairStyle === h.id
-                        ? 'border-gold bg-gold/10 text-gold-light'
-                        : 'border-gold/15 text-cream-dark/50 hover:border-gold/30 hover:text-cream-dark/70'
+                        ? 'border-gold bg-gold/10 text-gold-light shadow-[0_0_12px_rgba(212,168,67,0.12)]'
+                        : 'border-gold/10 text-cream-dark/50 hover:border-gold/30 hover:text-cream-dark/70'
                     }`}
                   >
                     {h.label}
@@ -258,7 +258,7 @@ export function ModelStep() {
 
           {/* Info for revenant */}
           {isRevenant && (
-            <div className="rounded-lg border border-gold/10 bg-surface-light/30 p-4">
+            <div className="rounded-2xl border border-gold/10 bg-surface-light/30 p-4">
               <p className="font-body text-sm text-cream-dark/60">
                 Revenant models use a spectral green palette. Clothing and hair customization
                 applies to living versions of your character.
@@ -268,7 +268,7 @@ export function ModelStep() {
 
           {/* Info for no-hair ancestries */}
           {!showHair && !isRevenant && model && (
-            <div className="rounded-lg border border-gold/10 bg-surface-light/30 p-3">
+            <div className="rounded-2xl border border-gold/10 bg-surface-light/30 p-3">
               <p className="font-body text-xs text-cream-dark/40">
                 {modelId === 'dragonKnight' && 'Dragon Knights have natural scale crests instead of hair.'}
                 {modelId === 'memonek' && 'Memonek are crystalline beings with no natural hair.'}

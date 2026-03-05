@@ -13,7 +13,7 @@ export function StatBlock({ label, value, size = 'md' }: StatBlockProps) {
   const s = sizes[size];
 
   return (
-    <div className={`${s.box} flex flex-col items-center justify-center rounded-md border border-gold/20 bg-surface-light`}>
+    <div className={`${s.box} flex flex-col items-center justify-center rounded-xl border border-gold/20 bg-surface-light`}>
       <span className={`font-heading font-bold text-gold-light ${s.val} leading-none`}>
         {value >= 0 ? `+${value}` : value}
       </span>
