@@ -2,24 +2,22 @@
 // At render time, we do string.replaceAll to swap clothing/hair colors
 
 export interface AncestryModelData {
-  living: string;       // Full SVG string for living version
-  revenant: string;     // Full SVG string for revenant version
-  viewW: number;        // SVG viewBox width
-  viewH: number;        // SVG viewBox height
-  // Original colors in the SVG that map to "clothing" - will be replaced at render time
+  living: string;
+  revenant: string;
+  viewW: number;
+  viewH: number;
   clothingColors: { original: string; role: 'primary' | 'dark' | 'light' | 'accent' }[];
-  // Original hair color hex in the SVG (null for non-hair ancestries like Dragon Knight, Memonek, Time Raider)
   hairColor: string | null;
-  // Default clothing color (the primary clothing color used in the original SVG)
   defaultClothingColor: string;
-  // Default hair color
   defaultHairColor: string;
-  // Right hand position (for weapon overlay positioning)
   handR: { x: number; y: number };
-  // Back position (for back-mounted weapons)
+  handL: { x: number; y: number };
+  /** Torso bounding box for armor placement */
+  torso: { x: number; y: number; w: number; h: number };
   backPos: { x: number; y: number };
-  // Whether this ancestry has visible hair that can be styled
   hasHair: boolean;
+  /** Head center (for hair overlay positioning) */
+  headCenter: { x: number; y: number };
 }
 
 // ---- Revenant filter defs shared by all revenant SVGs ----
@@ -772,313 +770,509 @@ const wodeElfRevenant = revWrap(`
 
 export const ANCESTRY_MODELS: Record<string, AncestryModelData> = {
   devil: {
-    living: devilLiving,
-    revenant: devilRevenant,
-    viewW: 80,
-    viewH: 145,
-    clothingColors: [
-      { original: '#ff6600', role: 'accent' },
-    ],
-    hairColor: null,
-    defaultClothingColor: '#ff6600',
-    defaultHairColor: '#ff6600',
-    handR: { x: 66, y: 104 },
-    backPos: { x: 60, y: 80 },
-    hasHair: false,
+    living: devilLiving, revenant: devilRevenant,
+    viewW: 80, viewH: 145,
+    clothingColors: [{ original: '#ff6600', role: 'accent' }],
+    hairColor: null, defaultClothingColor: '#ff6600', defaultHairColor: '#ff6600',
+    handR: { x: 66, y: 104 }, handL: { x: 14, y: 104 },
+    torso: { x: 20, y: 62, w: 40, h: 46 },
+    backPos: { x: 60, y: 80 }, hasHair: false, headCenter: { x: 40, y: 37 },
   },
   dragonKnight: {
-    living: dragonKnightLiving,
-    revenant: dragonKnightRevenant,
-    viewW: 80,
-    viewH: 145,
+    living: dragonKnightLiving, revenant: dragonKnightRevenant,
+    viewW: 80, viewH: 145,
     clothingColors: [
       { original: '#64b5f6', role: 'light' },
       { original: '#1976d2', role: 'primary' },
       { original: '#1565c0', role: 'dark' },
     ],
-    hairColor: null,
-    defaultClothingColor: '#1976d2',
-    defaultHairColor: '#1976d2',
-    handR: { x: 67, y: 102 },
-    backPos: { x: 62, y: 80 },
-    hasHair: false,
+    hairColor: null, defaultClothingColor: '#1976d2', defaultHairColor: '#1976d2',
+    handR: { x: 67, y: 102 }, handL: { x: 12, y: 102 },
+    torso: { x: 18, y: 58, w: 44, h: 46 },
+    backPos: { x: 62, y: 80 }, hasHair: false, headCenter: { x: 40, y: 28 },
   },
   dwarf: {
-    living: dwarfLiving,
-    revenant: dwarfRevenant,
-    viewW: 72,
-    viewH: 130,
+    living: dwarfLiving, revenant: dwarfRevenant,
+    viewW: 72, viewH: 130,
     clothingColors: [
       { original: '#9e9e9e', role: 'primary' },
       { original: '#546e7a', role: 'dark' },
       { original: '#607d8b', role: 'accent' },
       { original: '#b0bec5', role: 'light' },
     ],
-    hairColor: '#5d4037',
-    defaultClothingColor: '#9e9e9e',
-    defaultHairColor: '#5d4037',
-    handR: { x: 64, y: 89 },
-    backPos: { x: 58, y: 70 },
-    hasHair: true,
+    hairColor: '#5d4037', defaultClothingColor: '#9e9e9e', defaultHairColor: '#5d4037',
+    handR: { x: 64, y: 89 }, handL: { x: 8, y: 89 },
+    torso: { x: 12, y: 54, w: 48, h: 40 },
+    backPos: { x: 58, y: 70 }, hasHair: true, headCenter: { x: 36, y: 32 },
   },
   hakaan: {
-    living: hakaanLiving,
-    revenant: hakaanRevenant,
-    viewW: 90,
-    viewH: 155,
-    clothingColors: [
-      { original: '#4a2f1a', role: 'dark' },
-    ],
-    hairColor: null,
-    defaultClothingColor: '#4a2f1a',
-    defaultHairColor: '#4a2f1a',
-    handR: { x: 81, y: 112 },
-    backPos: { x: 73, y: 85 },
-    hasHair: false,
+    living: hakaanLiving, revenant: hakaanRevenant,
+    viewW: 90, viewH: 155,
+    clothingColors: [{ original: '#4a2f1a', role: 'dark' }],
+    hairColor: null, defaultClothingColor: '#4a2f1a', defaultHairColor: '#4a2f1a',
+    handR: { x: 81, y: 112 }, handL: { x: 9, y: 112 },
+    torso: { x: 16, y: 62, w: 58, h: 50 },
+    backPos: { x: 73, y: 85 }, hasHair: false, headCenter: { x: 45, y: 35 },
   },
   highElf: {
-    living: highElfLiving,
-    revenant: highElfRevenant,
-    viewW: 74,
-    viewH: 145,
+    living: highElfLiving, revenant: highElfRevenant,
+    viewW: 74, viewH: 145,
     clothingColors: [
       { original: '#e8d5ff', role: 'light' },
       { original: '#9c64d0', role: 'primary' },
       { original: '#b39ddb', role: 'accent' },
       { original: '#7e57c2', role: 'dark' },
     ],
-    hairColor: '#c8a0e8',
-    defaultClothingColor: '#9c64d0',
-    defaultHairColor: '#c8a0e8',
-    handR: { x: 58, y: 95 },
-    backPos: { x: 56, y: 80 },
-    hasHair: true,
+    hairColor: '#c8a0e8', defaultClothingColor: '#9c64d0', defaultHairColor: '#c8a0e8',
+    handR: { x: 58, y: 95 }, handL: { x: 16, y: 95 },
+    torso: { x: 22, y: 56, w: 30, h: 40 },
+    backPos: { x: 56, y: 80 }, hasHair: true, headCenter: { x: 37, y: 33 },
   },
   human: {
-    living: humanLiving,
-    revenant: humanRevenant,
-    viewW: 74,
-    viewH: 145,
+    living: humanLiving, revenant: humanRevenant,
+    viewW: 74, viewH: 145,
     clothingColors: [
       { original: '#c62828', role: 'primary' },
       { original: '#b71c1c', role: 'dark' },
       { original: '#ffd700', role: 'accent' },
     ],
-    hairColor: '#4a2f1a',
-    defaultClothingColor: '#c62828',
-    defaultHairColor: '#4a2f1a',
-    handR: { x: 62, y: 100 },
-    backPos: { x: 56, y: 80 },
-    hasHair: true,
+    hairColor: '#4a2f1a', defaultClothingColor: '#c62828', defaultHairColor: '#4a2f1a',
+    handR: { x: 62, y: 100 }, handL: { x: 12, y: 100 },
+    torso: { x: 18, y: 58, w: 38, h: 45 },
+    backPos: { x: 56, y: 80 }, hasHair: true, headCenter: { x: 37, y: 34 },
   },
   memonek: {
-    living: memonekLiving,
-    revenant: memonekRevenant,
-    viewW: 74,
-    viewH: 145,
+    living: memonekLiving, revenant: memonekRevenant,
+    viewW: 74, viewH: 145,
     clothingColors: [
       { original: '#0288d1', role: 'primary' },
       { original: '#4fc3f7', role: 'light' },
       { original: '#81d4fa', role: 'accent' },
     ],
-    hairColor: null,
-    defaultClothingColor: '#0288d1',
-    defaultHairColor: '#0288d1',
-    handR: { x: 62, y: 99 },
-    backPos: { x: 56, y: 80 },
-    hasHair: false,
+    hairColor: null, defaultClothingColor: '#0288d1', defaultHairColor: '#0288d1',
+    handR: { x: 62, y: 99 }, handL: { x: 12, y: 99 },
+    torso: { x: 18, y: 58, w: 38, h: 45 },
+    backPos: { x: 56, y: 80 }, hasHair: false, headCenter: { x: 37, y: 33 },
   },
   orc: {
-    living: orcLiving,
-    revenant: orcRevenant,
-    viewW: 84,
-    viewH: 148,
+    living: orcLiving, revenant: orcRevenant,
+    viewW: 84, viewH: 148,
     clothingColors: [
       { original: '#4a2f1a', role: 'primary' },
       { original: '#ff5722', role: 'accent' },
     ],
-    hairColor: null,
-    defaultClothingColor: '#4a2f1a',
-    defaultHairColor: '#4a2f1a',
-    handR: { x: 75, y: 101 },
-    backPos: { x: 67, y: 78 },
-    hasHair: false,
+    hairColor: null, defaultClothingColor: '#4a2f1a', defaultHairColor: '#4a2f1a',
+    handR: { x: 75, y: 101 }, handL: { x: 9, y: 101 },
+    torso: { x: 16, y: 56, w: 52, h: 46 },
+    backPos: { x: 67, y: 78 }, hasHair: false, headCenter: { x: 42, y: 32 },
   },
   polder: {
-    living: polderLiving,
-    revenant: polderRevenant,
-    viewW: 64,
-    viewH: 118,
+    living: polderLiving, revenant: polderRevenant,
+    viewW: 64, viewH: 118,
     clothingColors: [
       { original: '#e91e63', role: 'primary' },
       { original: '#ffd700', role: 'accent' },
     ],
-    hairColor: null,
-    defaultClothingColor: '#e91e63',
-    defaultHairColor: '#e91e63',
-    handR: { x: 55, y: 79 },
-    backPos: { x: 49, y: 62 },
-    hasHair: false,
+    hairColor: null, defaultClothingColor: '#e91e63', defaultHairColor: '#e91e63',
+    handR: { x: 55, y: 79 }, handL: { x: 9, y: 79 },
+    torso: { x: 14, y: 46, w: 36, h: 38 },
+    backPos: { x: 49, y: 62 }, hasHair: false, headCenter: { x: 32, y: 25 },
   },
   revenant: {
-    living: revenantLiving,
-    revenant: revenantRevenant,
-    viewW: 74,
-    viewH: 145,
+    living: revenantLiving, revenant: revenantRevenant,
+    viewW: 74, viewH: 145,
     clothingColors: [
       { original: '#37474f', role: 'dark' },
       { original: '#455a64', role: 'primary' },
       { original: '#546e7a', role: 'accent' },
       { original: '#607d8b', role: 'light' },
     ],
-    hairColor: null,
-    defaultClothingColor: '#455a64',
-    defaultHairColor: '#455a64',
-    handR: { x: 62, y: 99 },
-    backPos: { x: 56, y: 80 },
-    hasHair: false,
+    hairColor: null, defaultClothingColor: '#455a64', defaultHairColor: '#455a64',
+    handR: { x: 62, y: 99 }, handL: { x: 12, y: 99 },
+    torso: { x: 18, y: 58, w: 38, h: 44 },
+    backPos: { x: 56, y: 80 }, hasHair: false, headCenter: { x: 37, y: 33 },
   },
   timeRaider: {
-    living: timeRaiderLiving,
-    revenant: timeRaiderRevenant,
-    viewW: 80,
-    viewH: 148,
+    living: timeRaiderLiving, revenant: timeRaiderRevenant,
+    viewW: 80, viewH: 148,
     clothingColors: [
       { original: '#ff5722', role: 'primary' },
       { original: '#ffcc02', role: 'accent' },
     ],
-    hairColor: null,
-    defaultClothingColor: '#ff5722',
-    defaultHairColor: '#ff5722',
-    handR: { x: 72, y: 97 },
-    backPos: { x: 65, y: 80 },
-    hasHair: false,
+    hairColor: null, defaultClothingColor: '#ff5722', defaultHairColor: '#ff5722',
+    handR: { x: 72, y: 97 }, handL: { x: 8, y: 97 },
+    torso: { x: 14, y: 60, w: 52, h: 44 },
+    backPos: { x: 65, y: 80 }, hasHair: false, headCenter: { x: 40, y: 34 },
   },
   wodeElf: {
-    living: wodeElfLiving,
-    revenant: wodeElfRevenant,
-    viewW: 74,
-    viewH: 145,
+    living: wodeElfLiving, revenant: wodeElfRevenant,
+    viewW: 74, viewH: 145,
     clothingColors: [
       { original: '#1b5e20', role: 'dark' },
       { original: '#388e3c', role: 'primary' },
       { original: '#2e7d32', role: 'accent' },
     ],
-    hairColor: '#1b5e20',
-    defaultClothingColor: '#388e3c',
-    defaultHairColor: '#1b5e20',
-    handR: { x: 62, y: 99 },
-    backPos: { x: 56, y: 80 },
-    hasHair: true,
+    hairColor: '#1b5e20', defaultClothingColor: '#388e3c', defaultHairColor: '#1b5e20',
+    handR: { x: 62, y: 99 }, handL: { x: 12, y: 99 },
+    torso: { x: 18, y: 58, w: 38, h: 44 },
+    backPos: { x: 56, y: 80 }, hasHair: true, headCenter: { x: 37, y: 33 },
   },
 };
 
 // =============================================================================
-// WEAPON OVERLAYS — positioned relative to each model's viewBox
+// WEAPON OVERLAYS — anchored to each model's hand/back positions
 // =============================================================================
 
-/** Returns an SVG group string for the weapon overlay, scaled to model dimensions */
-export function getWeaponOverlay(weaponType: string, vw: number, vh: number): string {
-  // Scale to normalize around 80x145 base
-  const sx = vw / 80;
-  const sy = vh / 145;
+/** Build a weapon SVG placed at the model's actual hand/back positions */
+export function getWeaponOverlay(weaponType: string, _vw: number, _vh: number, model?: AncestryModelData): string {
+  if (!model) return '';
+  const { handR, handL, backPos, torso } = model;
+  const cx = torso.x + torso.w / 2; // body center X
 
   switch (weaponType) {
-    case 'bow':
-      return `<g transform="scale(${sx},${sy})" opacity="0.9">
-        <path d="M68 18 Q78 45 71 75 Q78 100 71 120" stroke="#5d4037" stroke-width="3" fill="none"/>
-        <line x1="71" y1="23" x2="69" y2="115" stroke="#c9a84c" stroke-width="0.8"/>
+    case 'bow': {
+      // Elegant longbow held at right side, curves from above shoulder to below hip
+      const bx = handR.x + 2;
+      const topY = torso.y - 14;
+      const botY = handR.y + 22;
+      const midY = (topY + botY) / 2;
+      const bulge = 10;
+      return `<g>
+        <!-- bow stave -->
+        <path d="M${bx} ${topY} Q${bx + bulge} ${midY - 15} ${bx + 2} ${midY} Q${bx + bulge} ${midY + 15} ${bx} ${botY}"
+          stroke="#5d4037" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <!-- wood grain highlight -->
+        <path d="M${bx} ${topY + 4} Q${bx + bulge - 2} ${midY - 12} ${bx + 1} ${midY}"
+          stroke="#8d6e63" stroke-width="1" fill="none" opacity="0.5"/>
+        <!-- bowstring -->
+        <line x1="${bx + 1}" y1="${topY + 2}" x2="${bx}" y2="${botY - 2}" stroke="#c9a84c" stroke-width="0.7"/>
+        <!-- nock tips -->
+        <circle cx="${bx}" cy="${topY}" r="1.5" fill="#5d4037"/>
+        <circle cx="${bx}" cy="${botY}" r="1.5" fill="#5d4037"/>
       </g>`;
-    case 'heavy':
-      return `<g transform="scale(${sx},${sy})" opacity="0.9">
-        <rect x="65" y="16" width="4" height="98" rx="1" fill="#9e9e9e"/>
-        <rect x="58" y="46" width="18" height="4" rx="1" fill="#757575"/>
-        <rect x="64" y="10" width="6" height="8" rx="2" fill="#c9a84c"/>
+    }
+    case 'heavy': {
+      // Greatsword slung on back, hilt over right shoulder
+      const sx = backPos.x + 4;
+      const topY = torso.y - 18;
+      const bladeLen = torso.h + 28;
+      return `<g>
+        <!-- blade -->
+        <rect x="${sx - 2}" y="${topY}" width="5" height="${bladeLen}" rx="1" fill="#b0bec5"/>
+        <!-- blade edge highlight -->
+        <rect x="${sx - 1}" y="${topY + 2}" width="2" height="${bladeLen - 8}" rx="0.5" fill="#e0e0e0" opacity="0.5"/>
+        <!-- fuller groove -->
+        <line x1="${sx + 0.5}" y1="${topY + 6}" x2="${sx + 0.5}" y2="${topY + bladeLen - 12}" stroke="#90a4ae" stroke-width="1" opacity="0.6"/>
+        <!-- crossguard -->
+        <rect x="${sx - 7}" y="${topY + bladeLen - 4}" width="15" height="4" rx="1.5" fill="#757575"/>
+        <rect x="${sx - 8}" y="${topY + bladeLen - 3}" width="17" height="2" rx="1" fill="#9e9e9e" opacity="0.5"/>
+        <!-- grip -->
+        <rect x="${sx - 0.5}" y="${topY + bladeLen}" width="2" height="10" rx="1" fill="#4a2f1a"/>
+        <!-- leather wrap -->
+        <line x1="${sx - 1}" y1="${topY + bladeLen + 2}" x2="${sx + 2}" y2="${topY + bladeLen + 4}" stroke="#3e2723" stroke-width="0.8"/>
+        <line x1="${sx - 1}" y1="${topY + bladeLen + 5}" x2="${sx + 2}" y2="${topY + bladeLen + 7}" stroke="#3e2723" stroke-width="0.8"/>
+        <!-- pommel -->
+        <circle cx="${sx + 0.5}" cy="${topY + bladeLen + 12}" r="2.5" fill="#c9a84c"/>
+        <circle cx="${sx + 0.5}" cy="${topY + bladeLen + 12}" r="1" fill="#ffd700" opacity="0.6"/>
       </g>`;
-    case 'medium':
-      return `<g transform="scale(${sx},${sy})" opacity="0.9">
-        <rect x="62" y="38" width="3" height="62" rx="1" fill="#9e9e9e"/>
-        <rect x="57" y="54" width="13" height="3" rx="1" fill="#757575"/>
-        <rect x="60" y="32" width="6" height="8" rx="2" fill="#c9a84c"/>
+    }
+    case 'medium': {
+      // Longsword at right hip, angled
+      const hx = handR.x - 2;
+      const hy = handR.y - 20;
+      const bladeLen = torso.h * 0.85;
+      return `<g transform="translate(${hx},${hy}) rotate(15)">
+        <!-- blade -->
+        <rect x="-1.5" y="${-bladeLen}" width="4" height="${bladeLen}" rx="0.5" fill="#b0bec5"/>
+        <rect x="-0.5" y="${-bladeLen + 2}" width="2" height="${bladeLen - 6}" rx="0.3" fill="#e0e0e0" opacity="0.4"/>
+        <!-- fuller -->
+        <line x1="0.5" y1="${-bladeLen + 4}" x2="0.5" y2="-6" stroke="#90a4ae" stroke-width="0.7" opacity="0.5"/>
+        <!-- blade tip -->
+        <path d="M-1.5 ${-bladeLen} L0.5 ${-bladeLen - 4} L2.5 ${-bladeLen}" fill="#b0bec5"/>
+        <!-- crossguard -->
+        <rect x="-5" y="-2" width="11" height="3" rx="1" fill="#757575"/>
+        <!-- grip -->
+        <rect x="-0.5" y="1" width="2" height="8" rx="0.5" fill="#4a2f1a"/>
+        <line x1="-0.8" y1="2.5" x2="1.8" y2="3.5" stroke="#3e2723" stroke-width="0.6"/>
+        <line x1="-0.8" y1="5" x2="1.8" y2="6" stroke="#3e2723" stroke-width="0.6"/>
+        <!-- pommel -->
+        <circle cx="0.5" cy="10.5" r="2" fill="#c9a84c"/>
       </g>`;
-    case 'light':
-      return `<g transform="scale(${sx},${sy})" opacity="0.9">
-        <rect x="64" y="46" width="2.5" height="34" rx="1" fill="#9e9e9e"/>
-        <rect x="61" y="56" width="9" height="2.5" rx="1" fill="#757575"/>
-        <rect x="4" y="46" width="2.5" height="34" rx="1" fill="#9e9e9e"/>
-        <rect x="1" y="56" width="9" height="2.5" rx="1" fill="#757575"/>
+    }
+    case 'light': {
+      // Dual daggers, one at each hip
+      const dLen = torso.h * 0.42;
+      return `<g>
+        <!-- right dagger -->
+        <g transform="translate(${handR.x - 1},${handR.y - 12}) rotate(12)">
+          <rect x="-1" y="${-dLen}" width="2.5" height="${dLen}" rx="0.3" fill="#b0bec5"/>
+          <path d="M-1 ${-dLen} L0.25 ${-dLen - 3} L1.5 ${-dLen}" fill="#d0d0d0"/>
+          <rect x="-3" y="-1" width="7" height="2.5" rx="0.8" fill="#757575"/>
+          <rect x="-0.5" y="1.5" width="1.5" height="5" rx="0.5" fill="#4a2f1a"/>
+          <circle cx="0.25" cy="7.5" r="1.3" fill="#c9a84c"/>
+        </g>
+        <!-- left dagger -->
+        <g transform="translate(${handL.x + 1},${handL.y - 12}) rotate(-12)">
+          <rect x="-1" y="${-dLen}" width="2.5" height="${dLen}" rx="0.3" fill="#b0bec5"/>
+          <path d="M-1 ${-dLen} L0.25 ${-dLen - 3} L1.5 ${-dLen}" fill="#d0d0d0"/>
+          <rect x="-3" y="-1" width="7" height="2.5" rx="0.8" fill="#757575"/>
+          <rect x="-0.5" y="1.5" width="1.5" height="5" rx="0.5" fill="#4a2f1a"/>
+          <circle cx="0.25" cy="7.5" r="1.3" fill="#c9a84c"/>
+        </g>
       </g>`;
-    case 'polearm':
-      return `<g transform="scale(${sx},${sy})" opacity="0.9">
-        <rect x="68" y="8" width="3" height="115" rx="1" fill="#5d4037"/>
-        <path d="M65 8 L69.5 -4 L74 8Z" fill="#9e9e9e"/>
+    }
+    case 'polearm': {
+      // Spear/halberd held beside right side, tip above head
+      const px = handR.x + 4;
+      const tipY = torso.y - 30;
+      const shaftBot = handR.y + 20;
+      const shaftLen = shaftBot - tipY;
+      return `<g>
+        <!-- shaft -->
+        <rect x="${px - 1.5}" y="${tipY + 10}" width="3" height="${shaftLen - 10}" rx="1" fill="#5d4037"/>
+        <!-- wood grain -->
+        <line x1="${px - 0.5}" y1="${tipY + 20}" x2="${px - 0.5}" y2="${shaftBot - 5}" stroke="#8d6e63" stroke-width="0.5" opacity="0.4"/>
+        <!-- spearhead -->
+        <path d="M${px - 4} ${tipY + 12} L${px} ${tipY} L${px + 4} ${tipY + 12} L${px + 2} ${tipY + 14} L${px - 2} ${tipY + 14}Z" fill="#9e9e9e"/>
+        <path d="M${px - 2} ${tipY + 12} L${px} ${tipY + 2} L${px + 2} ${tipY + 12}" fill="#c0c0c0" opacity="0.5"/>
+        <!-- lugs/wings -->
+        <path d="M${px - 2} ${tipY + 14} L${px - 5} ${tipY + 18} L${px - 2} ${tipY + 16}" fill="#757575"/>
+        <path d="M${px + 2} ${tipY + 14} L${px + 5} ${tipY + 18} L${px + 2} ${tipY + 16}" fill="#757575"/>
+        <!-- butt cap -->
+        <rect x="${px - 2}" y="${shaftBot - 2}" width="4" height="3" rx="1" fill="#757575"/>
       </g>`;
-    case 'unarmed':
-      return `<g transform="scale(${sx},${sy})" opacity="0.85">
-        <circle cx="10" cy="100" r="5" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
-        <circle cx="70" cy="100" r="5" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
+    }
+    case 'unarmed': {
+      // Wrapped fist bindings / knuckle wraps
+      const r = torso.w * 0.04;
+      return `<g>
+        <!-- right hand wraps -->
+        <ellipse cx="${handR.x}" cy="${handR.y}" rx="${r + 3}" ry="${r + 1.5}" fill="none" stroke="#c9a84c" stroke-width="1.2"/>
+        <line x1="${handR.x - r}" y1="${handR.y - 1}" x2="${handR.x + r}" y2="${handR.y + 1}" stroke="#c9a84c" stroke-width="0.8" opacity="0.6"/>
+        <!-- left hand wraps -->
+        <ellipse cx="${handL.x}" cy="${handL.y}" rx="${r + 3}" ry="${r + 1.5}" fill="none" stroke="#c9a84c" stroke-width="1.2"/>
+        <line x1="${handL.x - r}" y1="${handL.y - 1}" x2="${handL.x + r}" y2="${handL.y + 1}" stroke="#c9a84c" stroke-width="0.8" opacity="0.6"/>
       </g>`;
-    case 'whip':
-      return `<g transform="scale(${sx},${sy})" opacity="0.9">
-        <path d="M68 92 Q76 80 73 66 Q70 54 76 44 Q80 34 76 24" fill="none" stroke="#5d4037" stroke-width="2.5" stroke-linecap="round"/>
+    }
+    case 'whip': {
+      // Coiled whip trailing from right hand
+      const wx = handR.x;
+      const wy = handR.y;
+      return `<g>
+        <path d="M${wx} ${wy} Q${wx + 8} ${wy - 12} ${wx + 5} ${wy - 24}
+                 Q${wx + 2} ${wy - 34} ${wx + 8} ${wy - 42}
+                 Q${wx + 12} ${wy - 50} ${wx + 6} ${wy - 58}"
+          fill="none" stroke="#5d4037" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- whip highlights -->
+        <path d="M${wx + 1} ${wy - 2} Q${wx + 7} ${wy - 14} ${wx + 4} ${wy - 25}"
+          fill="none" stroke="#8d6e63" stroke-width="0.8" opacity="0.5"/>
+        <!-- handle -->
+        <rect x="${wx - 1}" y="${wy - 2}" width="3" height="7" rx="1" fill="#3e2723"/>
+        <circle cx="${wx + 0.5}" cy="${wy + 6}" r="1.5" fill="#c9a84c"/>
       </g>`;
-    case 'ensnaring':
-      return `<g transform="scale(${sx},${sy})" opacity="0.9">
-        <circle cx="10" cy="92" r="12" fill="none" stroke="#8d6e63" stroke-width="1.5"/>
-        <line x1="2" y1="84" x2="18" y2="100" stroke="#8d6e63" stroke-width="0.8"/>
-        <line x1="18" y1="84" x2="2" y2="100" stroke="#8d6e63" stroke-width="0.8"/>
-        <line x1="10" y1="80" x2="10" y2="104" stroke="#8d6e63" stroke-width="0.8"/>
+    }
+    case 'ensnaring': {
+      // Net bundled at left hip
+      const nx = handL.x;
+      const ny = handL.y - 8;
+      const r = torso.w * 0.16;
+      return `<g>
+        <!-- net bundle -->
+        <ellipse cx="${nx}" cy="${ny}" rx="${r}" ry="${r * 0.75}" fill="none" stroke="#8d6e63" stroke-width="1.5"/>
+        <!-- net weave pattern -->
+        <line x1="${nx - r * 0.7}" y1="${ny - r * 0.5}" x2="${nx + r * 0.7}" y2="${ny + r * 0.5}" stroke="#8d6e63" stroke-width="0.7" opacity="0.6"/>
+        <line x1="${nx + r * 0.7}" y1="${ny - r * 0.5}" x2="${nx - r * 0.7}" y2="${ny + r * 0.5}" stroke="#8d6e63" stroke-width="0.7" opacity="0.6"/>
+        <line x1="${nx}" y1="${ny - r * 0.7}" x2="${nx}" y2="${ny + r * 0.7}" stroke="#8d6e63" stroke-width="0.7" opacity="0.5"/>
+        <line x1="${nx - r * 0.8}" y1="${ny}" x2="${nx + r * 0.8}" y2="${ny}" stroke="#8d6e63" stroke-width="0.7" opacity="0.5"/>
+        <!-- trailing rope -->
+        <path d="M${nx} ${ny + r * 0.7} Q${nx - 3} ${ny + r * 1.2} ${nx + 2} ${ny + r * 1.8}"
+          stroke="#8d6e63" stroke-width="1" fill="none" opacity="0.5"/>
+        <!-- trident (retiarius secondary) -->
+        <g transform="translate(${cx + 2},${torso.y - 10}) rotate(5)">
+          <rect x="-1" y="0" width="2.5" height="${torso.h * 0.9}" rx="0.8" fill="#5d4037"/>
+          <path d="M-4 2 L0.25 -6 L4.5 2" fill="none" stroke="#9e9e9e" stroke-width="1.5"/>
+          <line x1="-3" y1="0" x2="-3" y2="-3" stroke="#9e9e9e" stroke-width="1.5"/>
+          <line x1="4" y1="0" x2="4" y2="-3" stroke="#9e9e9e" stroke-width="1.5"/>
+          <line x1="0.25" y1="-6" x2="0.25" y2="-3" stroke="#9e9e9e" stroke-width="1"/>
+        </g>
       </g>`;
+    }
     default:
       return '';
   }
 }
 
 // =============================================================================
-// ARMOR OVERLAYS — worn on the model body
+// ARMOR OVERLAYS — fitted to each model's actual torso bounds
 // =============================================================================
 
 export type ArmorWeight = 'none' | 'light' | 'medium' | 'heavy';
 
-export function getArmorOverlay(weight: ArmorWeight, hasShield: boolean, color: string, vw: number, vh: number): string {
-  if (weight === 'none' && !hasShield) return '';
-  const sx = vw / 80;
-  const sy = vh / 145;
-  // Darker shade for depth
+export function getArmorOverlay(weight: ArmorWeight, hasShield: boolean, color: string, _vw: number, _vh: number, model?: AncestryModelData): string {
+  if ((weight === 'none' && !hasShield) || !model) return '';
+  const { torso, handL } = model;
+  const tx = torso.x;
+  const ty = torso.y;
+  const tw = torso.w;
+  const th = torso.h;
+  const cx = tx + tw / 2;
   const darkColor = adjustBrightness(color, -40);
   const lightColor = adjustBrightness(color, 30);
+  const midColor = adjustBrightness(color, -15);
 
-  let svg = `<g transform="scale(${sx},${sy})" opacity="0.6">`;
+  let svg = '<g>';
 
   if (weight === 'light') {
+    // Leather armor: shoulder pads + chest strap + bracers
+    const padW = tw * 0.22;
+    const padH = th * 0.22;
     svg += `
-      <path d="M14 68 Q18 60 28 58 L32 64 Q20 66 18 72Z" fill="${color}" opacity="0.7"/>
-      <path d="M66 68 Q62 60 52 58 L48 64 Q60 66 62 72Z" fill="${color}" opacity="0.7"/>
-      <rect x="28" y="60" width="24" height="6" rx="2" fill="${darkColor}" opacity="0.4"/>`;
+      <!-- left shoulder pad -->
+      <path d="M${tx - 1} ${ty + padH * 0.6}
+               Q${tx + 1} ${ty - padH * 0.3} ${tx + padW} ${ty - padH * 0.2}
+               L${tx + padW + 2} ${ty + padH * 0.4}
+               Q${tx + padW * 0.5} ${ty + padH * 0.8} ${tx - 1} ${ty + padH * 0.6}Z"
+        fill="${color}" opacity="0.75"/>
+      <path d="M${tx + 1} ${ty + padH * 0.2} Q${tx + padW * 0.5} ${ty - padH * 0.1} ${tx + padW} ${ty}"
+        stroke="${lightColor}" stroke-width="0.6" fill="none" opacity="0.4"/>
+      <!-- right shoulder pad -->
+      <path d="M${tx + tw + 1} ${ty + padH * 0.6}
+               Q${tx + tw - 1} ${ty - padH * 0.3} ${tx + tw - padW} ${ty - padH * 0.2}
+               L${tx + tw - padW - 2} ${ty + padH * 0.4}
+               Q${tx + tw - padW * 0.5} ${ty + padH * 0.8} ${tx + tw + 1} ${ty + padH * 0.6}Z"
+        fill="${color}" opacity="0.75"/>
+      <!-- chest strap -->
+      <path d="M${cx - tw * 0.3} ${ty + th * 0.1}
+               L${cx + tw * 0.3} ${ty + th * 0.1}
+               L${cx + tw * 0.28} ${ty + th * 0.2}
+               L${cx - tw * 0.28} ${ty + th * 0.2}Z"
+        fill="${darkColor}" opacity="0.45"/>
+      <!-- strap buckle -->
+      <rect x="${cx - 1.5}" y="${ty + th * 0.1}" width="3" height="3" rx="0.5" fill="#c9a84c" opacity="0.7"/>
+      <!-- bracers -->
+      <rect x="${model.handR.x - 4}" y="${model.handR.y - 14}" width="7" height="8" rx="2" fill="${midColor}" opacity="0.55"/>
+      <rect x="${model.handL.x - 3}" y="${model.handL.y - 14}" width="7" height="8" rx="2" fill="${midColor}" opacity="0.55"/>`;
   } else if (weight === 'medium') {
+    // Scale/chain mail: breastplate + pronounced pauldrons + belt
+    const padW = tw * 0.25;
     svg += `
-      <path d="M28 58 L52 58 L54 90 Q42 94 40 94 Q38 94 26 90Z" fill="${color}" opacity="0.55"/>
-      <path d="M10 72 Q14 58 28 56 L34 64 Q16 66 14 78Z" fill="${darkColor}"/>
-      <path d="M70 72 Q66 58 52 56 L46 64 Q64 66 66 78Z" fill="${darkColor}"/>
-      <line x1="28" y1="66" x2="52" y2="66" stroke="${lightColor}" stroke-width="0.8" opacity="0.4"/>
-      <line x1="28" y1="74" x2="52" y2="74" stroke="${lightColor}" stroke-width="0.8" opacity="0.3"/>`;
+      <!-- breastplate -->
+      <path d="M${tx + tw * 0.15} ${ty + 2}
+               L${tx + tw * 0.85} ${ty + 2}
+               L${tx + tw * 0.88} ${ty + th * 0.7}
+               Q${cx} ${ty + th * 0.78} ${tx + tw * 0.12} ${ty + th * 0.7}Z"
+        fill="${color}" opacity="0.55"/>
+      <!-- chest plate center ridge -->
+      <line x1="${cx}" y1="${ty + 4}" x2="${cx}" y2="${ty + th * 0.55}" stroke="${lightColor}" stroke-width="1" opacity="0.35"/>
+      <!-- scale pattern -->
+      <path d="M${tx + tw * 0.2} ${ty + th * 0.25} Q${cx} ${ty + th * 0.2} ${tx + tw * 0.8} ${ty + th * 0.25}"
+        stroke="${darkColor}" stroke-width="0.8" fill="none" opacity="0.4"/>
+      <path d="M${tx + tw * 0.2} ${ty + th * 0.38} Q${cx} ${ty + th * 0.33} ${tx + tw * 0.8} ${ty + th * 0.38}"
+        stroke="${darkColor}" stroke-width="0.8" fill="none" opacity="0.35"/>
+      <path d="M${tx + tw * 0.22} ${ty + th * 0.51} Q${cx} ${ty + th * 0.46} ${tx + tw * 0.78} ${ty + th * 0.51}"
+        stroke="${darkColor}" stroke-width="0.8" fill="none" opacity="0.3"/>
+      <!-- left pauldron -->
+      <path d="M${tx - 2} ${ty + padW * 0.5}
+               Q${tx} ${ty - padW * 0.4} ${tx + padW * 1.2} ${ty - padW * 0.3}
+               L${tx + padW * 1.3} ${ty + padW * 0.5}
+               Q${tx + padW * 0.6} ${ty + padW * 0.7} ${tx - 2} ${ty + padW * 0.5}Z"
+        fill="${darkColor}" opacity="0.8"/>
+      <path d="M${tx} ${ty + padW * 0.15} Q${tx + padW * 0.6} ${ty - padW * 0.2} ${tx + padW * 1.1} ${ty - padW * 0.1}"
+        stroke="${lightColor}" stroke-width="0.6" fill="none" opacity="0.3"/>
+      <!-- right pauldron -->
+      <path d="M${tx + tw + 2} ${ty + padW * 0.5}
+               Q${tx + tw} ${ty - padW * 0.4} ${tx + tw - padW * 1.2} ${ty - padW * 0.3}
+               L${tx + tw - padW * 1.3} ${ty + padW * 0.5}
+               Q${tx + tw - padW * 0.6} ${ty + padW * 0.7} ${tx + tw + 2} ${ty + padW * 0.5}Z"
+        fill="${darkColor}" opacity="0.8"/>
+      <!-- belt -->
+      <rect x="${tx}" y="${ty + th * 0.72}" width="${tw}" height="${th * 0.08}" rx="1.5" fill="${darkColor}" opacity="0.7"/>
+      <rect x="${cx - 2}" y="${ty + th * 0.71}" width="4" height="${th * 0.1}" rx="1" fill="#c9a84c" opacity="0.7"/>`;
   } else if (weight === 'heavy') {
+    // Full plate: cuirass + gorget + massive pauldrons + faulds + vambraces
+    const padW = tw * 0.28;
     svg += `
-      <path d="M26 56 L54 56 L58 94 Q42 100 40 100 Q38 100 22 94Z" fill="${color}" opacity="0.6"/>
-      <path d="M8 76 Q12 54 26 52 L34 62 Q14 60 12 80Z" fill="${darkColor}"/>
-      <path d="M72 76 Q68 54 54 52 L46 62 Q66 60 68 80Z" fill="${darkColor}"/>
-      <path d="M30 48 Q40 44 50 48 Q50 54 40 52 Q30 54 30 48Z" fill="${darkColor}" opacity="0.8"/>
-      <line x1="26" y1="64" x2="54" y2="64" stroke="${lightColor}" stroke-width="1" opacity="0.3"/>
-      <line x1="26" y1="72" x2="54" y2="72" stroke="${lightColor}" stroke-width="0.8" opacity="0.25"/>
-      <line x1="26" y1="80" x2="54" y2="80" stroke="${lightColor}" stroke-width="0.6" opacity="0.2"/>`;
+      <!-- cuirass -->
+      <path d="M${tx + tw * 0.1} ${ty - 2}
+               L${tx + tw * 0.9} ${ty - 2}
+               L${tx + tw * 0.95} ${ty + th * 0.75}
+               Q${cx} ${ty + th * 0.85} ${tx + tw * 0.05} ${ty + th * 0.75}Z"
+        fill="${color}" opacity="0.6"/>
+      <!-- chest plate ridge -->
+      <line x1="${cx}" y1="${ty + 2}" x2="${cx}" y2="${ty + th * 0.6}" stroke="${lightColor}" stroke-width="1.2" opacity="0.3"/>
+      <!-- pectoral lines -->
+      <path d="M${cx} ${ty + th * 0.12}
+               Q${tx + tw * 0.3} ${ty + th * 0.18} ${tx + tw * 0.15} ${ty + th * 0.3}"
+        stroke="${lightColor}" stroke-width="0.8" fill="none" opacity="0.25"/>
+      <path d="M${cx} ${ty + th * 0.12}
+               Q${tx + tw * 0.7} ${ty + th * 0.18} ${tx + tw * 0.85} ${ty + th * 0.3}"
+        stroke="${lightColor}" stroke-width="0.8" fill="none" opacity="0.25"/>
+      <!-- rivet lines -->
+      <line x1="${tx + tw * 0.15}" y1="${ty + th * 0.42}" x2="${tx + tw * 0.85}" y2="${ty + th * 0.42}"
+        stroke="${lightColor}" stroke-width="0.6" opacity="0.2"/>
+      <line x1="${tx + tw * 0.18}" y1="${ty + th * 0.56}" x2="${tx + tw * 0.82}" y2="${ty + th * 0.56}"
+        stroke="${lightColor}" stroke-width="0.5" opacity="0.18"/>
+      <!-- gorget (neck guard) -->
+      <path d="M${cx - tw * 0.18} ${ty - 4}
+               Q${cx} ${ty - 8} ${cx + tw * 0.18} ${ty - 4}
+               Q${cx + tw * 0.15} ${ty} ${cx} ${ty - 1}
+               Q${cx - tw * 0.15} ${ty} ${cx - tw * 0.18} ${ty - 4}Z"
+        fill="${darkColor}" opacity="0.75"/>
+      <!-- left pauldron (massive) -->
+      <path d="M${tx - 3} ${ty + padW * 0.4}
+               Q${tx - 1} ${ty - padW * 0.55} ${tx + padW * 1.4} ${ty - padW * 0.4}
+               L${tx + padW * 1.5} ${ty + padW * 0.5}
+               Q${tx + padW * 0.7} ${ty + padW * 0.8} ${tx - 3} ${ty + padW * 0.4}Z"
+        fill="${darkColor}" opacity="0.85"/>
+      <path d="M${tx - 1} ${ty} Q${tx + padW * 0.7} ${ty - padW * 0.3} ${tx + padW * 1.3} ${ty - padW * 0.15}"
+        stroke="${lightColor}" stroke-width="0.7" fill="none" opacity="0.3"/>
+      <path d="M${tx} ${ty + padW * 0.2} Q${tx + padW * 0.6} ${ty} ${tx + padW * 1.2} ${ty + padW * 0.1}"
+        stroke="${lightColor}" stroke-width="0.5" fill="none" opacity="0.2"/>
+      <!-- right pauldron (massive) -->
+      <path d="M${tx + tw + 3} ${ty + padW * 0.4}
+               Q${tx + tw + 1} ${ty - padW * 0.55} ${tx + tw - padW * 1.4} ${ty - padW * 0.4}
+               L${tx + tw - padW * 1.5} ${ty + padW * 0.5}
+               Q${tx + tw - padW * 0.7} ${ty + padW * 0.8} ${tx + tw + 3} ${ty + padW * 0.4}Z"
+        fill="${darkColor}" opacity="0.85"/>
+      <!-- faulds (hip plates) -->
+      <rect x="${tx + tw * 0.05}" y="${ty + th * 0.72}" width="${tw * 0.9}" height="${th * 0.12}" rx="1.5" fill="${midColor}" opacity="0.55"/>
+      <line x1="${cx - tw * 0.15}" y1="${ty + th * 0.72}" x2="${cx - tw * 0.15}" y2="${ty + th * 0.84}"
+        stroke="${darkColor}" stroke-width="0.8" opacity="0.4"/>
+      <line x1="${cx + tw * 0.15}" y1="${ty + th * 0.72}" x2="${cx + tw * 0.15}" y2="${ty + th * 0.84}"
+        stroke="${darkColor}" stroke-width="0.8" opacity="0.4"/>
+      <!-- belt -->
+      <rect x="${tx}" y="${ty + th * 0.68}" width="${tw}" height="${th * 0.06}" rx="1" fill="${darkColor}" opacity="0.8"/>
+      <rect x="${cx - 2.5}" y="${ty + th * 0.67}" width="5" height="${th * 0.08}" rx="1.2" fill="#c9a84c" opacity="0.8"/>
+      <!-- vambraces -->
+      <rect x="${model.handR.x - 5}" y="${model.handR.y - 16}" width="9" height="10" rx="2.5" fill="${midColor}" opacity="0.6"/>
+      <line x1="${model.handR.x - 3}" y1="${model.handR.y - 14}" x2="${model.handR.x + 2}" y2="${model.handR.y - 14}"
+        stroke="${lightColor}" stroke-width="0.5" opacity="0.3"/>
+      <rect x="${model.handL.x - 4}" y="${model.handL.y - 16}" width="9" height="10" rx="2.5" fill="${midColor}" opacity="0.6"/>`;
   }
 
   if (hasShield) {
+    // Kite shield held on left arm
+    const shX = handL.x;
+    const shY = handL.y - th * 0.25;
+    const shW = tw * 0.22;
+    const shH = th * 0.45;
     svg += `
-      <g transform="translate(4,74) rotate(-10)">
-        <path d="M0 -10 L10 -5 L10 8 L0 16 L-10 8 L-10 -5Z" fill="${color}" opacity="0.8" stroke="${darkColor}" stroke-width="1"/>
-        <line x1="0" y1="-6" x2="0" y2="12" stroke="${lightColor}" stroke-width="1.5" opacity="0.5"/>
-      </g>`;
+      <!-- shield body -->
+      <path d="M${shX} ${shY - shH * 0.4}
+               L${shX + shW} ${shY - shH * 0.2}
+               L${shX + shW * 0.9} ${shY + shH * 0.4}
+               L${shX + shW * 0.5} ${shY + shH * 0.6}
+               L${shX + shW * 0.1} ${shY + shH * 0.4}
+               L${shX} ${shY - shH * 0.2}Z"
+        fill="${color}" opacity="0.85" stroke="${darkColor}" stroke-width="1"/>
+      <!-- shield boss -->
+      <circle cx="${shX + shW * 0.5}" cy="${shY + shH * 0.05}" r="${shW * 0.2}" fill="${darkColor}" opacity="0.6"/>
+      <circle cx="${shX + shW * 0.5}" cy="${shY + shH * 0.05}" r="${shW * 0.1}" fill="${lightColor}" opacity="0.4"/>
+      <!-- shield cross -->
+      <line x1="${shX + shW * 0.5}" y1="${shY - shH * 0.3}" x2="${shX + shW * 0.5}" y2="${shY + shH * 0.5}"
+        stroke="${lightColor}" stroke-width="1" opacity="0.3"/>
+      <line x1="${shX + shW * 0.1}" y1="${shY + shH * 0.05}" x2="${shX + shW * 0.9}" y2="${shY + shH * 0.05}"
+        stroke="${lightColor}" stroke-width="1" opacity="0.3"/>`;
   }
 
   svg += '</g>';
@@ -1086,46 +1280,107 @@ export function getArmorOverlay(weight: ArmorWeight, hasShield: boolean, color: 
 }
 
 // =============================================================================
-// HAIR STYLE OVERLAYS
+// HAIR STYLE OVERLAYS — positioned at each model's actual head
 // =============================================================================
 
 export type HairStyleId = 'short' | 'long' | 'braided' | 'mohawk' | 'ponytail' | 'bald';
 
-/** Returns SVG for the hair overlay, colored with the given hex color */
-export function getHairOverlay(style: HairStyleId, color: string, vw: number, vh: number): string {
-  if (style === 'bald') return '';
-  const sx = vw / 74;  // Normalize around human head dimensions
-  const sy = vh / 145;
+export function getHairOverlay(style: HairStyleId, color: string, _vw: number, _vh: number, model?: AncestryModelData): string {
+  if (style === 'bald' || !model) return '';
+  const { headCenter } = model;
+  const hx = headCenter.x;
+  const hy = headCenter.y;
+  // Scale hair radius based on head (roughly 16px radius for a 74px wide model)
+  const r = model.viewW * 0.22;
+  const darkHair = adjustBrightness(color, -25);
 
   switch (style) {
     case 'short':
-      return `<g transform="scale(${sx},${sy})">
-        <path d="M22 26 Q22 12 37 10 Q52 12 52 26 Q48 18 37 16 Q26 18 22 26Z" fill="${color}"/>
+      return `<g>
+        <path d="M${hx - r} ${hy - 4}
+                 Q${hx - r} ${hy - r * 1.1} ${hx} ${hy - r * 1.2}
+                 Q${hx + r} ${hy - r * 1.1} ${hx + r} ${hy - 4}
+                 Q${hx + r * 0.7} ${hy - r * 0.6} ${hx} ${hy - r * 0.7}
+                 Q${hx - r * 0.7} ${hy - r * 0.6} ${hx - r} ${hy - 4}Z"
+          fill="${color}"/>
+        <path d="M${hx - r * 0.6} ${hy - r * 0.8}
+                 Q${hx} ${hy - r * 1.05} ${hx + r * 0.6} ${hy - r * 0.8}"
+          stroke="${darkHair}" stroke-width="0.8" fill="none" opacity="0.3"/>
       </g>`;
-    case 'long':
-      return `<g transform="scale(${sx},${sy})">
-        <path d="M22 26 Q22 12 37 10 Q52 12 52 26 Q48 18 37 16 Q26 18 22 26Z" fill="${color}"/>
-        <path d="M22 26 Q18 40 16 62" stroke="${color}" stroke-width="8" fill="none" stroke-linecap="round"/>
-        <path d="M52 26 Q56 40 58 62" stroke="${color}" stroke-width="8" fill="none" stroke-linecap="round"/>
+    case 'long': {
+      const shoulderY = model.torso.y + model.torso.h * 0.3;
+      return `<g>
+        <!-- crown -->
+        <path d="M${hx - r} ${hy - 4}
+                 Q${hx - r} ${hy - r * 1.1} ${hx} ${hy - r * 1.2}
+                 Q${hx + r} ${hy - r * 1.1} ${hx + r} ${hy - 4}
+                 Q${hx + r * 0.7} ${hy - r * 0.6} ${hx} ${hy - r * 0.7}
+                 Q${hx - r * 0.7} ${hy - r * 0.6} ${hx - r} ${hy - 4}Z"
+          fill="${color}"/>
+        <!-- left drape -->
+        <path d="M${hx - r} ${hy - 2} Q${hx - r - 2} ${hy + r} ${hx - r - 1} ${shoulderY}"
+          stroke="${color}" stroke-width="${r * 0.5}" fill="none" stroke-linecap="round"/>
+        <path d="M${hx - r + 0.5} ${hy} Q${hx - r - 1} ${hy + r * 0.6} ${hx - r} ${shoulderY - 4}"
+          stroke="${darkHair}" stroke-width="${r * 0.15}" fill="none" opacity="0.3"/>
+        <!-- right drape -->
+        <path d="M${hx + r} ${hy - 2} Q${hx + r + 2} ${hy + r} ${hx + r + 1} ${shoulderY}"
+          stroke="${color}" stroke-width="${r * 0.5}" fill="none" stroke-linecap="round"/>
       </g>`;
-    case 'braided':
-      return `<g transform="scale(${sx},${sy})">
-        <path d="M22 26 Q22 12 37 10 Q52 12 52 26 Q48 18 37 16 Q26 18 22 26Z" fill="${color}"/>
-        <path d="M28 26 Q26 38 28 56 Q30 62 28 68" stroke="${color}" stroke-width="5" fill="none"/>
-        <path d="M46 26 Q48 38 46 56 Q44 62 46 68" stroke="${color}" stroke-width="5" fill="none"/>
-        <circle cx="28" cy="70" r="3" fill="${adjustBrightness(color, 30)}"/>
-        <circle cx="46" cy="70" r="3" fill="${adjustBrightness(color, 30)}"/>
+    }
+    case 'braided': {
+      const braidEnd = model.torso.y + model.torso.h * 0.45;
+      const beadColor = adjustBrightness(color, 40);
+      return `<g>
+        <!-- crown -->
+        <path d="M${hx - r} ${hy - 4}
+                 Q${hx - r} ${hy - r * 1.1} ${hx} ${hy - r * 1.2}
+                 Q${hx + r} ${hy - r * 1.1} ${hx + r} ${hy - 4}
+                 Q${hx + r * 0.7} ${hy - r * 0.6} ${hx} ${hy - r * 0.7}
+                 Q${hx - r * 0.7} ${hy - r * 0.6} ${hx - r} ${hy - 4}Z"
+          fill="${color}"/>
+        <!-- left braid -->
+        <path d="M${hx - r * 0.5} ${hy + 2}
+                 Q${hx - r * 0.7} ${hy + r * 0.8} ${hx - r * 0.5} ${hy + r * 1.5}
+                 Q${hx - r * 0.3} ${hy + r * 2} ${hx - r * 0.5} ${braidEnd}"
+          stroke="${color}" stroke-width="${r * 0.32}" fill="none"/>
+        <circle cx="${hx - r * 0.5}" cy="${braidEnd + 2}" r="${r * 0.15}" fill="${beadColor}"/>
+        <!-- right braid -->
+        <path d="M${hx + r * 0.5} ${hy + 2}
+                 Q${hx + r * 0.7} ${hy + r * 0.8} ${hx + r * 0.5} ${hy + r * 1.5}
+                 Q${hx + r * 0.3} ${hy + r * 2} ${hx + r * 0.5} ${braidEnd}"
+          stroke="${color}" stroke-width="${r * 0.32}" fill="none"/>
+        <circle cx="${hx + r * 0.5}" cy="${braidEnd + 2}" r="${r * 0.15}" fill="${beadColor}"/>
       </g>`;
+    }
     case 'mohawk':
-      return `<g transform="scale(${sx},${sy})">
-        <path d="M33 24 Q35 6 37 2 Q39 6 41 24" fill="${color}"/>
-        <path d="M34 20 Q36 8 37 4 Q38 8 40 20" fill="${adjustBrightness(color, 20)}"/>
+      return `<g>
+        <path d="M${hx - r * 0.2} ${hy - r * 0.6}
+                 Q${hx - r * 0.1} ${hy - r * 1.6} ${hx} ${hy - r * 1.8}
+                 Q${hx + r * 0.1} ${hy - r * 1.6} ${hx + r * 0.2} ${hy - r * 0.6}Z"
+          fill="${color}"/>
+        <path d="M${hx - r * 0.08} ${hy - r * 0.8}
+                 Q${hx} ${hy - r * 1.5} ${hx + r * 0.08} ${hy - r * 0.8}"
+          fill="${darkHair}" opacity="0.3"/>
       </g>`;
-    case 'ponytail':
-      return `<g transform="scale(${sx},${sy})">
-        <path d="M22 26 Q22 12 37 10 Q52 12 52 26 Q48 18 37 16 Q26 18 22 26Z" fill="${color}"/>
-        <path d="M44 20 Q54 22 56 32 Q58 42 54 58" stroke="${color}" stroke-width="6" fill="none" stroke-linecap="round"/>
+    case 'ponytail': {
+      const tailEnd = model.torso.y + model.torso.h * 0.3;
+      return `<g>
+        <!-- crown -->
+        <path d="M${hx - r} ${hy - 4}
+                 Q${hx - r} ${hy - r * 1.1} ${hx} ${hy - r * 1.2}
+                 Q${hx + r} ${hy - r * 1.1} ${hx + r} ${hy - 4}
+                 Q${hx + r * 0.7} ${hy - r * 0.6} ${hx} ${hy - r * 0.7}
+                 Q${hx - r * 0.7} ${hy - r * 0.6} ${hx - r} ${hy - 4}Z"
+          fill="${color}"/>
+        <!-- tie point -->
+        <circle cx="${hx + r * 0.5}" cy="${hy - r * 0.5}" r="${r * 0.12}" fill="${adjustBrightness(color, 30)}"/>
+        <!-- tail -->
+        <path d="M${hx + r * 0.5} ${hy - r * 0.4}
+                 Q${hx + r * 1.2} ${hy} ${hx + r * 1.1} ${hy + r * 0.8}
+                 Q${hx + r * 1.0} ${hy + r * 1.4} ${hx + r * 0.8} ${tailEnd}"
+          stroke="${color}" stroke-width="${r * 0.35}" fill="none" stroke-linecap="round"/>
       </g>`;
+    }
     default:
       return '';
   }

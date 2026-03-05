@@ -77,6 +77,7 @@ export function buildCharacterSvg(character: CharacterData): string | null {
       hairColor,
       viewW,
       viewH,
+      model,
     );
   }
 
@@ -89,13 +90,13 @@ export function buildCharacterSvg(character: CharacterData): string | null {
     if (kit) {
       // Weapon
       if (kit.weapons[0]) {
-        weaponSvg = getWeaponOverlay(kit.weapons[0], viewW, viewH);
+        weaponSvg = getWeaponOverlay(kit.weapons[0], viewW, viewH, model);
       }
       // Armor
       const armorWeight = parseArmorWeight(kit.armor);
       const hasShield = parseHasShield(kit.armor);
       const armorColor = character.portraitSettings?.armorColor || '#757575';
-      armorSvg = getArmorOverlay(armorWeight, hasShield, armorColor, viewW, viewH);
+      armorSvg = getArmorOverlay(armorWeight, hasShield, armorColor, viewW, viewH, model);
     }
   }
 
