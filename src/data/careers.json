@@ -1,0 +1,360 @@
+{
+  "_meta": {
+    "source": "Draw Steel Heroes v1.01.pdf",
+    "pages": "73-82",
+    "description": "All 18 careers for the Draw Steel character builder. Each career provides skills, and optionally languages, renown, wealth, project points, and a perk."
+  },
+  "careerBenefitsInfo": {
+    "skills": "Each career grants 2-3 skills.",
+    "languages": "Some careers allow learning extra languages from Languages in Orden.",
+    "renown": "Some careers increase starting Renown score (base 0).",
+    "wealth": "Some careers increase starting Wealth score (base 1).",
+    "projectPoints": "Some careers grant project points for use in crafting and research.",
+    "perk": "Each career grants access to one perk from a specific perk group."
+  },
+  "careers": {
+    "agent": {
+      "name": "Agent",
+      "description": "You worked as a spy for a government or organization.",
+      "skills": {
+        "granted": ["Sneak"],
+        "grantedFrom": {
+          "interpersonal": 1,
+          "intrigue": 1
+        },
+        "quickBuild": ["Disguise", "Lie", "Sneak"]
+      },
+      "languages": 2,
+      "renown": 0,
+      "wealth": 0,
+      "projectPoints": 0,
+      "perk": {
+        "group": "intrigue",
+        "quickBuild": "Forgettable Face"
+      }
+    },
+    "aristocrat": {
+      "name": "Aristocrat",
+      "description": "You were born into money, married into it, or conned your way into it. You didn't need to work thanks to generational wealth.",
+      "skills": {
+        "grantedFrom": {
+          "interpersonal": 1,
+          "lore": 1
+        },
+        "quickBuild": ["Brag", "Society"]
+      },
+      "languages": 1,
+      "renown": 1,
+      "wealth": 1,
+      "projectPoints": 0,
+      "perk": {
+        "group": "lore",
+        "quickBuild": "I've Read About This Place"
+      }
+    },
+    "artisan": {
+      "name": "Artisan",
+      "description": "You made and sold useful wares.",
+      "skills": {
+        "grantedFrom": {
+          "crafting": 2
+        },
+        "quickBuild": ["Blacksmithing", "Carpentry"]
+      },
+      "languages": 1,
+      "renown": 0,
+      "wealth": 0,
+      "projectPoints": 240,
+      "perk": {
+        "group": "crafting",
+        "quickBuild": "Area of Expertise"
+      }
+    },
+    "beggar": {
+      "name": "Beggar",
+      "description": "You lived by going to a tavern, crossroads, city street, or other busy area and begging passersby for money or food.",
+      "skills": {
+        "granted": ["Rumors"],
+        "grantedFrom": {
+          "exploration": 1,
+          "interpersonal": 1
+        },
+        "quickBuild": ["Empathize", "Endurance", "Rumors"]
+      },
+      "languages": 2,
+      "renown": 0,
+      "wealth": 0,
+      "projectPoints": 0,
+      "perk": {
+        "group": "interpersonal",
+        "quickBuild": "Spot the Tell"
+      }
+    },
+    "criminal": {
+      "name": "Criminal",
+      "description": "You once worked as a bandit, insurgent, smuggler, outlaw, or even as an assassin.",
+      "skills": {
+        "granted": ["Criminal Underworld"],
+        "grantedFrom": {
+          "intrigue": 2
+        },
+        "quickBuild": ["Criminal Underworld", "Pick Lock", "Pick Pocket"]
+      },
+      "languages": 1,
+      "renown": 0,
+      "wealth": 0,
+      "projectPoints": 120,
+      "perk": {
+        "group": "intrigue",
+        "quickBuild": "Criminal Contacts"
+      }
+    },
+    "disciple": {
+      "name": "Disciple",
+      "description": "You worked in a church, temple, or other religious institution as part of the clergy.",
+      "skills": {
+        "granted": ["Religion"],
+        "grantedFrom": {
+          "lore": 2
+        },
+        "quickBuild": ["Culture", "Magic", "Religion"]
+      },
+      "languages": 0,
+      "renown": 0,
+      "wealth": 0,
+      "projectPoints": 240,
+      "perk": {
+        "group": "supernatural",
+        "quickBuild": "Ritualist"
+      }
+    },
+    "explorer": {
+      "name": "Explorer",
+      "description": "You ventured into uncharted areas and made your living as a cartographer, researcher, resource seeker, or treasure hunter.",
+      "skills": {
+        "granted": ["Navigate"],
+        "grantedFrom": {
+          "exploration": 2
+        },
+        "quickBuild": ["Climb", "Heal", "Navigate"]
+      },
+      "languages": 2,
+      "renown": 0,
+      "wealth": 0,
+      "projectPoints": 0,
+      "perk": {
+        "group": "exploration",
+        "quickBuild": "Wood Wise"
+      }
+    },
+    "farmer": {
+      "name": "Farmer",
+      "description": "You grew crops or cared for livestock.",
+      "skills": {
+        "granted": ["Handle Animals"],
+        "grantedFrom": {
+          "exploration": 2
+        },
+        "quickBuild": ["Drive", "Handle Animals", "Lift"]
+      },
+      "languages": 1,
+      "renown": 0,
+      "wealth": 0,
+      "projectPoints": 120,
+      "perk": {
+        "group": "exploration",
+        "quickBuild": "Monster Whisperer"
+      }
+    },
+    "gladiator": {
+      "name": "Gladiator",
+      "description": "You entertained the masses with flashy displays of violence in the arena.",
+      "skills": {
+        "grantedFrom": {
+          "exploration": 2
+        },
+        "quickBuild": ["Gymnastics", "Jump"]
+      },
+      "languages": 1,
+      "renown": 2,
+      "wealth": 0,
+      "projectPoints": 0,
+      "perk": {
+        "group": "exploration",
+        "quickBuild": "Friend Catapult"
+      }
+    },
+    "laborer": {
+      "name": "Laborer",
+      "description": "You worked as a farmer, builder, clothes washer, forester, miner, or some other profession engaged in hard manual labor.",
+      "skills": {
+        "granted": ["Endurance"],
+        "grantedFrom": {
+          "crafting_or_exploration": 2
+        },
+        "grantedFromNote": "Two skills from either the crafting group or the exploration group",
+        "quickBuild": ["Blacksmithing", "Endurance", "Lift"]
+      },
+      "languages": 1,
+      "renown": 0,
+      "wealth": 0,
+      "projectPoints": 120,
+      "perk": {
+        "group": "exploration",
+        "quickBuild": "Brawny"
+      }
+    },
+    "magesApprentice": {
+      "name": "Mage's Apprentice",
+      "description": "For long years, you studied magic under the mentorship of a more experienced mage.",
+      "skills": {
+        "granted": ["Magic"],
+        "grantedFrom": {
+          "lore": 2
+        },
+        "quickBuild": ["Magic", "Monsters", "Timescape"]
+      },
+      "languages": 1,
+      "renown": 1,
+      "wealth": 0,
+      "projectPoints": 0,
+      "perk": {
+        "group": "supernatural",
+        "quickBuild": "Arcane Trick"
+      }
+    },
+    "performer": {
+      "name": "Performer",
+      "description": "You can sing, act, or dance well enough that people actually pay you to do it.",
+      "skills": {
+        "granted": ["Music or Perform"],
+        "grantedFrom": {
+          "interpersonal": 2
+        },
+        "grantedNote": "The Music or Perform skill (from the interpersonal skill group), plus two more skills from the interpersonal group",
+        "quickBuild": ["Flirt", "Music", "Perform"]
+      },
+      "languages": 0,
+      "renown": 2,
+      "wealth": 0,
+      "projectPoints": 0,
+      "perk": {
+        "group": "interpersonal",
+        "quickBuild": "Harmonizer"
+      }
+    },
+    "politician": {
+      "name": "Politician",
+      "description": "You worked as a leader within a formal, bureaucratic organization or government.",
+      "skills": {
+        "grantedFrom": {
+          "interpersonal": 2
+        },
+        "quickBuild": ["Lead", "Lie"]
+      },
+      "languages": 1,
+      "renown": 1,
+      "wealth": 1,
+      "projectPoints": 0,
+      "perk": {
+        "group": "interpersonal",
+        "quickBuild": "Engrossing Monologue"
+      }
+    },
+    "sage": {
+      "name": "Sage",
+      "description": "From an early age, you dedicated yourself to learning, whether you shared the knowledge of the world with others or sought out secret lore only for yourself.",
+      "skills": {
+        "grantedFrom": {
+          "lore": 2
+        },
+        "quickBuild": ["History", "Magic"]
+      },
+      "languages": 1,
+      "renown": 0,
+      "wealth": 0,
+      "projectPoints": 240,
+      "perk": {
+        "group": "lore",
+        "quickBuild": "Expert Sage"
+      }
+    },
+    "sailor": {
+      "name": "Sailor",
+      "description": "You worked on a ship, whether a merchant cog, a mercenary or military craft, or a pirate vessel.",
+      "skills": {
+        "granted": ["Swim"],
+        "grantedFrom": {
+          "exploration": 2
+        },
+        "quickBuild": ["Climb", "Gymnastics", "Swim"]
+      },
+      "languages": 2,
+      "renown": 0,
+      "wealth": 0,
+      "projectPoints": 0,
+      "perk": {
+        "group": "exploration",
+        "quickBuild": "Put Your Back Into It!"
+      }
+    },
+    "soldier": {
+      "name": "Soldier",
+      "description": "In your formative years, you fought tirelessly in skirmishes and campaigns against enemy forces.",
+      "skills": {
+        "grantedFrom": {
+          "exploration": 1,
+          "intrigue": 1
+        },
+        "quickBuild": ["Alertness", "Endurance"]
+      },
+      "languages": 2,
+      "renown": 1,
+      "wealth": 0,
+      "projectPoints": 0,
+      "perk": {
+        "group": "exploration",
+        "quickBuild": "Teamwork"
+      }
+    },
+    "warden": {
+      "name": "Warden",
+      "description": "You protected a wild region from those who sought to harm it, such as poachers and cultists bent on the destruction of the natural world.",
+      "skills": {
+        "granted": ["Nature"],
+        "grantedFrom": {
+          "exploration": 1,
+          "intrigue": 1
+        },
+        "quickBuild": ["Nature", "Navigate", "Track"]
+      },
+      "languages": 1,
+      "renown": 0,
+      "wealth": 0,
+      "projectPoints": 120,
+      "perk": {
+        "group": "exploration",
+        "quickBuild": "Camouflage Hunter"
+      }
+    },
+    "watchOfficer": {
+      "name": "Watch Officer",
+      "description": "You served as an officer of the law for a local government.",
+      "skills": {
+        "granted": ["Alertness"],
+        "grantedFrom": {
+          "intrigue": 2
+        },
+        "quickBuild": ["Alertness", "Search", "Track"]
+      },
+      "languages": 2,
+      "renown": 0,
+      "wealth": 0,
+      "projectPoints": 0,
+      "perk": {
+        "group": "exploration",
+        "quickBuild": "Team Leader"
+      }
+    }
+  }
+}

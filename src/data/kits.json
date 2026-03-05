@@ -1,0 +1,902 @@
+{
+  "kitIntroduction": {
+    "description": "A kit is a combination of weapons, armor, and fighting techniques that lets you personalize your martial hero for battle. Censors, furies, shadows, tacticians, and troubadours can all use kits.",
+    "changingKits": "Your choice of kit is always flexible, and your hero is never locked into a specific kit. You can change your kit as a respite activity.",
+    "kitEquipmentRule": "You can wear armor and wield weapons that aren't part of your kit, but if you do, you don't get your kit's bonuses.",
+    "armorCategories": {
+      "none": "No armor. You can wear whatever clothing you like.",
+      "light": "Padded cloth, leather armor, or a chain shirt.",
+      "medium": "Layers of thick hides, a breastplate, or armor made of metal scales.",
+      "heavy": "Metal from head to toe. Chain mail, ring mail, and suits of plate armor.",
+      "shield": "A shield of any shape and any mundane material."
+    },
+    "weaponCategories": {
+      "bow": "Any weapon used to fire an arrow or bolt projectile, including crossbows, longbows, shortbows, slings, and atlatls.",
+      "ensnaring": "Bolas, nets, and other weapons made to capture an enemy and hold them in place.",
+      "light": "One-handed melee weapons for rapid strikes. Daggers, shortswords, rapiers, handaxes, throwing hammers. You can wield two light weapons at a time.",
+      "medium": "One-handed melee weapons leaving one hand free. Battleaxes, clubs, longswords, warhammers.",
+      "heavy": "Two-handed melee weapons with weighty heads. Greatswords, greataxes, mauls, morningstars.",
+      "polearm": "Two-handed melee weapons with long hafts for reach. Glaives, halberds, longspears, quarterstaffs.",
+      "unarmed": "Your body as a weapon. Punches, kicks, eye gouges, and the like.",
+      "whip": "Standard whip, spiked chains, flails, and similar long flexible melee weapons."
+    },
+    "bonusesExplanation": {
+      "staminaBonus": "Added to your Stamina maximum and scales with your echelon.",
+      "speedBonus": "Added to your speed.",
+      "stabilityBonus": "Added to your stability.",
+      "meleeDamageBonus": "Added to rolled damage of abilities with both Melee and Weapon keywords. Format is +X/+Y/+Z for tier 1/tier 2/tier 3 outcomes.",
+      "rangedDamageBonus": "Added to rolled damage of abilities with both Ranged and Weapon keywords. Format is +X/+Y/+Z for tier 1/tier 2/tier 3 outcomes.",
+      "meleeDistanceBonus": "Increases distance of abilities with Melee and Weapon keywords. Does not increase area of effect.",
+      "rangedDistanceBonus": "Increases distance of abilities with Ranged and Weapon keywords. Does not increase area of effect.",
+      "disengageBonus": "Increases the number of squares you can shift when you take the Disengage move action."
+    },
+    "losingEquipmentOptionalRule": {
+      "loseArmor": "If your kit has armor and you aren't wearing it, you lose your kit's Stamina bonus and stability bonus. If you lose your shield but keep the rest of your armor, your Stamina decreases by 3 per echelon.",
+      "loseMediumOrHeavyWeapon": "You lose the kit's melee damage bonus.",
+      "loseLightWeapon": "You lose the kit's melee damage bonus, ranged damage bonus, and distance bonus for a weapon you throw. If your kit also has a bow, you don't lose those benefits for the bow.",
+      "losePolearmOrWhip": "You lose the kit's melee damage bonus and melee distance bonus.",
+      "loseEnsnaringWeapon": "You lose the kit's signature ability.",
+      "loseBow": "You lose the kit's ranged damage bonus and distance bonus."
+    }
+  },
+  "standardKits": {
+    "arcaneArcher": {
+      "name": "Arcane Archer",
+      "description": "Allows you to combine magic and ranged weapon strikes. Your lack of armor keeps you mobile, and your magic makes your arrows explode to devastate your foes.",
+      "equipment": {
+        "armor": "none",
+        "weapons": ["bow"]
+      },
+      "bonuses": {
+        "stamina": null,
+        "speed": 1,
+        "stability": null,
+        "meleeDamage": null,
+        "rangedDamage": [2, 2, 2],
+        "meleeDistance": null,
+        "rangedDistance": 10,
+        "disengage": 1
+      },
+      "signatureAbility": {
+        "name": "Exploding Arrow",
+        "flavor": "Your ammunition explodes with magical energy.",
+        "keywords": ["Magic", "Ranged", "Strike", "Weapon"],
+        "type": "Main action",
+        "distance": "Ranged 15",
+        "target": "One creature or object",
+        "powerRoll": "Agility, Reason, Intuition, or Presence",
+        "tier1": "5 + characteristic fire damage",
+        "tier2": "7 + characteristic fire damage",
+        "tier3": "10 + characteristic fire damage",
+        "effect": "One creature or object of your choice within 2 squares of the target takes fire damage equal to the characteristic score used for this ability's power roll."
+      }
+    },
+    "battlemind": {
+      "name": "Battlemind",
+      "description": "Harnesses the power of your mind to make you harder to move and to make your foes easier to push around. Lightly armored but hard to move thanks to psionics.",
+      "equipment": {
+        "armor": "light",
+        "weapons": ["medium"]
+      },
+      "bonuses": {
+        "stamina": 3,
+        "speed": 2,
+        "stability": 1,
+        "meleeDamage": [2, 2, 2],
+        "rangedDamage": null,
+        "meleeDistance": null,
+        "rangedDistance": null,
+        "disengage": null
+      },
+      "signatureAbility": {
+        "name": "Unmooring",
+        "flavor": "Your weapon unleashes psionic energy that reduces your target's weight.",
+        "keywords": ["Melee", "Psionic", "Strike", "Weapon"],
+        "type": "Main action",
+        "distance": "Melee 1",
+        "target": "One creature",
+        "powerRoll": "Might, Reason, Intuition, or Presence",
+        "tier1": "5 + characteristic damage",
+        "tier2": "8 + characteristic damage",
+        "tier3": "11 + characteristic damage",
+        "effect": "Until the end of the target's next turn, any forced movement that affects the target has its distance increased by 2."
+      }
+    },
+    "cloakAndDagger": {
+      "name": "Cloak and Dagger",
+      "description": "Provides throwable light weapons and light armor easily concealed by a cloak to confuse your enemies, making you more mobile while increasing the effectiveness of your short-range strikes.",
+      "equipment": {
+        "armor": "light",
+        "weapons": ["light"]
+      },
+      "bonuses": {
+        "stamina": 3,
+        "speed": 2,
+        "stability": null,
+        "meleeDamage": [1, 1, 1],
+        "rangedDamage": [1, 1, 1],
+        "meleeDistance": null,
+        "rangedDistance": 5,
+        "disengage": 1
+      },
+      "signatureAbility": {
+        "name": "Fade",
+        "flavor": "A stab, and a few quick, careful steps back.",
+        "keywords": ["Melee", "Ranged", "Strike", "Weapon"],
+        "type": "Main action",
+        "distance": "Melee 1 or ranged 10",
+        "target": "One creature",
+        "powerRoll": "Might or Agility",
+        "tier1": "3 + M or A damage; you can shift 1 square",
+        "tier2": "6 + M or A damage; you can shift up to 2 squares",
+        "tier3": "8 + M or A damage; you can shift up to 3 squares",
+        "effect": null
+      }
+    },
+    "dualWielder": {
+      "name": "Dual Wielder",
+      "description": "For folks who want to excel at using two weapons at the same time. Your fighting style maximizes the power of each weapon, making you a whirling dealer of death.",
+      "equipment": {
+        "armor": "medium",
+        "weapons": ["light", "medium"]
+      },
+      "bonuses": {
+        "stamina": 6,
+        "speed": 2,
+        "stability": null,
+        "meleeDamage": [2, 2, 2],
+        "rangedDamage": null,
+        "meleeDistance": null,
+        "rangedDistance": null,
+        "disengage": 1
+      },
+      "signatureAbility": {
+        "name": "Double Strike",
+        "flavor": "Why strike once when you could do it twice?",
+        "keywords": ["Melee", "Strike", "Weapon"],
+        "type": "Main action",
+        "distance": "Melee 1",
+        "target": "Two creatures or objects",
+        "powerRoll": "Might or Agility",
+        "tier1": "4 damage",
+        "tier2": "6 damage",
+        "tier3": "8 damage",
+        "effect": "If you use this ability on your turn, you can use it against one target, then use your maneuver and your move action for that turn before using the ability against a second target. You still use the same power roll for both targets."
+      }
+    },
+    "guisarmier": {
+      "name": "Guisarmier",
+      "description": "For those who want to use a polearm for extended reach while remaining protected by sturdy armor. Become the ultimate halberd, longspear, or glaive fighter.",
+      "equipment": {
+        "armor": "medium",
+        "weapons": ["polearm"]
+      },
+      "bonuses": {
+        "stamina": 6,
+        "speed": null,
+        "stability": 1,
+        "meleeDamage": [2, 2, 2],
+        "rangedDamage": null,
+        "meleeDistance": 1,
+        "rangedDistance": null,
+        "disengage": null
+      },
+      "signatureAbility": {
+        "name": "Forward Thrust, Backward Smash",
+        "flavor": "In your hands, the haft is as good as the head.",
+        "keywords": ["Melee", "Strike", "Weapon"],
+        "type": "Main action",
+        "distance": "Melee 2",
+        "target": "Two creatures or objects",
+        "powerRoll": "Might or Agility",
+        "tier1": "4 damage",
+        "tier2": "7 damage",
+        "tier3": "9 damage",
+        "effect": null
+      }
+    },
+    "martialArtist": {
+      "name": "Martial Artist",
+      "description": "If you want to be fast in a fight. Unencumbered by weapons or armor, this fighting style rewards quick, focused unarmed strikes and allows you to be the ultimate skirmisher.",
+      "equipment": {
+        "armor": "none",
+        "weapons": ["unarmed"]
+      },
+      "bonuses": {
+        "stamina": 3,
+        "speed": 3,
+        "stability": null,
+        "meleeDamage": [2, 2, 2],
+        "rangedDamage": null,
+        "meleeDistance": null,
+        "rangedDistance": null,
+        "disengage": 1
+      },
+      "signatureAbility": {
+        "name": "Battle Grace",
+        "flavor": "You feint to move your enemies into perfect position.",
+        "keywords": ["Melee", "Strike", "Weapon"],
+        "type": "Main action",
+        "distance": "Melee 1",
+        "target": "One creature",
+        "powerRoll": "Might or Agility",
+        "tier1": "5 + M or A damage",
+        "tier2": "8 + M or A damage; you can swap places with the target",
+        "tier3": "11 + M or A damage; you can swap places with the target",
+        "effect": "If you obtain a tier 2 or tier 3 outcome and can't swap places with the target because one or both of you is too big to fit into the swapped space, you both remain in your original spaces and the target takes 1 extra damage."
+      }
+    },
+    "mountain": {
+      "name": "Mountain",
+      "description": "Don heavy armor and raise a heavy weapon to stand strong against your foes, quickly demolishing them when it's your turn to strike.",
+      "equipment": {
+        "armor": "heavy",
+        "weapons": ["heavy"]
+      },
+      "bonuses": {
+        "stamina": 9,
+        "speed": null,
+        "stability": 2,
+        "meleeDamage": [0, 0, 4],
+        "rangedDamage": null,
+        "meleeDistance": null,
+        "rangedDistance": null,
+        "disengage": null
+      },
+      "signatureAbility": {
+        "name": "Pain for Pain",
+        "flavor": "An enemy who tagged you will pay for that.",
+        "keywords": ["Melee", "Strike", "Weapon"],
+        "type": "Main action",
+        "distance": "Melee 1",
+        "target": "One creature",
+        "powerRoll": "Might or Agility",
+        "tier1": "3 + M or A damage",
+        "tier2": "5 + M or A damage",
+        "tier3": "13 + M or A damage",
+        "effect": "If the target dealt damage to you since the end of your last turn, this strike deals additional damage equal to your Might or Agility score (your choice)."
+      }
+    },
+    "panther": {
+      "name": "Panther",
+      "description": "Good balance of protection, speed, and damage. Increases your Stamina through focused battle preparation of body and mind, letting you be fast and mobile while swinging a heavy weapon.",
+      "equipment": {
+        "armor": "none",
+        "weapons": ["heavy"]
+      },
+      "bonuses": {
+        "stamina": 6,
+        "speed": 1,
+        "stability": 1,
+        "meleeDamage": [0, 0, 4],
+        "rangedDamage": null,
+        "meleeDistance": null,
+        "rangedDistance": null,
+        "disengage": null
+      },
+      "signatureAbility": {
+        "name": "Devastating Rush",
+        "flavor": "The faster you move, the harder you hit.",
+        "keywords": ["Melee", "Strike", "Weapon"],
+        "type": "Main action",
+        "distance": "Melee 1",
+        "target": "One creature or object",
+        "powerRoll": "Might or Agility",
+        "tier1": "3 + M or A damage",
+        "tier2": "6 + M or A damage",
+        "tier3": "13 + M or A damage",
+        "effect": "You can move up to 3 squares straight toward the target before this strike, which deals extra damage equal to the number of squares you move this way."
+      }
+    },
+    "pugilist": {
+      "name": "Pugilist",
+      "description": "Meant for brawlers and boxers. Grants a boost to Stamina and damage while allowing you to float like a butterfly. Be a tough, strong hero who doles out punishment with your fists.",
+      "equipment": {
+        "armor": "none",
+        "weapons": ["unarmed"]
+      },
+      "bonuses": {
+        "stamina": 6,
+        "speed": 2,
+        "stability": 1,
+        "meleeDamage": [1, 1, 1],
+        "rangedDamage": null,
+        "meleeDistance": null,
+        "rangedDistance": null,
+        "disengage": null
+      },
+      "signatureAbility": {
+        "name": "Let's Dance",
+        "flavor": "Keeping your enemies stumbling around the battlefield is second nature to you.",
+        "keywords": ["Melee", "Strike", "Weapon"],
+        "type": "Main action",
+        "distance": "Melee 1",
+        "target": "One creature",
+        "powerRoll": "Might or Agility",
+        "tier1": "3 + M or A damage",
+        "tier2": "6 + M or A damage; slide 1",
+        "tier3": "8 + M or A damage; slide 2",
+        "effect": "You can shift into any square the target leaves after you slide them."
+      }
+    },
+    "raider": {
+      "name": "Raider",
+      "description": "Keeps you protected while granting full mobility, providing a boost to speed and distance that lets you run around the battlefield like a Viking warrior.",
+      "equipment": {
+        "armor": "light, shield",
+        "weapons": ["light"]
+      },
+      "bonuses": {
+        "stamina": 6,
+        "speed": 1,
+        "stability": null,
+        "meleeDamage": [1, 1, 1],
+        "rangedDamage": [1, 1, 1],
+        "meleeDistance": null,
+        "rangedDistance": 5,
+        "disengage": 1
+      },
+      "signatureAbility": {
+        "name": "Raider's Awe",
+        "flavor": "You execute a brutal strike that leaves your foe reeling.",
+        "keywords": ["Melee", "Ranged", "Strike", "Weapon"],
+        "type": "Main action",
+        "distance": "Melee 1 or ranged 10",
+        "target": "One creature",
+        "powerRoll": "Might or Agility",
+        "tier1": "3 + M or A damage",
+        "tier2": "6 + M or A damage",
+        "tier3": "8 + M or A damage",
+        "effect": "The target takes a bane on their next power roll made before the end of their next turn."
+      }
+    },
+    "ranger": {
+      "name": "Ranger",
+      "description": "Outfits you with medium armor and weapons for every challenge, letting you easily switch between melee and ranged combat. A jack-of-all-trades.",
+      "equipment": {
+        "armor": "medium",
+        "weapons": ["bow", "medium"]
+      },
+      "bonuses": {
+        "stamina": 6,
+        "speed": 1,
+        "stability": null,
+        "meleeDamage": [1, 1, 1],
+        "rangedDamage": [1, 1, 1],
+        "meleeDistance": null,
+        "rangedDistance": 5,
+        "disengage": 1
+      },
+      "signatureAbility": {
+        "name": "Hamstring Shot",
+        "flavor": "A well-placed shot leaves your enemy struggling to move.",
+        "keywords": ["Ranged", "Strike", "Weapon"],
+        "type": "Main action",
+        "distance": "Ranged 10",
+        "target": "One creature",
+        "powerRoll": "Might or Agility",
+        "tier1": "3 + M or A damage; slowed (save ends) [easy potency]",
+        "tier2": "5 + M or A damage; slowed (save ends) [medium potency]",
+        "tier3": "7 + M or A damage; slowed (save ends) [hard potency]",
+        "effect": null
+      }
+    },
+    "rapidFire": {
+      "name": "Rapid-Fire",
+      "description": "For archers who want to deal maximum damage by shooting as many arrows as possible into nearby enemies. Focus on peppering foes before they can get close enough to counterattack.",
+      "equipment": {
+        "armor": "light",
+        "weapons": ["bow"]
+      },
+      "bonuses": {
+        "stamina": 3,
+        "speed": 1,
+        "stability": null,
+        "meleeDamage": null,
+        "rangedDamage": [2, 2, 2],
+        "meleeDistance": null,
+        "rangedDistance": 7,
+        "disengage": 1
+      },
+      "signatureAbility": {
+        "name": "Two Shot",
+        "flavor": "When you fire two arrows back-to-back, both hit their mark.",
+        "keywords": ["Ranged", "Strike", "Weapon"],
+        "type": "Main action",
+        "distance": "Ranged 12",
+        "target": "Two creatures or objects",
+        "powerRoll": "Might or Agility",
+        "tier1": "4 damage",
+        "tier2": "6 damage",
+        "tier3": "8 damage",
+        "effect": null
+      }
+    },
+    "retiarius": {
+      "name": "Retiarius",
+      "description": "Often depicted as a lightly armored warrior with a net in one hand and a trident in the other. Tie up your foe with a net and then poke them to death.",
+      "equipment": {
+        "armor": "light",
+        "weapons": ["ensnaring", "polearm"]
+      },
+      "bonuses": {
+        "stamina": 3,
+        "speed": 1,
+        "stability": null,
+        "meleeDamage": [2, 2, 2],
+        "rangedDamage": null,
+        "meleeDistance": 1,
+        "rangedDistance": null,
+        "disengage": 1
+      },
+      "signatureAbility": {
+        "name": "Net and Stab",
+        "flavor": "The well-thrown net that follows your main attack leaves your foes right where you want them.",
+        "keywords": ["Melee", "Strike", "Weapon"],
+        "type": "Main action",
+        "distance": "Melee 2",
+        "target": "One creature",
+        "powerRoll": "Might or Agility",
+        "tier1": "4 + M or A damage; slowed (EoT) [easy potency]",
+        "tier2": "6 + M or A damage; slowed (EoT) [medium potency]",
+        "tier3": "8 + M or A damage; restrained (EoT) [hard potency]",
+        "effect": null
+      }
+    },
+    "shiningArmor": {
+      "name": "Shining Armor",
+      "description": "Provides the most protection a kit can afford, providing you with the sword, shield, and armor necessary to play the prototypical knight.",
+      "equipment": {
+        "armor": "heavy, shield",
+        "weapons": ["medium"]
+      },
+      "bonuses": {
+        "stamina": 12,
+        "speed": null,
+        "stability": 1,
+        "meleeDamage": [2, 2, 2],
+        "rangedDamage": null,
+        "meleeDistance": null,
+        "rangedDistance": null,
+        "disengage": null
+      },
+      "signatureAbility": {
+        "name": "Protective Attack",
+        "flavor": "The strength of your assault makes it impossible for your foe to ignore you.",
+        "keywords": ["Melee", "Strike", "Weapon"],
+        "type": "Main action",
+        "distance": "Melee 1",
+        "target": "One creature",
+        "powerRoll": "Might or Agility",
+        "tier1": "5 + M or A damage",
+        "tier2": "8 + M or A damage",
+        "tier3": "11 + M or A damage",
+        "effect": "The target is taunted until the end of their next turn."
+      }
+    },
+    "sniper": {
+      "name": "Sniper",
+      "description": "Gives you the tools and techniques to take down enemies from afar. Lurk behind trees or down tunnels, picking off enemies with a bow or crossbow as they approach.",
+      "equipment": {
+        "armor": "none",
+        "weapons": ["bow"]
+      },
+      "bonuses": {
+        "stamina": null,
+        "speed": 1,
+        "stability": null,
+        "meleeDamage": null,
+        "rangedDamage": [0, 0, 4],
+        "meleeDistance": null,
+        "rangedDistance": 10,
+        "disengage": 1
+      },
+      "signatureAbility": {
+        "name": "Patient Shot",
+        "flavor": "Breathe... aim... wait... then strike!",
+        "keywords": ["Ranged", "Strike", "Weapon"],
+        "type": "Main action",
+        "distance": "Ranged 15",
+        "target": "One creature",
+        "powerRoll": "Might or Agility",
+        "tier1": "3 + M or A damage",
+        "tier2": "6 + M or A damage",
+        "tier3": "13 + M or A damage",
+        "effect": "If you don't take a move action this turn, this strike deals extra damage equal to your Might or Agility score (your choice)."
+      }
+    },
+    "spellsword": {
+      "name": "Spellsword",
+      "description": "Combines melee strikes and a little bit of magic, letting you create a warrior who doesn't have to choose between the incantation and the blade.",
+      "equipment": {
+        "armor": "light, shield",
+        "weapons": ["medium"]
+      },
+      "bonuses": {
+        "stamina": 6,
+        "speed": 1,
+        "stability": 1,
+        "meleeDamage": [2, 2, 2],
+        "rangedDamage": null,
+        "meleeDistance": null,
+        "rangedDistance": null,
+        "disengage": null
+      },
+      "signatureAbility": {
+        "name": "Leaping Lightning",
+        "flavor": "Lightning jumps from your weapon as you strike to harm a nearby foe.",
+        "keywords": ["Magic", "Melee", "Strike", "Weapon"],
+        "type": "Main action",
+        "distance": "Melee 1",
+        "target": "One creature or object",
+        "powerRoll": "Might, Reason, Intuition, or Presence",
+        "tier1": "5 + characteristic lightning damage",
+        "tier2": "8 + characteristic lightning damage",
+        "tier3": "11 + characteristic lightning damage",
+        "effect": "A creature or object of your choice within 2 squares of the target takes lightning damage equal to the characteristic score used for this ability's power roll."
+      }
+    },
+    "stickAndRobe": {
+      "name": "Stick and Robe",
+      "description": "Armed with a simple reach weapon, often a quarterstaff. Highly mobile thanks to light armor, allowing maximum use of your weapon's length.",
+      "equipment": {
+        "armor": "light",
+        "weapons": ["polearm"]
+      },
+      "bonuses": {
+        "stamina": 3,
+        "speed": 2,
+        "stability": null,
+        "meleeDamage": [1, 1, 1],
+        "rangedDamage": null,
+        "meleeDistance": 1,
+        "rangedDistance": null,
+        "disengage": 1
+      },
+      "signatureAbility": {
+        "name": "Where I Want You",
+        "flavor": "When your stick speaks, your enemy moves.",
+        "keywords": ["Melee", "Strike", "Weapon"],
+        "type": "Main action",
+        "distance": "Melee 2",
+        "target": "One creature",
+        "powerRoll": "Might or Agility",
+        "tier1": "4 + M or A damage",
+        "tier2": "7 + M or A damage; slide 1",
+        "tier3": "10 + M or A damage; slide 3",
+        "effect": null
+      }
+    },
+    "swashbuckler": {
+      "name": "Swashbuckler",
+      "description": "Mobile and deals a lot of damage with melee strikes. A great kit for heroes who want to be master duelists.",
+      "equipment": {
+        "armor": "light",
+        "weapons": ["medium"]
+      },
+      "bonuses": {
+        "stamina": 3,
+        "speed": 3,
+        "stability": null,
+        "meleeDamage": [2, 2, 2],
+        "rangedDamage": null,
+        "meleeDistance": null,
+        "rangedDistance": null,
+        "disengage": 1
+      },
+      "signatureAbility": {
+        "name": "Fancy Footwork",
+        "flavor": "All combat is a dance -- and you'll be the one leading.",
+        "keywords": ["Melee", "Strike", "Weapon"],
+        "type": "Main action",
+        "distance": "Melee 1",
+        "target": "One creature",
+        "powerRoll": "Might or Agility",
+        "tier1": "5 + M or A damage",
+        "tier2": "7 + M or A damage; push 1",
+        "tier3": "10 + M or A damage; push 2",
+        "effect": "You can shift into any square the target leaves after you push them."
+      }
+    },
+    "swordAndBoard": {
+      "name": "Sword and Board",
+      "description": "Makes the shield part of your offensive arsenal. With a medium weapon in one hand and a block of steel or solid oak in the other, you protect yourself while you control the battlefield.",
+      "equipment": {
+        "armor": "medium, shield",
+        "weapons": ["medium"]
+      },
+      "bonuses": {
+        "stamina": 9,
+        "speed": null,
+        "stability": 1,
+        "meleeDamage": [2, 2, 2],
+        "rangedDamage": null,
+        "meleeDistance": null,
+        "rangedDistance": null,
+        "disengage": 1
+      },
+      "signatureAbility": {
+        "name": "Shield Bash",
+        "flavor": "In your hands, a shield isn't just for protection.",
+        "keywords": ["Melee", "Strike", "Weapon"],
+        "type": "Main action",
+        "distance": "Melee 1",
+        "target": "One creature",
+        "powerRoll": "Might or Agility",
+        "tier1": "4 + M or A damage; push 1",
+        "tier2": "7 + M or A damage; push 2",
+        "tier3": "9 + M or A damage; push 3; prone [hard potency vs Might]",
+        "effect": null
+      }
+    },
+    "warriorPriest": {
+      "name": "Warrior Priest",
+      "description": "Imbues the power of the gods into your weapon, making it a smiting instrument. Wade into the fray without fear thanks to the power of the divine and heavy armor.",
+      "equipment": {
+        "armor": "heavy",
+        "weapons": ["light"]
+      },
+      "bonuses": {
+        "stamina": 9,
+        "speed": 1,
+        "stability": 1,
+        "meleeDamage": [1, 1, 1],
+        "rangedDamage": null,
+        "meleeDistance": null,
+        "rangedDistance": null,
+        "disengage": null
+      },
+      "signatureAbility": {
+        "name": "Weakening Brand",
+        "flavor": "The impact of your weapon brands your target for destruction.",
+        "keywords": ["Magic", "Melee", "Strike", "Weapon"],
+        "type": "Main action",
+        "distance": "Melee 1",
+        "target": "One creature or object",
+        "powerRoll": "Might, Reason, Intuition, or Presence",
+        "tier1": "3 + characteristic holy damage",
+        "tier2": "5 + characteristic holy damage",
+        "tier3": "8 + characteristic holy damage",
+        "effect": "Until the end of the target's next turn, they have damage weakness equal to the characteristic score used for this ability's power roll."
+      }
+    },
+    "whirlwind": {
+      "name": "Whirlwind",
+      "description": "Makes effective use of whips, granting you mobility, damage, and reach. Be a fast-moving warrior who lashes foes with a chain or whip.",
+      "equipment": {
+        "armor": "none",
+        "weapons": ["whip"]
+      },
+      "bonuses": {
+        "stamina": null,
+        "speed": 3,
+        "stability": null,
+        "meleeDamage": [1, 1, 1],
+        "rangedDamage": null,
+        "meleeDistance": 1,
+        "rangedDistance": null,
+        "disengage": 1
+      },
+      "signatureAbility": {
+        "name": "Extension of My Arm",
+        "flavor": "When you draw your whip back after an attack, your enemy is drawn ever closer.",
+        "keywords": ["Melee", "Strike", "Weapon"],
+        "type": "Main action",
+        "distance": "Melee 3",
+        "target": "One creature",
+        "powerRoll": "Might or Agility",
+        "tier1": "4 + M or A damage; vertical pull 1",
+        "tier2": "7 + M or A damage; vertical pull 2",
+        "tier3": "10 + M or A damage; vertical pull 3",
+        "effect": null
+      }
+    }
+  },
+  "stormwightKits": {
+    "description": "The stormwight primordial aspect (Fury class) lets you channel your ferocity into the form of an animal. All stormwight kits share common features: Aspect Benefits, Animal Form, Hybrid Form, Primordial Storm, and Growing Ferocity. You wear no armor and wield only unarmed strikes, which become devastating natural weapons as your ferocity grows.",
+    "commonFeatures": {
+      "equipment": {
+        "armor": "none",
+        "weapons": ["unarmed"]
+      },
+      "aspectOfTheWild": {
+        "name": "Aspect of the Wild",
+        "flavor": "You assume the form of the animal who channels your ferocity.",
+        "keywords": ["Magic"],
+        "type": "Maneuver",
+        "distance": "Self",
+        "target": "Self",
+        "effect": "You can shapeshift into the animal defined by your stormwight kit, into a hybrid form, or back into your true form. While in animal form or hybrid form, you can speak as you usually do, and you can also speak to animals who share your form. If you are in a negotiation with an animal while in animal form, you treat your Renown as 2 higher than usual.",
+        "spendFerocity": "Spend 1 Ferocity: As a free maneuver, you can shapeshift a second time, either into another animal form, into your hybrid form, or back into your true form."
+      }
+    },
+    "boren": {
+      "name": "Boren",
+      "description": "Channel your primordial ferocity into the form of a bear, becoming large, durable, and imposing. Tied to the craggy, rocky north, associated with the blizzard's bitter cold.",
+      "animalForm": "Bear",
+      "aspectBenefits": "Whenever you use forced movement to push a creature, you can pull that creature instead. Whenever you pull a creature adjacent to you and that creature has Might < medium potency, you can use a free triggered action to make that creature grabbed by you.",
+      "animalFormBenefits": "While in bear form, your size is 2 and you gain a +1 bonus to distance with melee weapon abilities.",
+      "hybridFormBenefits": "While in hybrid form, your size is 2 and you gain a +1 bonus to distance with melee weapon abilities. At 4th level, the first time you take hybrid form in an encounter, you gain 10 temporary Stamina.",
+      "primordialStorm": {
+        "name": "Blizzard",
+        "damageType": "cold"
+      },
+      "equipment": {
+        "armor": "none",
+        "weapons": ["unarmed"]
+      },
+      "bonuses": {
+        "stamina": 9,
+        "speed": null,
+        "stability": 2,
+        "meleeDamage": [0, 0, 4],
+        "rangedDamage": null,
+        "meleeDistance": null,
+        "rangedDistance": null,
+        "disengage": null
+      },
+      "signatureAbility": {
+        "name": "Bear Claws",
+        "flavor": "Attacks with your sharp and deadly claws grab the weak.",
+        "keywords": ["Melee", "Strike", "Weapon"],
+        "type": "Main action",
+        "distance": "Melee 1",
+        "target": "One creature or object",
+        "powerRoll": "Might",
+        "tier1": "2 + M damage; grabbed [easy potency vs Might]",
+        "tier2": "5 + M damage; grabbed [medium potency vs Might]",
+        "tier3": "11 + M damage; grabbed [hard potency vs Might]",
+        "effect": null
+      },
+      "growingFerocity": [
+        { "ferocity": 2, "benefit": "You can have up to two creatures grabbed at time. Additionally, whenever you make a strike against a creature you have grabbed, you gain 1 surge." },
+        { "ferocity": 4, "benefit": "The first time you grab a creature on a turn, you gain 1 surge." },
+        { "ferocity": 6, "benefit": "You gain an edge on the Grab and Knockback maneuvers." },
+        { "ferocity": 8, "level": "4th", "benefit": "The first time you grab a creature on a turn, you gain 2 surges instead of 1." },
+        { "ferocity": 10, "level": "7th", "benefit": "You have a double edge on the Grab and Knockback maneuvers." },
+        { "ferocity": 12, "level": "10th", "benefit": "Whenever you use a heroic ability, you gain 10 temporary Stamina. Additionally, whenever you have a creature grabbed, any ability roll made against that creature gains a bonus to its potency equal to your Might score." }
+      ]
+    },
+    "corven": {
+      "name": "Corven",
+      "description": "Channel your primordial ferocity into the form of a crow, becoming stealthy and quick. Tied to the mountain passes and the hot winds that flow through them. Associated with the warm and fast-rising anabatic wind.",
+      "animalForm": "Crow",
+      "aspectBenefits": "You gain an edge on tests made to hide and sneak. Additionally, whenever you fall, you can use a free triggered action to use your Aspect of the Wild ability.",
+      "animalFormBenefits": "While in crow form, your size is 1T and you can fly. You can use the Hide maneuver as a free maneuver, and you can use your allies as cover when you hide. You can't use any abilities while in this form except for Aspect of the Wild.",
+      "hybridFormBenefits": "While in hybrid form, your size is your choice of 1S or 1M. At 4th level, you can fly.",
+      "primordialStorm": {
+        "name": "Anabatic Wind",
+        "damageType": "fire"
+      },
+      "equipment": {
+        "armor": "none",
+        "weapons": ["unarmed"]
+      },
+      "bonuses": {
+        "stamina": 3,
+        "speed": 3,
+        "stability": null,
+        "meleeDamage": [2, 2, 2],
+        "rangedDamage": null,
+        "meleeDistance": null,
+        "rangedDistance": null,
+        "disengage": 1
+      },
+      "signatureAbility": {
+        "name": "Wing Buffet",
+        "flavor": "Foes who try to close in around you do so at their peril.",
+        "keywords": ["Area", "Melee", "Weapon"],
+        "type": "Main action",
+        "distance": "1 burst",
+        "target": "Each enemy in the area",
+        "powerRoll": "Agility",
+        "tier1": "3 damage",
+        "tier2": "6 damage",
+        "tier3": "8 damage",
+        "effect": "You can shift up to 2 squares before or after making the power roll."
+      },
+      "growingFerocity": [
+        { "ferocity": 2, "benefit": "Whenever you use the Disengage move action, the distance you can shift gains a bonus equal to your Agility score." },
+        { "ferocity": 4, "benefit": "The first time you shift on a turn, you gain 1 surge." },
+        { "ferocity": 6, "benefit": "You gain an edge on Agility tests, the Escape Grab maneuver, and the Knockback maneuver." },
+        { "ferocity": 8, "level": "4th", "benefit": "The first time you shift on a turn, you gain 2 surges instead of 1." },
+        { "ferocity": 10, "level": "7th", "benefit": "You have a double edge on Agility tests, the Escape Grab maneuver, and the Knockback maneuver." },
+        { "ferocity": 12, "level": "10th", "benefit": "Whenever you use a heroic ability, you gain 10 temporary Stamina. Additionally, the potency of any effects targeting you is reduced by 2 for you." }
+      ]
+    },
+    "raden": {
+      "name": "Raden",
+      "description": "Channel your primordial ferocity into the form of a rat, becoming mobile and elusive. Associated with the wild nature of the rat, before cities became their habitat. Associated with the rat flood -- a surge of corrupted water that draws forth hordes of rats.",
+      "animalForm": "Rat",
+      "aspectBenefits": "You gain an edge on tests made to hide and sneak. Additionally, you ignore difficult terrain.",
+      "animalFormBenefits": "While in rat form, your size is 1T and you can automatically climb at full speed while moving. You can use the Hide maneuver as a free maneuver, you can use your allies as cover when you hide, and you can stay hidden while you move through squares occupied by any creature. Additionally, you gain an edge on tests made to climb other creatures. You can't use any abilities while in this form except for Aspect of the Wild.",
+      "hybridFormBenefits": "While in hybrid form, your size is your choice of 1S or 1M. At 4th level, you can automatically climb at full speed while moving.",
+      "primordialStorm": {
+        "name": "Rat Flood",
+        "damageType": "corruption"
+      },
+      "equipment": {
+        "armor": "none",
+        "weapons": ["unarmed"]
+      },
+      "bonuses": {
+        "stamina": 3,
+        "speed": 3,
+        "stability": null,
+        "meleeDamage": [2, 2, 2],
+        "rangedDamage": null,
+        "meleeDistance": null,
+        "rangedDistance": null,
+        "disengage": 1
+      },
+      "signatureAbility": {
+        "name": "Driving Pounce",
+        "flavor": "Your enemies try in vain to fall back from your pouncing attack.",
+        "keywords": ["Melee", "Strike", "Weapon"],
+        "type": "Main action",
+        "distance": "Melee 1",
+        "target": "One creature or object",
+        "powerRoll": "Agility",
+        "tier1": "4 + A damage",
+        "tier2": "7 + A damage; push 1",
+        "tier3": "9 + A damage; push 2",
+        "effect": "You can shift up to the same number of squares that you pushed the target."
+      },
+      "growingFerocity": [
+        { "ferocity": 2, "benefit": "Whenever you use the Disengage move action, the distance you can shift gains a bonus equal to your Agility score." },
+        { "ferocity": 4, "benefit": "The first time you shift on a turn, you gain 1 surge." },
+        { "ferocity": 6, "benefit": "You gain an edge on Agility tests, the Escape Grab maneuver, and the Knockback maneuver." },
+        { "ferocity": 8, "level": "4th", "benefit": "The first time you shift on a turn, you gain 2 surges instead of 1." },
+        { "ferocity": 10, "level": "7th", "benefit": "You have a double edge on Agility tests, the Escape Grab maneuver, and the Knockback maneuver." },
+        { "ferocity": 12, "level": "10th", "benefit": "Whenever you use a heroic ability, you gain 10 temporary Stamina. Additionally, the potency of any effects targeting you is reduced by 2 for you." }
+      ]
+    },
+    "vuken": {
+      "name": "Vuken",
+      "description": "Channel your primordial ferocity into the form of a wolf, becoming a fleet-footed hunter. Tied to forests and open steppes. Associated with the thunderstorm.",
+      "animalForm": "Wolf",
+      "aspectBenefits": "Whenever you use the Knockback maneuver, you can then use the Aid Attack maneuver as a free triggered action.",
+      "animalFormBenefits": "While in wolf form, your size is 1L, you have a +2 bonus to speed, and you ignore difficult terrain.",
+      "hybridFormBenefits": "While in hybrid form, your size is 1L, you have a +2 bonus to speed, and you ignore difficult terrain. At 4th level, the first time you take hybrid form in an encounter, you gain 10 temporary Stamina.",
+      "primordialStorm": {
+        "name": "Lightning Storm",
+        "damageType": "lightning"
+      },
+      "equipment": {
+        "armor": "none",
+        "weapons": ["unarmed"]
+      },
+      "bonuses": {
+        "stamina": 9,
+        "speed": 2,
+        "stability": null,
+        "meleeDamage": [2, 2, 2],
+        "rangedDamage": null,
+        "meleeDistance": null,
+        "rangedDistance": null,
+        "disengage": 1
+      },
+      "signatureAbility": {
+        "name": "Unbalancing Attack",
+        "flavor": "A wild assault forces your foe onto their back.",
+        "keywords": ["Melee", "Strike", "Weapon"],
+        "type": "Main action",
+        "distance": "Melee 1",
+        "target": "One creature or object",
+        "powerRoll": "Might",
+        "tier1": "4 + M damage; prone [easy potency vs Agility]",
+        "tier2": "7 + M damage; prone [medium potency vs Agility]",
+        "tier3": "9 + M damage; prone [hard potency vs Agility]",
+        "effect": null
+      },
+      "growingFerocity": [
+        { "ferocity": 2, "benefit": "Whenever you use the Knockback maneuver, you can target one additional creature." },
+        { "ferocity": 4, "benefit": "The first time on a turn that you push a creature or knock a creature prone, you gain 1 surge." },
+        { "ferocity": 6, "benefit": "You gain an edge on Agility tests and the Knockback maneuver." },
+        { "ferocity": 8, "level": "4th", "benefit": "The first time on a turn that you push a creature or knock a creature prone, you gain 2 surges." },
+        { "ferocity": 10, "level": "7th", "benefit": "You have a double edge on Agility tests and the Knockback maneuver." },
+        { "ferocity": 12, "level": "10th", "benefit": "Whenever you use a heroic ability, you gain 10 temporary Stamina. Additionally, whenever you make a power roll that imposes forced movement on a target, the forced movement distance gains a bonus equal to your Agility score." }
+      ]
+    }
+  }
+}

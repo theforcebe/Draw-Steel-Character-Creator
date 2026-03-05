@@ -1,0 +1,205 @@
+{
+  "_meta": {
+    "source": "Draw Steel Heroes v1.01.pdf",
+    "pages": "68-72",
+    "description": "Culture data for the Draw Steel character builder. Culture has 4 aspects: language, environment, organization, and upbringing."
+  },
+  "cultureBenefits": {
+    "description": "The culture you choose or create grants the following benefits:",
+    "benefits": [
+      "You know the language of your culture, in addition to knowing Caelian.",
+      "From the environment, organization, and upbringing aspects of your culture, you gain access to skills. You can select one skill from each aspect's list of options.",
+      "You gain an edge on tests made to recall lore about your culture, and on tests made to influence and interact with people of your culture."
+    ]
+  },
+  "typicalAncestryCultures": {
+    "devil":        { "language": "Anjali",     "environment": "Urban",      "organization": "Bureaucratic", "upbringing": "Academic" },
+    "dragonKnight": { "language": "Vastariax",  "environment": "Secluded",   "organization": "Bureaucratic", "upbringing": "Martial" },
+    "dwarf":        { "language": "Zaliac",     "environment": "Secluded",   "organization": "Bureaucratic", "upbringing": "Creative" },
+    "wodeElf":      { "language": "Yllyric",    "environment": "Wilderness", "organization": "Bureaucratic", "upbringing": "Martial" },
+    "highElf":      { "language": "Hyrallic",   "environment": "Secluded",   "organization": "Bureaucratic", "upbringing": "Martial" },
+    "hakaan":       { "language": "Vhoric",     "environment": "Rural",      "organization": "Communal",     "upbringing": "Labor" },
+    "human":        { "language": "Vaslorian",  "environment": "Urban",      "organization": "Communal",     "upbringing": "Labor" },
+    "memonek":      { "language": "Axiomatic",  "environment": "Nomadic",    "organization": "Communal",     "upbringing": "Academic" },
+    "orc":          { "language": "Kalliak",    "environment": "Wilderness", "organization": "Communal",     "upbringing": "Creative" },
+    "polder":       { "language": "Khoursirian","environment": "Urban",      "organization": "Communal",     "upbringing": "Creative" },
+    "timeRaider":   { "language": "Voll",       "environment": "Nomadic",    "organization": "Communal",     "upbringing": "Martial" }
+  },
+  "archetypicalCultures": {
+    "artisanGuild":          { "environment": "Urban",      "organization": "Bureaucratic", "upbringing": "Creative" },
+    "borderlandHomestead":   { "environment": "Wilderness", "organization": "Communal",     "upbringing": "Labor" },
+    "collegeConclave":       { "environment": "Urban",      "organization": "Bureaucratic", "upbringing": "Academic" },
+    "criminalGang":          { "environment": "Urban",      "organization": "Communal",     "upbringing": "Lawless" },
+    "farmingVillage":        { "environment": "Rural",      "organization": "Bureaucratic", "upbringing": "Labor" },
+    "herdingCommunity":      { "environment": "Nomadic",    "organization": "Communal",     "upbringing": "Labor" },
+    "knightlyOrder":         { "environment": "Secluded",   "organization": "Bureaucratic", "upbringing": "Martial" },
+    "laborerNeighborhood":   { "environment": "Urban",      "organization": "Communal",     "upbringing": "Labor" },
+    "mercenaryBand":         { "environment": "Nomadic",    "organization": "Bureaucratic", "upbringing": "Martial" },
+    "merchantCaravan":       { "environment": "Nomadic",    "organization": "Bureaucratic", "upbringing": "Creative" },
+    "monasticOrder":         { "environment": "Secluded",   "organization": "Bureaucratic", "upbringing": "Academic" },
+    "nobleHouse":            { "environment": "Urban",      "organization": "Bureaucratic", "upbringing": "Noble" },
+    "outlawBand":            { "environment": "Wilderness", "organization": "Communal",     "upbringing": "Lawless" },
+    "pirateCrew":            { "environment": "Nomadic",    "organization": "Communal",     "upbringing": "Lawless" },
+    "telepathicHive":        { "environment": "Secluded",   "organization": "Communal",     "upbringing": "Creative" },
+    "travelingEntertainers": { "environment": "Nomadic",    "organization": "Communal",     "upbringing": "Creative" }
+  },
+  "environments": {
+    "nomadic": {
+      "name": "Nomadic",
+      "description": "A nomadic culture travels from place to place to survive. Members of a nomadic culture might follow animal migrations or the weather, travel to sell their wares or services, or simply enjoy a restless lifestyle full of new experiences and peoples.",
+      "skillOptions": "One skill from the exploration or interpersonal skill groups",
+      "skillGroups": ["exploration", "interpersonal"],
+      "quickBuild": "Navigate"
+    },
+    "rural": {
+      "name": "Rural",
+      "description": "A rural culture is one located in a town, village, or smaller settled enclave. People dwelling in such places often cultivate the land, trade goods or services with travelers passing through, harvest fish from the sea, or mine metals and gems from the earth.",
+      "skillOptions": "One skill from the crafting or lore skill groups",
+      "skillGroups": ["crafting", "lore"],
+      "quickBuild": "Nature"
+    },
+    "secluded": {
+      "name": "Secluded",
+      "description": "A secluded culture is based in one relatively close-quarters structure and interacts with other cultures only rarely. Such places are often buildings or complexes such as monasteries, castles, or prisons.",
+      "skillOptions": "One skill from the interpersonal or lore skill groups",
+      "skillGroups": ["interpersonal", "lore"],
+      "quickBuild": "Read Person"
+    },
+    "urban": {
+      "name": "Urban",
+      "description": "An urban culture is always centered in a city. The people of urban cultures often learn to effectively misdirect others in order to navigate the crowds and the political machinations that can come with city life.",
+      "skillOptions": "One skill from the interpersonal or intrigue skill groups",
+      "skillGroups": ["interpersonal", "intrigue"],
+      "quickBuild": "Alertness"
+    },
+    "wilderness": {
+      "name": "Wilderness",
+      "description": "A wilderness culture doesn't try to tame the terrain in which its people live. Instead, the folk of such a culture thrive amid nature, taking their sustenance and shelter from the land.",
+      "skillOptions": "One skill from the crafting or exploration skill groups",
+      "skillGroups": ["crafting", "exploration"],
+      "quickBuild": "Endurance"
+    }
+  },
+  "organizations": {
+    "bureaucratic": {
+      "name": "Bureaucratic",
+      "description": "Bureaucratic cultures are steeped in official leadership and formally recorded laws. Members of such a culture are often ranked in power according to those laws.",
+      "skillOptions": "One skill from the interpersonal or intrigue skill groups",
+      "skillGroups": ["interpersonal", "intrigue"],
+      "quickBuild": "Persuade"
+    },
+    "communal": {
+      "name": "Communal",
+      "description": "A communal culture is a place where all members of the culture are considered equal. The community works together to make important decisions that affect the majority of the culture.",
+      "skillOptions": "One skill from the crafting or exploration skill groups",
+      "skillGroups": ["crafting", "exploration"],
+      "quickBuild": "Jump"
+    }
+  },
+  "upbringings": {
+    "academic": {
+      "name": "Academic",
+      "description": "Your hero was raised by people who collect, study, and share books and other records.",
+      "skillOptions": "One skill from the lore skill group",
+      "skillGroups": ["lore"],
+      "quickBuild": "History"
+    },
+    "creative": {
+      "name": "Creative",
+      "description": "A hero with a creative upbringing was raised among folk who create art or other works valuable enough to trade.",
+      "skillOptions": "The Music or Perform skill (from the interpersonal skill group), or one skill from the crafting group",
+      "skillGroups": ["interpersonal (Music or Perform only)", "crafting"],
+      "quickBuild": "Perform"
+    },
+    "labor": {
+      "name": "Labor",
+      "description": "Your hero came of age in a culture where people labored for a living.",
+      "skillOptions": "The Blacksmithing skill (from the crafting skill group), the Handle Animals skill (from the interpersonal group), or a skill from the exploration group",
+      "skillGroups": ["crafting (Blacksmithing only)", "interpersonal (Handle Animals only)", "exploration"],
+      "quickBuild": "Lift"
+    },
+    "lawless": {
+      "name": "Lawless",
+      "description": "Your hero grew up among folk who performed activities that other people considered unlawful.",
+      "skillOptions": "One skill from the intrigue skill group",
+      "skillGroups": ["intrigue"],
+      "quickBuild": "Sneak"
+    },
+    "martial": {
+      "name": "Martial",
+      "description": "A hero with a martial upbringing was raised by warriors.",
+      "skillOptions": "One of the following: Blacksmithing or Fletching from crafting; Climb, Endurance, or Ride from exploration; Intimidate from interpersonal; Alertness or Track from intrigue; or Monsters or Strategy from lore",
+      "specificSkills": [
+        { "skill": "Blacksmithing", "group": "crafting" },
+        { "skill": "Fletching", "group": "crafting" },
+        { "skill": "Climb", "group": "exploration" },
+        { "skill": "Endurance", "group": "exploration" },
+        { "skill": "Ride", "group": "exploration" },
+        { "skill": "Intimidate", "group": "interpersonal" },
+        { "skill": "Alertness", "group": "intrigue" },
+        { "skill": "Track", "group": "intrigue" },
+        { "skill": "Monsters", "group": "lore" },
+        { "skill": "Strategy", "group": "lore" }
+      ],
+      "quickBuild": "Intimidate"
+    },
+    "noble": {
+      "name": "Noble",
+      "description": "Your hero grew up among leaders who rule over others and play the games of politics to maintain power.",
+      "skillOptions": "One skill from the interpersonal skill group",
+      "skillGroups": ["interpersonal"],
+      "quickBuild": "Lead"
+    }
+  },
+  "languages": {
+    "extantLanguages": [
+      { "language": "Anjali",      "ancestry": "Devils, hobgoblins",                "notes": "Language of contract law" },
+      { "language": "Axiomatic",   "ancestry": "Memonek",                           "notes": "Native language of Axiom, and the common language of the timescape by trade" },
+      { "language": "Caelian",     "ancestry": "Orden denizens",                    "notes": "Common language of Orden. All player characters know Caelian." },
+      { "language": "Filliaric",   "ancestry": "Angulotls",                         "notes": "The First Language" },
+      { "language": "Elder dragons","ancestry": "Elder dragons",                    "notes": "Language of magic" },
+      { "language": "Hyrallic",    "ancestry": "High elves",                        "notes": "Language of interspecies diplomacy" },
+      { "language": "Illyvric",    "ancestry": "Shadow elves",                      "notes": "" },
+      { "language": "Kalliak",     "ancestry": "Orcs",                              "notes": "Offshoot of Zaliac" },
+      { "language": "Kethaic",     "ancestry": "Kobolds",                           "notes": "Patois of Vastariax and Caelian" },
+      { "language": "Khelt",       "ancestry": "Bugbears, fey",                     "notes": "Offshoot of Kheltivari" },
+      { "language": "Khoursirian", "ancestry": "Polder, humans",                    "notes": "Distant offshoot of Khamish" },
+      { "language": "High Kuric",  "ancestry": "Bredbeddles, giants, ogres, trolls","notes": "" },
+      { "language": "Low Kuric",   "ancestry": "Elementals",                        "notes": "" },
+      { "language": "Mindspeech",  "ancestry": "Voiceless talkers",                 "notes": "A symbolic language shared among native telepaths" },
+      { "language": "Proto-Ctholl","ancestry": "Lower demons",                      "notes": "Incomplete precursor of Tholl" },
+      { "language": "Szetch",      "ancestry": "Goblins, radenwights",              "notes": "" },
+      { "language": "Tholl",       "ancestry": "Higher demons, gnolls",             "notes": "" },
+      { "language": "Urollialic",  "ancestry": "Olothec",                           "notes": "" },
+      { "language": "Variac",      "ancestry": "Olothec, trolls, voiceless talkers","notes": "Common language of the World Below" },
+      { "language": "Vastariax",   "ancestry": "Dragons, dragon knights",           "notes": "" },
+      { "language": "Vhoric",      "ancestry": "Hakaan",                            "notes": "Offshoot of the stone giant dialect of High Kuric" },
+      { "language": "Voll",        "ancestry": "Time raiders",                       "notes": "" },
+      { "language": "Yllyric",     "ancestry": "Wode elves",                        "notes": "Language of druids" },
+      { "language": "Za'hariax",   "ancestry": "Overminds",                         "notes": "" },
+      { "language": "Zaliac",      "ancestry": "Dwarves",                           "notes": "Language of engineering" }
+    ],
+    "vaslorianHumanLanguages": [
+      { "region": "The Gol",   "language": "Uvalic" },
+      { "region": "Higara",    "language": "Higaran" },
+      { "region": "Ix",        "language": "Oaxuatl" },
+      { "region": "Khemhara",  "language": "Khemharic" },
+      { "region": "Khoursir",  "language": "Khoursirian" },
+      { "region": "Phaedros",  "language": "Phaedran" },
+      { "region": "Rioja",     "language": "Riojan" },
+      { "region": "Vanigar",   "language": "Vaniric" },
+      { "region": "Vasloria",  "language": "Vaslorian" }
+    ],
+    "deadLanguages": [
+      { "language": "Ananjali",    "ancestry": "Old hobgoblin",           "relatedLanguages": "Anjali",             "commonTopics": "Zodiakol, the bloodmetal" },
+      { "language": "High Rhyvian","ancestry": "Sun elf",                 "relatedLanguages": "Hyrallic, Yllyric",  "commonTopics": "Liannar, the sunmetal" },
+      { "language": "Khamish",     "ancestry": "Beast lord",              "relatedLanguages": "Khoursirian",        "commonTopics": "Beast magic" },
+      { "language": "Kheltivari",  "ancestry": "Old fae",                 "relatedLanguages": "Yllyric, Khelt",     "commonTopics": "Using a wode to travel through time" },
+      { "language": "Low Rhyvian", "ancestry": "Sky elf",                 "relatedLanguages": "Hyrallic",           "commonTopics": "Flying castles" },
+      { "language": "Old Variac",  "ancestry": "Olothec, voiceless talker","relatedLanguages": "Variac",            "commonTopics": "Kollar, the sinmetal" },
+      { "language": "Phorialtic",  "ancestry": "Old elemental",           "relatedLanguages": "Low and High Kuric", "commonTopics": "Moving between manifolds" },
+      { "language": "Rallarian",   "ancestry": "Steel dwarf",             "relatedLanguages": "Zaliac",             "commonTopics": "Valiar, the truemetal" },
+      { "language": "Ullorvic",    "ancestry": "Star elf",                "relatedLanguages": "Hyrallic, Yllyric",  "commonTopics": "Rovion, the starmetal" }
+    ]
+  }
+}

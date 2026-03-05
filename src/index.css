@@ -1,0 +1,153 @@
+@import "tailwindcss";
+
+@theme {
+  --color-surface: #1c1410;
+  --color-surface-light: #2a1f18;
+  --color-surface-lighter: #382c22;
+  --color-gold: #d4a843;
+  --color-gold-light: #f0d47a;
+  --color-gold-dark: #a07c2a;
+  --color-gold-muted: #8a7040;
+  --color-crimson: #c42b3a;
+  --color-crimson-dark: #8b1a25;
+  --color-cream: #e8dcc8;
+  --color-cream-dark: #c4b79e;
+  --color-ink: #1a110c;
+  --color-ink-light: #3d2e24;
+  --font-display: "Cinzel Decorative", serif;
+  --font-heading: "Cinzel", serif;
+  --font-body: "Crimson Text", serif;
+}
+
+body {
+  font-family: var(--font-body);
+  background: #0e0a07;
+  min-height: 100vh;
+  margin: 0;
+  color: var(--color-cream);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-gold-dark); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-gold); }
+
+/* Gold gradient text */
+.gold-text {
+  background: linear-gradient(180deg, var(--color-gold-light) 0%, var(--color-gold) 60%, var(--color-gold-dark) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Dark glass card */
+.card {
+  background: linear-gradient(145deg, rgba(42, 31, 24, 0.9) 0%, rgba(28, 20, 16, 0.95) 100%);
+  border: 1px solid rgba(212, 168, 67, 0.12);
+  border-radius: 8px;
+  backdrop-filter: blur(8px);
+}
+
+.card-selected {
+  border-color: var(--color-gold);
+  box-shadow:
+    0 0 20px rgba(212, 168, 67, 0.15),
+    inset 0 0 20px rgba(212, 168, 67, 0.05);
+}
+
+.card-hover:hover {
+  border-color: rgba(212, 168, 67, 0.35);
+  background: linear-gradient(145deg, rgba(56, 44, 34, 0.9) 0%, rgba(42, 31, 24, 0.95) 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Primary button */
+.btn-primary {
+  background: linear-gradient(180deg, var(--color-gold) 0%, var(--color-gold-dark) 100%);
+  color: #1a110c;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  padding: 0.625rem 1.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-gold-dark);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  font-size: 0.875rem;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(180deg, var(--color-gold-light) 0%, var(--color-gold) 100%);
+  box-shadow: 0 4px 16px rgba(212, 168, 67, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.btn-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Secondary button */
+.btn-secondary {
+  background: transparent;
+  color: var(--color-gold);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  padding: 0.5rem 1.5rem;
+  border-radius: 6px;
+  border: 1px solid rgba(212, 168, 67, 0.3);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.btn-secondary:hover {
+  border-color: var(--color-gold);
+  background: rgba(212, 168, 67, 0.08);
+}
+
+/* Section divider */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--color-gold-dark) 50%, transparent 100%);
+  opacity: 0.3;
+}
+
+/* Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 4px;
+  font-family: var(--font-heading);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: rgba(212, 168, 67, 0.1);
+  border: 1px solid rgba(212, 168, 67, 0.15);
+  color: var(--color-gold-light);
+}
+
+.badge-accent {
+  background: rgba(196, 43, 58, 0.12);
+  border-color: rgba(196, 43, 58, 0.2);
+  color: #e8667a;
+}
+
+/* Print styles for battle cards */
+@media print {
+  body { background: white !important; color: #1a110c !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  nav, aside, footer, .print\\:hidden { display: none !important; }
+  .card { background: #f5f0e8 !important; border-color: #c4a85a !important; break-inside: avoid; page-break-inside: avoid; }
+  .gold-text { -webkit-text-fill-color: #8a6d2a !important; }
+}

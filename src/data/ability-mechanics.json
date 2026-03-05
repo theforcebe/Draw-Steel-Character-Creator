@@ -1,0 +1,164 @@
+{
+  "abilityMechanics": {
+    "keywords": [
+      {
+        "name": "Area",
+        "description": "Abilities with the Area keyword create an area of effect. Many area abilities deal damage to targets in their area, but such abilities are treated differently than strikes made against specific targets."
+      },
+      {
+        "name": "Charge",
+        "description": "Abilities with the Charge keyword can be used with the Charge main action instead of a melee free strike."
+      },
+      {
+        "name": "Magic",
+        "description": "Abilities with the Magic keyword are used by characters who can cast spells, have innate magical features, or wield magic treasures. Such abilities do magical things such as create rays of fire, open swirling portals, or summon creatures."
+      },
+      {
+        "name": "Melee",
+        "description": "Abilities with the Melee keyword can be used only over very short distances, typically within a character's reach, because they require a character to make contact with a creature or object with their body, a weapon, or an implement."
+      },
+      {
+        "name": "Psionic",
+        "description": "Abilities with the Psionic keyword are used by characters who can manifest psionic powers, have innate psionic features, or wield psionic items. These abilities might create blasts of psychic energy, move objects with telekinesis, or slow down time with chronopathy."
+      },
+      {
+        "name": "Ranged",
+        "description": "Abilities with the Ranged keyword can be used to affect creatures who are too far away to make contact with."
+      },
+      {
+        "name": "Strike",
+        "description": "Abilities with the Strike keyword deal damage to or impose a harmful effect on specific creatures or objects. Strikes target specific creatures or objects (not areas) and harm those targets by making a power roll."
+      },
+      {
+        "name": "Weapon",
+        "description": "The Weapon keyword is used in abilities that must be used with a blade, a bow, or some other offensive weapon. Weapon abilities also include strikes creatures make with their own bodies, such as unarmed strikes or a monster's punches, kicks, bites, tail slaps, and more."
+      }
+    ],
+    "actionTypes": [
+      "Main action",
+      "Maneuver",
+      "Move action",
+      "Triggered action",
+      "Free maneuver",
+      "Free triggered action"
+    ],
+    "distanceTypes": {
+      "melee": {
+        "format": "Melee X",
+        "description": "Melee abilities require you to make contact with a creature or object with your body, a weapon, or an implement. The number X is the maximum distance in squares. Melee 1 limits you to adjacent targets."
+      },
+      "ranged": {
+        "format": "Ranged X",
+        "description": "Ranged abilities can be used to target creatures or objects too far away for you to make contact with. The number X is the maximum distance in squares. Making a ranged strike while any enemy is adjacent to you gives a bane on the power roll."
+      },
+      "self": {
+        "format": "Self",
+        "description": "The ability originates from you, and often affects only you."
+      }
+    },
+    "areaTypes": {
+      "aura": {
+        "format": "X aura",
+        "description": "The number X is the radius of the aura, which always originates from you and moves with you for the duration of the ability."
+      },
+      "burst": {
+        "format": "X burst",
+        "description": "The number X is the radius of the burst, which always originates from you and lasts only for as long as it takes to affect its targets."
+      },
+      "cube": {
+        "format": "X cube",
+        "description": "The number X is the length of each of the area's sides."
+      },
+      "line": {
+        "format": "A x B line",
+        "description": "The number A denotes the line's length in squares, while the number B equals the line's width and height in squares. The squares must be in a straight line."
+      },
+      "wall": {
+        "format": "X wall",
+        "description": "The number X is how many squares are used to make the wall. Each square must share at least one side with another square of the wall. A wall blocks line of effect."
+      }
+    },
+    "targetTypes": [
+      "Creature",
+      "Object",
+      "Enemy",
+      "Ally",
+      "Self",
+      "Each [Target] (all eligible targets in the area)"
+    ],
+    "powerRolls": {
+      "description": "Ability rolls use 2d10 + characteristic. Unlike tests, ability rolls always do something useful. Rolling determines the tier outcome.",
+      "tiers": {
+        "tier1": "11 or lower",
+        "tier2": "12-16",
+        "tier3": "17 or higher"
+      },
+      "criticalHit": "Natural 19 or 20 on the 2d10 roll (before modifiers) when used as a main action. Allows an immediate additional main action."
+    },
+    "heroicResources": [
+      { "class": "Censor", "resource": "Wrath" },
+      { "class": "Conduit", "resource": "Piety" },
+      { "class": "Elementalist", "resource": "Essence" },
+      { "class": "Fury", "resource": "Ferocity" },
+      { "class": "Null", "resource": "Discipline" },
+      { "class": "Shadow", "resource": "Insight" },
+      { "class": "Tactician", "resource": "Focus" },
+      { "class": "Talent", "resource": "Clarity" },
+      { "class": "Troubadour", "resource": "Drama" }
+    ],
+    "abilityTypes": {
+      "signatureAbility": "Signature abilities don't require your Heroic Resource to use, but sometimes let you spend your Heroic Resource to enhance or add to their effects.",
+      "heroicAbility": "If an ability has a Heroic Resource cost to activate (you can't use it at all without spending some of your Heroic Resource), it is a heroic ability."
+    },
+    "potencies": {
+      "description": "Many abilities impose conditions that targets can resist based on a characteristic score. The potency value must be higher than the target's indicated characteristic score for the effect to apply.",
+      "values": {
+        "weak": "Your highest characteristic score - 2",
+        "average": "Your highest characteristic score - 1",
+        "strong": "Your highest characteristic score"
+      },
+      "format": "Presented as '[characteristic]<[potency]' -- e.g., M<w means 'if target's Might is less than weak potency value'. Read as: 'If the target's [characteristic] is less than [potency value], they [suffer effect].'",
+      "abbreviations": {
+        "M": "Might",
+        "A": "Agility",
+        "R": "Reason",
+        "I": "Intuition",
+        "P": "Presence",
+        "w": "weak potency",
+        "v": "average potency",
+        "s": "strong potency"
+      }
+    },
+    "surges": {
+      "description": "Surges can be used in combat to deal extra damage or increase potencies.",
+      "usage": [
+        "Whenever you deal rolled damage, spend up to 3 surges to deal extra damage to one target. Each surge deals extra damage equal to your highest characteristic score.",
+        "Whenever you target creatures with an ability that has a potency, spend 2 surges to increase the potency by 1 for one target. Can't increase by more than 1 using surges."
+      ],
+      "notes": "You lose surges as you spend them. At the end of combat, you lose any remaining surges."
+    },
+    "conditions": {
+      "bleeding": "Whenever you use a main action, triggered action, or make a test or ability roll using Might or Agility, you lose Stamina equal to 1d6 + your level after the action is resolved. This Stamina loss can't be prevented in any way, and only happens once per action.",
+      "dazed": "You can do only one thing on your turn: use a main action, use a maneuver, or use a move action. You also can't use triggered actions, free triggered actions, or free maneuvers.",
+      "frightened": "Any ability roll you make against the source of your fear takes a bane. If that source is a creature, their ability rolls against you gain an edge. You can't willingly move closer to the source of your fear if you know the location of that source.",
+      "grabbed": "You have speed 0, can't be force moved except by whatever has you grabbed, can't use the Knockback maneuver, and take a bane on abilities that don't target what has you grabbed. If grabbed by a creature that moves, you move with them.",
+      "prone": "You are flat on the ground. Any strike you make takes a bane, and melee abilities used against you gain an edge. You must crawl to move (costs 1 additional square per square crawled). You can't climb, jump, swim, or fly while prone.",
+      "restrained": "You have speed 0, can't use the Stand Up maneuver, and can't be force moved. You take a bane on ability rolls and on Might and Agility tests, and abilities used against you gain an edge. Teleporting ends this condition.",
+      "slowed": "You have speed 2 unless your speed is already lower, and you can't shift.",
+      "taunted": "You have a double bane on ability rolls for any ability that doesn't target the creature who taunted you, as long as you have line of effect to that creature.",
+      "weakened": "You take a bane on power rolls."
+    },
+    "endingEffects": {
+      "endOfNextTurn": "Abbreviated as '(EoT)'. The effect lasts until the end of the target's next turn, or the end of their current turn if imposed on their current turn.",
+      "savingThrow": "Abbreviated as '(save ends)'. The target rolls a d10 at the end of each of their turns. On a 6 or higher, the effect ends.",
+      "endOfEncounter": "Lasts until the end of the encounter. If used outside combat, lasts 5 minutes."
+    },
+    "damageCharacteristics": {
+      "M": "Might",
+      "A": "Agility",
+      "R": "Reason",
+      "I": "Intuition",
+      "P": "Presence"
+    }
+  }
+}
