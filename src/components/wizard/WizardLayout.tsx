@@ -22,6 +22,7 @@ const STEP_LABELS: Record<WizardStepId, string> = {
   abilities: 'Abilities',
   complication: 'Complication',
   details: 'Details',
+  model: 'Model',
   review: 'Review',
 };
 

@@ -12,6 +12,7 @@ import { KitStep } from './components/steps/KitStep';
 import { AbilitiesStep } from './components/steps/AbilitiesStep';
 import { ComplicationStep } from './components/steps/ComplicationStep';
 import { DetailsStep } from './components/steps/DetailsStep';
+import { ModelStep } from './components/steps/ModelStep';
 import { ReviewStep } from './components/steps/ReviewStep';
 
 function StepRouter() {
@@ -42,6 +43,8 @@ function StepRouter() {
       return <ComplicationStep />;
     case 'details':
       return <DetailsStep />;
+    case 'model':
+      return <ModelStep />;
     case 'review':
       return <ReviewStep />;
     default:

@@ -98,6 +98,15 @@ export interface ComputedStats {
   echelon: number;
 }
 
+export type HairStyle = 'short' | 'long' | 'braided' | 'mohawk' | 'ponytail' | 'bald';
+
+export interface PortraitSettings {
+  hairStyle: HairStyle;
+  hairColor: string;
+  clothingColor: string;
+  armorColor: string;
+}
+
 export interface CharacterData {
   // Identity
   name: string;
@@ -120,6 +129,9 @@ export interface CharacterData {
   appearance: string;
   backstory: string;
 
+  // Visual customization
+  portraitSettings: PortraitSettings | null;
+
   // Computed (stored for display)
   computedStats: ComputedStats | null;
 }
@@ -137,6 +149,7 @@ export const WIZARD_STEPS = [
   'abilities',
   'complication',
   'details',
+  'model',
   'review',
 ] as const;
 

@@ -46,7 +46,7 @@ export function CharacterPreview() {
     <div className="flex flex-col gap-3 p-4">
       {/* Character Portrait */}
       <div className="flex justify-center">
-        <CharacterPortrait character={character} size={160} />
+        <CharacterPortrait character={character} size={120} />
       </div>
 
       <div className="text-center">

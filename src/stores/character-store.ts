@@ -9,6 +9,7 @@ import type {
   CareerChoice,
   ClassChoice,
   ComplicationChoice,
+  PortraitSettings,
   WizardStepId,
 } from '../types/character';
 
@@ -24,6 +25,7 @@ const DEFAULT_CHARACTER: CharacterData = {
   complication: null,
   appearance: '',
   backstory: '',
+  portraitSettings: null,
   computedStats: null,
 };
 
@@ -48,6 +50,7 @@ interface CharacterStore {
   setComplication: (complication: ComplicationChoice | null) => void;
   setAppearance: (text: string) => void;
   setBackstory: (text: string) => void;
+  setPortraitSettings: (settings: PortraitSettings) => void;
 
   // Reset
   resetCharacter: () => void;
@@ -145,6 +148,11 @@ export const useCharacterStore = create<CharacterStore>()(
           character: { ...state.character, backstory: text },
         })),
 
+      setPortraitSettings: (settings) =>
+        set((state) => ({
+          character: { ...state.character, portraitSettings: settings },
+        })),
+
       // Reset
       resetCharacter: () =>
         set({
@@ -180,6 +188,15 @@ export const useCharacterStore = create<CharacterStore>()(
           const classChoice = character.classChoice as Record<string, unknown> | null;
           if (classChoice && !('subclassSkill' in classChoice)) {
             classChoice.subclassSkill = '';
+          }
+
+          // Ensure portraitSettings exists and has armorColor
+          if (!('portraitSettings' in character)) {
+            character.portraitSettings = null;
+          }
+          const ps = character.portraitSettings as Record<string, unknown> | null;
+          if (ps && !('armorColor' in ps)) {
+            ps.armorColor = '#757575';
           }
         }
         return state;

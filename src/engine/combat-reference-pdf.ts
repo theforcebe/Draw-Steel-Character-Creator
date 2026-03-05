@@ -1,4 +1,4 @@
-import { PDFDocument, StandardFonts, rgb, PDFPage, PDFFont } from 'pdf-lib';
+import { PDFDocument, StandardFonts, rgb, degrees, PDFPage, PDFFont } from 'pdf-lib';
 
 // ---------------------------------------------------------------------------
 // Elegant black & white palette — printer-friendly, zero ink waste
@@ -103,7 +103,7 @@ function ornamentDivider(page: PDFPage, y: number, cx = PAGE_W / 2, halfW = 80) 
   page.drawRectangle({
     x: cx - s, y: y - s, width: s * 2, height: s * 2,
     borderColor: C.mid, borderWidth: 0.6, opacity: 0,
-    rotate: { type: 0 as never, angle: 45 },
+    rotate: degrees(45),
   });
 }
 
