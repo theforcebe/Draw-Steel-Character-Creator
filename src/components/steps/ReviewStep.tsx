@@ -6,6 +6,7 @@ import { exportCombatReferencePdf } from '../../engine/combat-reference-pdf';
 import { BattleCardsView } from '../battle/BattleCardsView';
 import { getCharacterSkills } from '../../engine/skill-mapper';
 import { saveCharacter } from '../../engine/character-storage';
+import { CharacterPortrait } from '../portrait/CharacterPortrait';
 import type { CharacterData } from '../../types/character';
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
@@ -192,8 +193,9 @@ export function ReviewStep() {
       <div className="max-w-3xl mx-auto w-full flex flex-col gap-5">
         {/* Hero Identity */}
         <ParchmentCard>
-          <div className="text-center mb-3">
-            <h2 className="font-display text-2xl text-gold-light tracking-wider">
+          <div className="flex flex-col items-center mb-3">
+            <CharacterPortrait character={character} size={180} />
+            <h2 className="font-display text-2xl text-gold-light tracking-wider mt-2">
               {character.name || 'Unnamed Hero'}
             </h2>
             <p className="font-heading text-xs uppercase tracking-widest text-gold-muted mt-1">

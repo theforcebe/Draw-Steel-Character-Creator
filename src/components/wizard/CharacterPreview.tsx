@@ -1,6 +1,7 @@
 import { useCharacterStore } from '../../stores/character-store';
 import { computeAllStats } from '../../engine/stat-calculator';
 import { getComplicationStatBonuses } from '../../engine/complication-stats';
+import { CharacterPortrait } from '../portrait/CharacterPortrait';
 
 function Row({ label, value }: { label: string; value: string | null }) {
   return (
@@ -43,6 +44,11 @@ export function CharacterPreview() {
 
   return (
     <div className="flex flex-col gap-3 p-4">
+      {/* Character Portrait */}
+      <div className="flex justify-center">
+        <CharacterPortrait character={character} size={160} />
+      </div>
+
       <div className="text-center">
         <p className="font-display text-sm text-gold-light tracking-wider">
           {character.name || 'New Hero'}
