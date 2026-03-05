@@ -1,5 +1,5 @@
 import { PDFDocument, PDFTextField, PDFName, PDFString, StandardFonts } from 'pdf-lib';
-import type { PDFForm, PDFFont } from 'pdf-lib';
+import type { PDFForm } from 'pdf-lib';
 import type { CharacterData } from '../types/character';
 import { computeAllStats } from './stat-calculator';
 import { getCharacterSkills } from './skill-mapper';
@@ -199,7 +199,7 @@ interface AncestryTrait {
 }
 
 function getAncestryTraitDescriptions(ancestryId: string, traitNames: string[]): string {
-  const ancestries = ancestriesData.ancestries as Record<string, { purchasedTraits?: AncestryTrait[]; signatureTraits?: AncestryTrait[] }>;
+  const ancestries = ancestriesData.ancestries as unknown as Record<string, { purchasedTraits?: AncestryTrait[]; signatureTraits?: AncestryTrait[] }>;
   const ancestry = ancestries[ancestryId];
   if (!ancestry) return traitNames.join(', ');
 
@@ -644,7 +644,7 @@ export async function exportAbilityCardsPdf(character: CharacterData): Promise<v
 // ---------------------------------------------------------------------------
 
 function triggerDownload(pdfBytes: Uint8Array, filename: string) {
-  const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+  const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;

@@ -89,18 +89,6 @@ function wrap(page: PDFPage, s: string, x: number, y: number, maxW: number, st: 
   return cy;
 }
 
-function measureLines(s: string, maxW: number, font: PDFFont, size: number): number {
-  const words = s.split(' ');
-  let line = '';
-  let n = 0;
-  for (const word of words) {
-    const test = line ? `${line} ${word}` : word;
-    if (font.widthOfTextAtSize(test, size) > maxW && line) { n++; line = word; }
-    else line = test;
-  }
-  if (line) n++;
-  return n;
-}
 
 // ---------------------------------------------------------------------------
 // Decorative elements
@@ -130,34 +118,6 @@ interface SectionOpts {
   items: SectionItem[];
   intro?: string;
   numbered?: boolean;
-}
-
-/** Measure the height a section will occupy */
-function measureSection(
-  opts: SectionOpts,
-  contentW: number,
-  fonts: { bold: PDFFont; regular: PDFFont; oblique: PDFFont },
-): number {
-  const nameSize = 9;
-  const descSize = 8;
-  const descLH = descSize * 1.35;
-  const introSize = 8;
-  const introLH = introSize * 1.35;
-
-  let h = 18; // title + underline + gap
-
-  if (opts.intro) {
-    h += measureLines(opts.intro, contentW, fonts.oblique, introSize) * introLH + 8;
-  }
-
-  for (let i = 0; i < opts.items.length; i++) {
-    const item = opts.items[i];
-    h += 14; // name line height
-    h += measureLines(item.desc, contentW - 10, fonts.regular, descSize) * descLH;
-    h += 8; // gap after item
-  }
-
-  return h;
 }
 
 /** Draw a section. Returns Y after section. */
@@ -529,7 +489,7 @@ export async function exportCombatReferencePdf(): Promise<void> {
   // Save & Download
   // =========================================================================
   const pdfBytes = await pdfDoc.save();
-  const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+  const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
