@@ -125,6 +125,7 @@ export function ClassStep() {
     setClassChoice({
       classId: id,
       subclassId: '',
+      subclassSkill: '',
       characteristics: { might: 0, agility: 0, reason: 0, intuition: 0, presence: 0 },
       signatureAbilityName: '',
       heroicAbilities: [],

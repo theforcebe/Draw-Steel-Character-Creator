@@ -1,5 +1,6 @@
 import { useCharacterStore } from '../../stores/character-store';
 import { computeAllStats } from '../../engine/stat-calculator';
+import { getComplicationStatBonuses } from '../../engine/complication-stats';
 
 function Row({ label, value }: { label: string; value: string | null }) {
   return (
@@ -37,6 +38,7 @@ export function CharacterPreview() {
     classId: character.classChoice?.classId ?? null,
     kitId: character.classChoice?.kitId ?? null,
     selectedTraits: character.selectedTraits,
+    complicationBonuses: getComplicationStatBonuses(character.complication, character.level),
   });
 
   return (

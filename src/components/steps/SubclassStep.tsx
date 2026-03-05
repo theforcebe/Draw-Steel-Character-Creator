@@ -91,9 +91,15 @@ export function SubclassStep() {
 
   function handleSelect(subId: string) {
     if (!classChoice) return;
+    const sub = subclasses.find((s) => s.id === subId);
+    // Clear kit when subclass changes (stormwight kits are incompatible with other subclasses)
+    const subclassChanged = classChoice.subclassId !== subId;
     setClassChoice({
       ...classChoice,
       subclassId: subId,
+      subclassSkill: sub?.skill ?? '',
+      kitId: subclassChanged ? undefined : classChoice.kitId,
+      secondKitId: subclassChanged ? undefined : classChoice.secondKitId,
     });
   }
 

@@ -30,6 +30,12 @@ interface RecoveriesParams {
   ancestryRecoveryBonus: number;
 }
 
+interface ComplicationBonuses {
+  stamina?: number;
+  recoveries?: number;
+  stability?: number;
+}
+
 interface ComputeAllParams {
   level: number;
   ancestryId: string | null;
@@ -37,6 +43,7 @@ interface ComputeAllParams {
   classId: string | null;
   kitId: string | null;
   selectedTraits: { name: string; cost: number }[];
+  complicationBonuses?: ComplicationBonuses;
 }
 
 // ---------------------------------------------------------------------------
@@ -295,7 +302,7 @@ function resolveSize(ancestry: AncestryEntry, formerLifeAncestry?: AncestryEntry
  * choices. Returns `null` if a required piece of data (class) is missing.
  */
 export function computeAllStats(params: ComputeAllParams): ComputedStats | null {
-  const { level, ancestryId, formerLifeAncestryId, classId, kitId, selectedTraits } = params;
+  const { level, ancestryId, formerLifeAncestryId, classId, kitId, selectedTraits, complicationBonuses } = params;
 
   // A class is required to compute stats
   if (classId == null) {
@@ -342,12 +349,17 @@ export function computeAllStats(params: ComputeAllParams): ComputedStats | null 
   // Echelon
   const echelon = getEchelon(level);
 
+  // Complication bonuses
+  const compStamina = complicationBonuses?.stamina ?? 0;
+  const compRecoveries = complicationBonuses?.recoveries ?? 0;
+  const compStability = complicationBonuses?.stability ?? 0;
+
   // Stamina & derived
   const stamina = getStamina({
     classBaseStamina: classStats.baseStamina,
     classStaminaPerLevel: classStats.staminaPerLevel,
     kitStaminaBonus,
-    ancestryStaminaBonus,
+    ancestryStaminaBonus: ancestryStaminaBonus + compStamina,
     level,
   });
 
@@ -357,7 +369,7 @@ export function computeAllStats(params: ComputeAllParams): ComputedStats | null 
   // Recoveries
   const recoveries = getRecoveries({
     classBaseRecoveries: classStats.baseRecoveries,
-    ancestryRecoveryBonus,
+    ancestryRecoveryBonus: ancestryRecoveryBonus + compRecoveries,
   });
 
   // Speed
@@ -370,7 +382,7 @@ export function computeAllStats(params: ComputeAllParams): ComputedStats | null 
   // Stability
   const stability = getStability({
     kitStabilityBonus,
-    ancestryStabilityBonus,
+    ancestryStabilityBonus: ancestryStabilityBonus + compStability,
   });
 
   return {

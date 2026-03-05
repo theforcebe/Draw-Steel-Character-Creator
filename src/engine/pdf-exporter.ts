@@ -3,6 +3,7 @@ import type { PDFForm } from 'pdf-lib';
 import type { CharacterData } from '../types/character';
 import { computeAllStats } from './stat-calculator';
 import { getCharacterSkills } from './skill-mapper';
+import { getComplicationStatBonuses } from './complication-stats';
 import abilitiesData from '../data/abilities.json';
 import kitsData from '../data/kits.json';
 import complicationsData from '../data/complications.json';
@@ -345,6 +346,7 @@ export async function exportCharacterPdf(character: CharacterData): Promise<void
     classId: character.classChoice?.classId ?? null,
     kitId: character.classChoice?.kitId ?? null,
     selectedTraits: character.selectedTraits,
+    complicationBonuses: getComplicationStatBonuses(character.complication, character.level),
   });
 
   const classId = character.classChoice?.classId;
@@ -466,18 +468,27 @@ export async function exportCharacterPdf(character: CharacterData): Promise<void
     if (careerData?.description) {
       safeSetText(form, 'Career Inciting Incident', careerData.description);
     }
-    // Wealth & Renown from career data
-    const wealth = 1 + (careerData?.wealth ?? 0);
-    const renown = careerData?.renown ?? 0;
+    // Wealth & Renown from career + complication
+    const compBonuses = getComplicationStatBonuses(character.complication, character.level);
+    const wealth = 1 + (careerData?.wealth ?? 0) + (compBonuses.wealth ?? 0);
+    const renown = (careerData?.renown ?? 0) + (compBonuses.renown ?? 0);
     safeSetText(form, 'Wealth', String(wealth));
     safeSetText(form, 'Renown', String(renown));
   }
 
-  // --- Languages ---
-  const languages: string[] = [];
+  // --- Languages (from all sources) ---
+  const languages: string[] = ['Caelian'];
   if (character.culture?.language) languages.push(character.culture.language);
-  if (character.career?.languages) languages.push(...character.career.languages);
-  safeSetText(form, 'Languages', languages.join(', '));
+  if (character.career?.languages) languages.push(...character.career.languages.filter(Boolean));
+  if (character.complication?.languages) languages.push(...character.complication.languages.filter(Boolean));
+  // Remove forgotten language (Shipwrecked)
+  const forgotten = character.complication?.forgottenLanguage;
+  const filteredLanguages = forgotten
+    ? languages.filter((l) => l !== forgotten)
+    : languages;
+  // Deduplicate
+  const uniqueLanguages = [...new Set(filteredLanguages)];
+  safeSetText(form, 'Languages', uniqueLanguages.join(', '));
 
   // --- Perks (name + full description) ---
   if (character.career?.perkName) {
@@ -488,9 +499,10 @@ export async function exportCharacterPdf(character: CharacterData): Promise<void
   }
 
   // --- Complication (name + full benefit/drawback details) ---
-  safeSetText(form, 'Complication Name', character.complicationName || '');
-  if (character.complicationName) {
-    const comp = findComplication(character.complicationName);
+  const complicationName = character.complication?.name ?? '';
+  safeSetText(form, 'Complication Name', complicationName);
+  if (complicationName) {
+    const comp = findComplication(complicationName);
     if (comp) {
       const details: string[] = [];
       if (comp.benefit) details.push(`Benefit: ${comp.benefit}`);

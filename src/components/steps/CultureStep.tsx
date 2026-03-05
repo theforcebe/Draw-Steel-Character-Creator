@@ -1,12 +1,15 @@
 import { useCharacterStore } from '../../stores/character-store';
 import { ParchmentCard } from '../ui/ParchmentCard';
 import cultureData from '../../data/cultures.json';
+import { getSkillsFromGroups } from '../../data/skill-groups';
 import type { EnvironmentId, OrganizationId, UpbringingId } from '../../types/character';
 
 interface CultureAspect {
   name: string;
   description: string;
   skillOptions: string;
+  skillGroups?: string[];
+  specificSkills?: { skill: string; group: string }[];
   quickBuild: string;
 }
 
@@ -15,6 +18,18 @@ const organizations = cultureData.organizations as unknown as Record<string, Cul
 const upbringings = cultureData.upbringings as unknown as Record<string, CultureAspect>;
 const languageList = cultureData.languages.extantLanguages as { language: string; ancestry: string }[];
 
+/** Get the list of choosable skills for a culture aspect (environment/org/upbringing). */
+function getAspectSkills(aspect: CultureAspect): string[] {
+  // Martial upbringing has a specific list of skills instead of full groups
+  if (aspect.specificSkills) {
+    return aspect.specificSkills.map((s) => s.skill);
+  }
+  if (aspect.skillGroups) {
+    return getSkillsFromGroups(aspect.skillGroups);
+  }
+  return [];
+}
+
 export function CultureStep() {
   const { character, setCulture } = useCharacterStore();
 
@@ -22,57 +37,65 @@ export function CultureStep() {
   const selectedOrganization = character.culture?.organization ?? null;
   const selectedUpbringing = character.culture?.upbringing ?? null;
   const selectedLanguage = character.culture?.language ?? '';
+  const selectedEnvSkill = character.culture?.environmentSkill ?? '';
+  const selectedOrgSkill = character.culture?.organizationSkill ?? '';
+  const selectedUpbSkill = character.culture?.upbringingSkill ?? '';
 
-  const updateCulture = (
-    env: EnvironmentId | null,
-    org: OrganizationId | null,
-    upb: UpbringingId | null,
-    lang: string,
-  ) => {
-    if (env && org && upb) {
-      // Use quickBuild defaults for skills
-      const envSkill = environments[env]?.quickBuild ?? '';
-      const orgSkill = organizations[org]?.quickBuild ?? '';
-      const upbSkill = upbringings[upb]?.quickBuild ?? '';
+  const updateCulture = (patch: {
+    env?: EnvironmentId | null;
+    org?: OrganizationId | null;
+    upb?: UpbringingId | null;
+    lang?: string;
+    envSkill?: string;
+    orgSkill?: string;
+    upbSkill?: string;
+  }) => {
+    const env = patch.env !== undefined ? patch.env : selectedEnvironment;
+    const org = patch.org !== undefined ? patch.org : selectedOrganization;
+    const upb = patch.upb !== undefined ? patch.upb : selectedUpbringing;
+    const lang = patch.lang !== undefined ? patch.lang : selectedLanguage;
+    const envSkill = patch.envSkill !== undefined ? patch.envSkill : selectedEnvSkill;
+    const orgSkill = patch.orgSkill !== undefined ? patch.orgSkill : selectedOrgSkill;
+    const upbSkill = patch.upbSkill !== undefined ? patch.upbSkill : selectedUpbSkill;
 
-      setCulture({
-        environment: env,
-        organization: org,
-        upbringing: upb,
-        language: lang || 'Caelian',
-        environmentSkill: envSkill,
-        organizationSkill: orgSkill,
-        upbringingSkill: upbSkill,
-      });
-    } else if (env || org || upb || lang) {
-      // Partial selection: store what we have, fill in defaults for missing
-      setCulture({
-        environment: env ?? 'urban',
-        organization: org ?? 'communal',
-        upbringing: upb ?? 'labor',
-        language: lang || 'Caelian',
-        environmentSkill: env ? (environments[env]?.quickBuild ?? '') : '',
-        organizationSkill: org ? (organizations[org]?.quickBuild ?? '') : '',
-        upbringingSkill: upb ? (upbringings[upb]?.quickBuild ?? '') : '',
-      });
-    }
+    if (!env && !org && !upb) return;
+
+    setCulture({
+      environment: env ?? 'urban',
+      organization: org ?? 'communal',
+      upbringing: upb ?? 'labor',
+      language: lang || 'Caelian',
+      environmentSkill: envSkill,
+      organizationSkill: orgSkill,
+      upbringingSkill: upbSkill,
+    });
   };
 
   const handleEnvironment = (id: EnvironmentId) => {
-    updateCulture(id, selectedOrganization, selectedUpbringing, selectedLanguage);
+    // Reset skill when changing environment (old skill may not be valid)
+    const aspect = environments[id];
+    const skills = getAspectSkills(aspect);
+    const keep = skills.includes(selectedEnvSkill) ? selectedEnvSkill : '';
+    updateCulture({ env: id, envSkill: keep });
   };
 
   const handleOrganization = (id: OrganizationId) => {
-    updateCulture(selectedEnvironment, id, selectedUpbringing, selectedLanguage);
+    const aspect = organizations[id];
+    const skills = getAspectSkills(aspect);
+    const keep = skills.includes(selectedOrgSkill) ? selectedOrgSkill : '';
+    updateCulture({ org: id, orgSkill: keep });
   };
 
   const handleUpbringing = (id: UpbringingId) => {
-    updateCulture(selectedEnvironment, selectedOrganization, id, selectedLanguage);
+    const aspect = upbringings[id];
+    const skills = getAspectSkills(aspect);
+    const keep = skills.includes(selectedUpbSkill) ? selectedUpbSkill : '';
+    updateCulture({ upb: id, upbSkill: keep });
   };
 
-  const handleLanguage = (lang: string) => {
-    updateCulture(selectedEnvironment, selectedOrganization, selectedUpbringing, lang);
-  };
+  const envSkills = selectedEnvironment ? getAspectSkills(environments[selectedEnvironment]) : [];
+  const orgSkills = selectedOrganization ? getAspectSkills(organizations[selectedOrganization]) : [];
+  const upbSkills = selectedUpbringing ? getAspectSkills(upbringings[selectedUpbringing]) : [];
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
@@ -114,6 +137,20 @@ export function CultureStep() {
               </ParchmentCard>
             ))}
           </div>
+          {selectedEnvironment && (
+            <div className="mt-3">
+              <select
+                value={selectedEnvSkill}
+                onChange={(e) => updateCulture({ envSkill: e.target.value })}
+                className="w-full rounded border border-gold-dark/30 bg-surface-light px-3 py-2 font-body text-sm text-cream outline-none focus:border-gold focus:ring-1 focus:ring-gold"
+              >
+                <option value="">Choose a skill...</option>
+                {envSkills.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
 
         {/* Organization column */}
@@ -142,6 +179,20 @@ export function CultureStep() {
               </ParchmentCard>
             ))}
           </div>
+          {selectedOrganization && (
+            <div className="mt-3">
+              <select
+                value={selectedOrgSkill}
+                onChange={(e) => updateCulture({ orgSkill: e.target.value })}
+                className="w-full rounded border border-gold-dark/30 bg-surface-light px-3 py-2 font-body text-sm text-cream outline-none focus:border-gold focus:ring-1 focus:ring-gold"
+              >
+                <option value="">Choose a skill...</option>
+                {orgSkills.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
 
         {/* Upbringing column */}
@@ -170,6 +221,20 @@ export function CultureStep() {
               </ParchmentCard>
             ))}
           </div>
+          {selectedUpbringing && (
+            <div className="mt-3">
+              <select
+                value={selectedUpbSkill}
+                onChange={(e) => updateCulture({ upbSkill: e.target.value })}
+                className="w-full rounded border border-gold-dark/30 bg-surface-light px-3 py-2 font-body text-sm text-cream outline-none focus:border-gold focus:ring-1 focus:ring-gold"
+              >
+                <option value="">Choose a skill...</option>
+                {upbSkills.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
       </div>
 
@@ -183,7 +248,7 @@ export function CultureStep() {
         </p>
         <select
           value={selectedLanguage}
-          onChange={(e) => handleLanguage(e.target.value)}
+          onChange={(e) => updateCulture({ lang: e.target.value })}
           className="w-full rounded border border-gold-dark/30 bg-surface-light px-4 py-3 font-body text-cream outline-none transition-colors focus:border-gold focus:ring-1 focus:ring-gold"
         >
           <option value="">Select a language...</option>
@@ -196,26 +261,17 @@ export function CultureStep() {
       </div>
 
       {/* Summary of selected skills */}
-      {selectedEnvironment && selectedOrganization && selectedUpbringing && (
+      {(selectedEnvSkill || selectedOrgSkill || selectedUpbSkill) && (
         <div className="mx-auto mt-8 max-w-lg">
           <div className="rounded-lg border border-gold-dark/30 bg-surface-light p-4">
             <h4 className="mb-2 font-heading text-sm uppercase tracking-wider text-gold">
-              Culture Skills (Quick Build)
+              Culture Skills
             </h4>
             <div className="flex flex-wrap gap-2">
-              {[
-                environments[selectedEnvironment]?.quickBuild,
-                organizations[selectedOrganization]?.quickBuild,
-                upbringings[selectedUpbringing]?.quickBuild,
-              ]
+              {[selectedEnvSkill, selectedOrgSkill, selectedUpbSkill]
                 .filter(Boolean)
                 .map((skill) => (
-                  <span
-                    key={skill}
-                    className="badge"
-                  >
-                    {skill}
-                  </span>
+                  <span key={skill} className="badge">{skill}</span>
                 ))}
             </div>
           </div>

@@ -43,6 +43,12 @@ export type KitType = 'standard' | 'stormwight';
 export interface SelectedTrait {
   name: string;
   cost: number;
+  // Sub-choices for traits that require further selection
+  damageType?: string;          // Wyrmplate, Dragon Breath, Prismatic Scales
+  runeChoice?: string;          // Runic Carving (Detection/Light/Voice)
+  abilityChoice?: string;       // Psionic Gift (ability name)
+  skillChoices?: string[];      // Silver Tongue (1 interpersonal), Passionate Artisan (2 crafting)
+  previousLifeTrait?: string;   // Revenant Previous Life: which trait from former ancestry
 }
 
 export interface CultureChoice {
@@ -65,11 +71,20 @@ export interface CareerChoice {
 export interface ClassChoice {
   classId: ClassId;
   subclassId: string;
+  subclassSkill: string;
   characteristics: Characteristics;
   signatureAbilityName: string;
   heroicAbilities: string[];
   kitId?: string;
   secondKitId?: string;
+}
+
+export interface ComplicationChoice {
+  name: string;
+  skills: string[];              // chosen + fixed skills
+  languages: string[];           // chosen languages
+  forgottenLanguage: string;     // language lost (Shipwrecked)
+  benefitChoiceIndex: number;    // for "choose one" complications (-1 = none)
 }
 
 export interface ComputedStats {
@@ -96,8 +111,10 @@ export interface CharacterData {
   career: CareerChoice | null;
   classChoice: ClassChoice | null;
 
-  // Optional
-  complicationName: string | null;
+  // Complication (expanded from just a name)
+  complication: ComplicationChoice | null;
+  // Keep complicationName for backward compat during migration
+  complicationName?: string | null;
 
   // Details
   appearance: string;

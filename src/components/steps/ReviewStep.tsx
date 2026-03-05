@@ -4,6 +4,8 @@ import { ParchmentCard } from '../ui/ParchmentCard';
 import { exportCharacterPdf, exportAbilityCardsPdf } from '../../engine/pdf-exporter';
 import { exportCombatReferencePdf } from '../../engine/combat-reference-pdf';
 import { BattleCardsView } from '../battle/BattleCardsView';
+import { getCharacterSkills } from '../../engine/skill-mapper';
+import { saveCharacter } from '../../engine/character-storage';
 import type { CharacterData } from '../../types/character';
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
@@ -47,6 +49,7 @@ function ExportButtons({ character }: { character: CharacterData }) {
   const [exporting, setExporting] = useState(false);
   const [exportingCards, setExportingCards] = useState(false);
   const [exportingRef, setExportingRef] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   async function handleExportSheet() {
     setExporting(true);
@@ -81,8 +84,22 @@ function ExportButtons({ character }: { character: CharacterData }) {
     }
   }
 
+  function handleSave() {
+    saveCharacter(character);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  }
+
   return (
     <div className="flex flex-col items-center gap-3 pt-4 pb-8">
+      <button
+        type="button"
+        className="btn-primary text-lg px-10 py-4"
+        onClick={handleSave}
+      >
+        {saved ? 'Saved!' : 'Save Character'}
+      </button>
+      <div className="divider w-48 my-2" />
       <button
         type="button"
         className="btn-primary text-lg px-10 py-4"
@@ -203,14 +220,32 @@ export function ReviewStep() {
         <ParchmentCard>
           <SectionHeading>Ancestry</SectionHeading>
           <DetailRow label="Ancestry" value={ancestryLabel} />
+          {character.ancestryId === 'revenant' && character.formerLifeAncestryId && (
+            <DetailRow label="Former Life" value={formatId(character.formerLifeAncestryId)} />
+          )}
           {traits.length > 0 && (
             <div className="mt-2">
               <span className="font-heading text-xs uppercase tracking-wider text-gold-muted">
                 Traits:{' '}
               </span>
-              <span className="font-body text-sm text-cream">
-                {traits.map((t) => t.name).join(', ')}
-              </span>
+              <div className="mt-1 flex flex-col gap-1">
+                {traits.map((t) => {
+                  const extras: string[] = [];
+                  if (t.damageType) extras.push(`Damage: ${t.damageType}`);
+                  if (t.runeChoice) extras.push(`Rune: ${t.runeChoice}`);
+                  if (t.abilityChoice) extras.push(`Ability: ${t.abilityChoice}`);
+                  if (t.skillChoices?.length) extras.push(`Skills: ${t.skillChoices.join(', ')}`);
+                  if (t.previousLifeTrait) extras.push(`Trait: ${t.previousLifeTrait}`);
+                  return (
+                    <span key={t.name} className="font-body text-sm text-cream">
+                      {t.name}{t.cost > 0 ? ` (${t.cost}pt)` : ''}
+                      {extras.length > 0 && (
+                        <span className="text-gold-muted"> — {extras.join(', ')}</span>
+                      )}
+                    </span>
+                  );
+                })}
+              </div>
             </div>
           )}
         </ParchmentCard>
@@ -224,6 +259,16 @@ export function ReviewStep() {
           {character.culture?.language && (
             <DetailRow label="Language" value={character.culture.language} />
           )}
+          {(character.culture?.environmentSkill || character.culture?.organizationSkill || character.culture?.upbringingSkill) && (
+            <DetailRow
+              label="Culture Skills"
+              value={[
+                character.culture?.environmentSkill,
+                character.culture?.organizationSkill,
+                character.culture?.upbringingSkill,
+              ].filter(Boolean).join(', ')}
+            />
+          )}
         </ParchmentCard>
 
         {/* Career */}
@@ -232,6 +277,9 @@ export function ReviewStep() {
           <DetailRow label="Career" value={careerLabel} />
           {character.career?.skills && character.career.skills.length > 0 && (
             <DetailRow label="Skills" value={character.career.skills.join(', ')} />
+          )}
+          {character.career?.languages && character.career.languages.filter(Boolean).length > 0 && (
+            <DetailRow label="Languages" value={character.career.languages.filter(Boolean).join(', ')} />
           )}
           {character.career?.perkName && (
             <DetailRow label="Perk" value={character.career.perkName} />
@@ -255,13 +303,25 @@ export function ReviewStep() {
           {character.classChoice?.kitId && (
             <DetailRow label="Kit" value={formatId(character.classChoice.kitId)} />
           )}
+          {character.classChoice?.subclassSkill && (
+            <DetailRow label="Subclass Skill" value={character.classChoice.subclassSkill} />
+          )}
         </ParchmentCard>
 
         {/* Complication */}
-        {character.complicationName && (
+        {character.complication && (
           <ParchmentCard>
             <SectionHeading>Complication</SectionHeading>
-            <p className="font-body text-sm text-cream">{character.complicationName}</p>
+            <DetailRow label="Name" value={character.complication.name} />
+            {character.complication.skills.length > 0 && (
+              <DetailRow label="Skills" value={character.complication.skills.join(', ')} />
+            )}
+            {character.complication.languages.filter(Boolean).length > 0 && (
+              <DetailRow label="Languages" value={character.complication.languages.filter(Boolean).join(', ')} />
+            )}
+            {character.complication.forgottenLanguage && (
+              <DetailRow label="Forgotten" value={character.complication.forgottenLanguage} />
+            )}
           </ParchmentCard>
         )}
 
@@ -298,6 +358,49 @@ export function ReviewStep() {
             </div>
           </ParchmentCard>
         )}
+
+        {/* Aggregated Skills */}
+        {(() => {
+          const allSkills = getCharacterSkills(character);
+          if (allSkills.length === 0) return null;
+          return (
+            <ParchmentCard>
+              <SectionHeading>All Skills</SectionHeading>
+              <div className="flex flex-wrap gap-1.5">
+                {allSkills.sort().map((s) => (
+                  <span key={s} className="badge text-xs">{s}</span>
+                ))}
+              </div>
+            </ParchmentCard>
+          );
+        })()}
+
+        {/* Aggregated Languages */}
+        {(() => {
+          const langs: string[] = ['Caelian'];
+          if (character.culture?.language) langs.push(character.culture.language);
+          if (character.career?.languages) langs.push(...character.career.languages.filter(Boolean));
+          if (character.complication?.languages) langs.push(...character.complication.languages.filter(Boolean));
+          const forgotten = character.complication?.forgottenLanguage;
+          const filtered = forgotten ? langs.filter((l) => l !== forgotten) : langs;
+          const unique = [...new Set(filtered)];
+          if (unique.length <= 1) return null;
+          return (
+            <ParchmentCard>
+              <SectionHeading>Languages</SectionHeading>
+              <div className="flex flex-wrap gap-1.5">
+                {unique.map((l) => (
+                  <span key={l} className="badge text-xs">{l}</span>
+                ))}
+              </div>
+              {forgotten && (
+                <p className="mt-2 font-body text-xs text-crimson/80 italic">
+                  Forgotten: {forgotten}
+                </p>
+              )}
+            </ParchmentCard>
+          );
+        })()}
 
         {/* Export Buttons */}
         <ExportButtons character={character} />

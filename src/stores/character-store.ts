@@ -8,6 +8,7 @@ import type {
   CultureChoice,
   CareerChoice,
   ClassChoice,
+  ComplicationChoice,
   WizardStepId,
 } from '../types/character';
 
@@ -20,7 +21,7 @@ const DEFAULT_CHARACTER: CharacterData = {
   culture: null,
   career: null,
   classChoice: null,
-  complicationName: null,
+  complication: null,
   appearance: '',
   backstory: '',
   computedStats: null,
@@ -44,7 +45,7 @@ interface CharacterStore {
   setCulture: (culture: CultureChoice) => void;
   setCareer: (career: CareerChoice) => void;
   setClassChoice: (choice: ClassChoice) => void;
-  setComplication: (name: string | null) => void;
+  setComplication: (complication: ComplicationChoice | null) => void;
   setAppearance: (text: string) => void;
   setBackstory: (text: string) => void;
 
@@ -129,9 +130,9 @@ export const useCharacterStore = create<CharacterStore>()(
           },
         })),
 
-      setComplication: (name) =>
+      setComplication: (complication) =>
         set((state) => ({
-          character: { ...state.character, complicationName: name },
+          character: { ...state.character, complication },
         })),
 
       setAppearance: (text) =>
@@ -153,6 +154,37 @@ export const useCharacterStore = create<CharacterStore>()(
     }),
     {
       name: 'draw-steel-character',
+      // Migrate old data: convert complicationName -> complication
+      migrate: (persisted: unknown, version: number) => {
+        const state = persisted as Record<string, unknown>;
+        const character = state.character as Record<string, unknown> | undefined;
+        if (character) {
+          // Migrate complicationName to complication object
+          if ('complicationName' in character && character.complicationName && !character.complication) {
+            character.complication = {
+              name: character.complicationName as string,
+              skills: [],
+              languages: [],
+              forgottenLanguage: '',
+              benefitChoiceIndex: -1,
+            };
+          }
+          delete character.complicationName;
+
+          // Ensure complication defaults
+          if (!character.complication) {
+            character.complication = null;
+          }
+
+          // Ensure classChoice has subclassSkill
+          const classChoice = character.classChoice as Record<string, unknown> | null;
+          if (classChoice && !('subclassSkill' in classChoice)) {
+            classChoice.subclassSkill = '';
+          }
+        }
+        return state;
+      },
+      version: 1,
     },
   ),
 );
