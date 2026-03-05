@@ -174,7 +174,7 @@ export function CareerStep() {
                 Skills
               </p>
               <p className="font-body mt-0.5 text-xs text-cream-dark/60">
-                {c.skills.grantedNote || c.skills.grantedFromNote || c.skills.skillOptions || (
+                {c.skills.grantedNote || c.skills.grantedFromNote || (
                   <>
                     {getFixedGranted(c).length > 0 && <>{getFixedGranted(c).join(', ')}. </>}
                     {c.skills.grantedFrom && Object.entries(c.skills.grantedFrom).map(([g, n]) => (

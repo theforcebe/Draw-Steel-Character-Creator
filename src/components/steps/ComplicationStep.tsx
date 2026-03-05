@@ -4,8 +4,7 @@ import { ParchmentCard } from '../ui/ParchmentCard';
 import complicationsData from '../../data/complications.json';
 import cultureData from '../../data/cultures.json';
 import { COMPLICATION_CHOICES } from '../../data/complication-choices';
-import { SKILL_GROUPS, getSkillsFromGroups, getSkillsExcludingGroups, getAllSkills } from '../../data/skill-groups';
-import type { ComplicationChoice } from '../../types/character';
+import { getSkillsFromGroups, getSkillsExcludingGroups, getAllSkills } from '../../data/skill-groups';
 
 interface Complication {
   name: string;

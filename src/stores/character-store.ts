@@ -155,7 +155,7 @@ export const useCharacterStore = create<CharacterStore>()(
     {
       name: 'draw-steel-character',
       // Migrate old data: convert complicationName -> complication
-      migrate: (persisted: unknown, version: number) => {
+      migrate: (persisted: unknown, _version: number) => {
         const state = persisted as Record<string, unknown>;
         const character = state.character as Record<string, unknown> | undefined;
         if (character) {

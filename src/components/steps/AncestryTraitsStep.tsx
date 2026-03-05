@@ -59,16 +59,6 @@ function signatureNeedsChoice(t: SignatureTraitData): boolean {
   return !!(t.damageTypeOptions || t.runeOptions || t.benefits?.skills);
 }
 
-function purchasedNeedsChoice(t: PurchasedTraitData): boolean {
-  return !!(
-    t.damageTypeOptions ||
-    t.ability?.damageTypeOptions ||
-    t.abilityOptions ||
-    t.name === 'Prismatic Scales' ||
-    t.name === 'Passionate Artisan' ||
-    t.name.startsWith('Previous Life')
-  );
-}
 
 // ---------------------------------------------------------------------------
 // Sub-choice rendering
