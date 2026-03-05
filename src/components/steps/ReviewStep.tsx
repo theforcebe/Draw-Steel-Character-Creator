@@ -229,16 +229,19 @@ export function ReviewStep() {
                 Traits:{' '}
               </span>
               <div className="mt-1 flex flex-col gap-1">
-                {traits.map((t) => {
+                {traits.map((t, i) => {
                   const extras: string[] = [];
                   if (t.damageType) extras.push(`Damage: ${t.damageType}`);
                   if (t.runeChoice) extras.push(`Rune: ${t.runeChoice}`);
                   if (t.abilityChoice) extras.push(`Ability: ${t.abilityChoice}`);
                   if (t.skillChoices?.length) extras.push(`Skills: ${t.skillChoices.join(', ')}`);
-                  if (t.previousLifeTrait) extras.push(`Trait: ${t.previousLifeTrait}`);
+                  // Show the chosen trait name as the display name for Previous Life
+                  const displayName = t.previousLifeTrait
+                    ? `${t.previousLifeTrait} (via Previous Life)`
+                    : t.name;
                   return (
-                    <span key={t.name} className="font-body text-sm text-cream">
-                      {t.name}{t.cost > 0 ? ` (${t.cost}pt)` : ''}
+                    <span key={`${t.name}-${i}`} className="font-body text-sm text-cream">
+                      {displayName}{t.cost > 0 ? ` (${t.cost}pt)` : ''}
                       {extras.length > 0 && (
                         <span className="text-gold-muted"> — {extras.join(', ')}</span>
                       )}

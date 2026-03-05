@@ -431,6 +431,13 @@ export function AncestryTraitsStep() {
                                   .map((ft: PurchasedTraitData) => ({ value: ft.name, label: ft.name }))}
                                 onChange={(v) => updateTraitAtIndex(index, { previousLifeTrait: v, damageType: undefined, abilityChoice: undefined })}
                               />
+                              {/* Show chosen trait description */}
+                              {chosenFormerTrait && (
+                                <p className="mt-1.5 rounded bg-surface/70 px-3 py-2 font-body text-xs leading-relaxed text-cream-dark/70 border border-gold-dark/15">
+                                  <span className="font-heading text-gold-light">{chosenFormerTrait.name}:</span>{' '}
+                                  {chosenFormerTrait.description}
+                                </p>
+                              )}
 
                               {/* Cascading sub-choice: if the chosen former trait has its own options */}
                               {chosenFormerTrait?.ability?.damageTypeOptions && (
@@ -542,6 +549,11 @@ export function AncestryTraitsStep() {
                           if (!chosenFormerTrait) return null;
                           return (
                             <>
+                              {/* Show chosen trait description */}
+                              <p className="mt-1.5 rounded bg-surface/70 px-3 py-2 font-body text-xs leading-relaxed text-cream-dark/70 border border-gold-dark/15">
+                                <span className="font-heading text-gold-light">{chosenFormerTrait.name}:</span>{' '}
+                                {chosenFormerTrait.description}
+                              </p>
                               {chosenFormerTrait.ability?.damageTypeOptions && (
                                 <SubChoiceSelect
                                   label={`${chosenFormerTrait.name}: Choose damage type`}
