@@ -3,7 +3,6 @@ import { CharacterPortrait, buildCharacterSvg } from '../portrait/CharacterPortr
 import {
   ANCESTRY_ID_MAP,
   ANCESTRY_DEFAULTS,
-  ANCESTRY_DIMENSIONS,
   getTier,
   getAvailableWeapons,
   getKitArmorClass,
@@ -14,22 +13,22 @@ function exportModelImage(character: CharacterData) {
   const svgString = buildCharacterSvg(character);
   if (!svgString) return;
 
-  const ancestryId = character.ancestryId;
-  const modelAncestry = ancestryId === 'revenant'
-    ? (character.formerLifeAncestryId ?? 'revenant')
-    : ancestryId;
-  const mappedId = modelAncestry ? (ANCESTRY_ID_MAP[modelAncestry] || modelAncestry) : 'human';
-  const dims = ANCESTRY_DIMENSIONS[mappedId] || { w: 110, h: 200 };
+  // Parse viewBox from SVG to get actual dimensions (includes padding for weapons/effects)
+  const vbMatch = svgString.match(/viewBox="[^\s]+\s+[^\s]+\s+([\d.]+)\s+([\d.]+)"/);
+  const vbW = vbMatch ? Number(vbMatch[1]) : 170;
+  const vbH = vbMatch ? Number(vbMatch[2]) : 235;
 
   const canvas = document.createElement('canvas');
   const scale = 4;
-  canvas.width = dims.w * scale;
-  canvas.height = dims.h * scale;
+  canvas.width = vbW * scale;
+  canvas.height = vbH * scale;
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
   const img = new Image();
-  const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+  // Add explicit width/height for the img element to render at correct size
+  const exportSvg = svgString.replace('<svg ', `<svg width="${vbW}" height="${vbH}" `);
+  const svgBlob = new Blob([exportSvg], { type: 'image/svg+xml;charset=utf-8' });
   const url = URL.createObjectURL(svgBlob);
 
   img.onload = () => {

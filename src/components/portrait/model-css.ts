@@ -31,8 +31,8 @@ export const ENHANCED_MODEL_CSS = `
   50%{ transform: translateY(-3px); }
 }
 
-.character-model { display: flex; align-items: center; justify-content: center; }
-.character-model svg { max-width: 100%; max-height: 100%; }
+.character-model { display: flex; align-items: center; justify-content: center; overflow: visible; }
+.character-model svg { max-width: 100%; max-height: 100%; overflow: visible; }
 .living-svg { }
 .rev-svg { animation: ghostFloat 3s ease-in-out infinite; }
 .high-lv { }

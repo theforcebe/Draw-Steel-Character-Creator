@@ -2727,5 +2727,18 @@ export function renderAncestryModel(
   const renderer = ANCESTRY_RENDERERS[mapped];
   if (!renderer) return '';
 
-  return renderer(level, tier, isRev, kit, weaponId, colorOverride);
+  const svg = renderer(level, tier, isRev, kit, weaponId, colorOverride);
+
+  // Pad the viewBox so weapons, wings, and head decorations aren't clipped.
+  // Also remove fixed width/height so the SVG scales to fill its container.
+  return svg
+    .replace(
+      /viewBox="(-?\d+\.?\d*)\s+(-?\d+\.?\d*)\s+(\d+\.?\d*)\s+(\d+\.?\d*)"/,
+      (_, x, y, w, h) => {
+        const pad = { left: 25, top: 25, right: 35, bottom: 10 };
+        return `viewBox="${Number(x) - pad.left} ${Number(y) - pad.top} ${Number(w) + pad.left + pad.right} ${Number(h) + pad.top + pad.bottom}"`;
+      },
+    )
+    .replace(/\s+width="\d+\.?\d*"/, '')
+    .replace(/\s+height="\d+\.?\d*"/, '');
 }
