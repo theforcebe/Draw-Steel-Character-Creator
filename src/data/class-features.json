@@ -98,7 +98,7 @@
       "resource_generation": [
         "Start of combat: Gain essence equal to your Victories.",
         "+2 essence at the start of each of your turns, reduced by the total persistent value of your active persistent effects.",
-        "+1 essence the first time each round a creature within 10 squares takes damage of a type other than holy or untyped.",
+        "+1 essence the first time each combat round you or a creature within 10 squares takes damage (excluding untyped or holy damage).",
         "Essence is lost at end of encounter."
       ],
       "features": [
@@ -106,27 +106,48 @@
           "name": "Hurl Element",
           "type": "Main action",
           "keywords": ["Magic", "Ranged", "Strike"],
-          "distance": "Ranged 5",
+          "distance": "Ranged 10",
           "target": "One creature or object",
-          "description": "You hurl a chunk of elemental matter at a foe. Can be used as a ranged free strike. Power Roll + Reason: 11-: 2 + R damage; 12+: 6 + R damage; 17+: 9 + R damage. Choose damage type each time: cold, corruption, fire, or lightning.",
+          "description": "You hurl a chunk of elemental matter at a foe. Can be used as a ranged free strike. Power Roll + Reason: 11-: 2 + R damage; 12+: 4 + R damage; 17+: 6 + R damage. Choose damage type each time: acid, cold, corruption, fire, lightning, poison, or sonic.",
+          "level": 1
+        },
+        {
+          "name": "Practical Magic",
+          "type": "Maneuver",
+          "keywords": ["Magic"],
+          "distance": "Self",
+          "target": "Self",
+          "description": "Choose one effect: (1) Use Knockback maneuver at range of Hurl Element distance, using Reason instead of Might. (2) Deal Reason score damage of a chosen type (acid, cold, corruption, fire, lightning, poison, sonic) to a creature within Hurl Element range. (3) Teleport up to Reason score squares; can spend essence for +1 square per essence spent.",
           "level": 1
         },
         {
           "name": "Persistent Magic",
           "type": "Passive",
-          "description": "Some of your abilities have a persistent effect with a persistent value. At the start of each of your turns, your essence generation is reduced by the total persistent value of all your active persistent effects. You can end any persistent effect as a free maneuver.",
+          "description": "Some abilities have a persistent effect with a persistent value. At the start of each of your turns, your essence generation is reduced by the total persistent value of all your active persistent effects. You can end any persistent effect as a free maneuver.",
           "level": 1
         },
         {
-          "name": "End Persistent Effect",
-          "type": "Free maneuver",
-          "description": "You can end any of your active persistent effects as a free maneuver on your turn.",
+          "name": "Specialization Triggered Action",
+          "type": "Triggered",
+          "description": "Your elemental specialization grants a triggered action.",
+          "subclass_effects": {
+            "Green": "Breath of Dawn Remembered (Ranged 10, self or ally): Trigger: Target starts turn or takes damage. Effect: Target can spend a Recovery. Spend 1+ Essence: +1 additional Recovery per essence.",
+            "Fire": "Explosive Assistance (Ranged 10, self or ally): Trigger: Target force moves a creature/object. Effect: Forced movement distance gains bonus equal to Reason score. Spend 1 Essence: Bonus becomes 2× Reason.",
+            "Earth": "Skin Like Castle Walls (Ranged 10, self or ally): Trigger: Target takes damage. Effect: Target takes half damage. Spend 1 Essence: Reduce potency of associated effects by 1.",
+            "Void": "Subtle Relocation (Ranged 10, self or ally): Trigger: Target starts turn, moves, or is force moved. Effect: Teleport target up to Reason squares. Spend 1 Essence: Teleport up to 2× Reason instead."
+          },
           "level": 1
         },
         {
-          "name": "Mantle of Essence",
+          "name": "Elementalist Ward",
           "type": "Passive",
-          "description": "While you have 3 or more Essence, a visible mantle of elemental energy surrounds you in an aura with a size equal to your Reason score. You choose the element when the mantle activates. Enemies who enter or start their turn in the aura take damage equal to your Reason score of the chosen type.",
+          "description": "Choose one ward (changeable via ritual during respite): Ward of Delightful Consequences (first time each round you take damage, gain 1 surge), Ward of Excellent Protection (immunity to chosen elemental damage type equal to Reason score), Ward of Nature's Affection (when creature within Reason squares damages you, slide them up to Reason squares as free triggered action), Ward of Surprising Reactivity (when adjacent creature damages you, push them up to 2× Reason squares as free triggered action).",
+          "level": 1
+        },
+        {
+          "name": "Enchantment",
+          "type": "Passive",
+          "description": "Choose one enchantment (changeable via ritual during respite): Enchantment of Battle (light armor +3 Stamina, light weapon +1 damage), Enchantment of Celerity (+1 speed and disengage distance), Enchantment of Destruction (+1 rolled damage with magic abilities), Enchantment of Distance (+2 ranged magic ability distance), Enchantment of Permanence (+6 Stamina and +1 stability).",
           "level": 1
         }
       ]
@@ -136,42 +157,47 @@
       "resource_generation": [
         "Start of combat: Gain ferocity equal to your Victories.",
         "+1d3 ferocity at the start of each of your turns.",
-        "+1 ferocity the first time each turn you take damage.",
-        "+1d3 ferocity when you become winded or dying.",
+        "+1 ferocity the first time each round you take damage.",
+        "+1d3 ferocity the first time you become winded or dying in an encounter.",
         "Ferocity is lost at end of encounter."
       ],
       "features": [
         {
           "name": "Growing Ferocity",
           "type": "Passive",
-          "description": "You gain benefits in combat based on ferocity amount (benefits last until end of your turn even if you spend ferocity): 3+ Ferocity: +1 bonus to weapon damage; your attacks deal extra damage equal to Might score. 6+ Ferocity: Speed +1, shift +1 extra square; melee strikes deal extra damage equal to 2× Might. 9+ Ferocity: Edge on melee attacks; extra damage equal to 3× Might.",
+          "description": "You gain benefits in combat based on ferocity amount (last until end of your turn even if you spend ferocity). Benefits scale by subclass — see your aspect's Growing Ferocity table.",
+          "subclass_effects": {
+            "Berserker": "2+: Knockback forced movement gains bonus equal to Might. 4+: First push per turn grants 1 surge. 6+: Edge on Might tests and Knockback.",
+            "Reaver": "2+: Knockback forced movement gains bonus equal to Agility. 4+: First slide per turn grants 1 surge. 6+: Edge on Agility tests and Knockback.",
+            "Stormwight": "Growing benefits tied to animal form and kit bonuses. See Stormwight Growing Ferocity table."
+          },
           "level": 1
         },
         {
           "name": "Mighty Leaps",
-          "type": "Free maneuver",
-          "description": "You can use a free maneuver to long jump a number of squares up to your Might score without needing a running start, or high jump up to half that distance. This movement is not affected by difficult terrain.",
+          "type": "Passive",
+          "description": "You can't obtain lower than a tier 2 outcome on any Might test made to jump.",
           "level": 1
         },
         {
           "name": "Aspect Triggered Action",
           "type": "Triggered",
-          "description": "Your primordial aspect grants you a triggered action. Berserker: Relentless Tread — Trigger: You are force moved. Effect: Reduce distance by Might score; if reduced to 0, use free maneuver to Knockback source. Reaver: Pounce — Trigger: Enemy within Might score squares becomes bleeding/frightened/weakened. Effect: Move up to speed toward them; make free strike against them if adjacent at end. Stormwight: Stormwhelm — Trigger: Take damage. Cost: 1 Ferocity. Effect: Deal lightning damage equal to Might score to source of damage.",
+          "description": "Your primordial aspect grants a triggered action.",
           "subclass_effects": {
-            "Berserker": "Relentless Tread: When force moved, reduce distance by Might score. If reduced to 0, free Knockback against source.",
-            "Reaver": "Pounce: When enemy within Might squares becomes bleeding/frightened/weakened, move up to speed toward them and make free strike.",
-            "Stormwight": "Stormwhelm (1 Ferocity): When you take damage, deal lightning damage equal to Might score to the source."
+            "Berserker": "Lines of Force (Melee 1): Trigger: You or adjacent creature would be force moved. Effect: Select new target of same size or smaller to be force moved instead; you become source, determine destination, can push; forced movement gains Might score bonus. Spend 1 Ferocity: Gains 2× Might bonus instead.",
+            "Reaver": "Unearthly Reflexes: Trigger: You take damage. Effect: Take half damage; shift up to Agility squares. Spend 1 Ferocity: Reduce potency of associated effects by 1.",
+            "Stormwight": "Furious Change: Trigger: You lose Stamina and are not dying. Effect: Gain temporary Stamina equal to Might; can enter animal or hybrid form. Spend 1 Ferocity: If not dying, can spend a Recovery."
           },
           "level": 1
         },
         {
           "name": "Aspect Features",
           "type": "Passive",
-          "description": "Your primordial aspect grants two features. Berserker: Lift skill + Brutal Blows (melee strikes deal extra damage equal to Might score). Reaver: Hide skill + Cunning Ambush (you and adjacent allies gain edge on attacks against surprised targets; deal extra damage equal to Might on first attack). Stormwight: Track skill + Animal Form (transform into animal as free maneuver; gain specific movement benefits).",
+          "description": "Your primordial aspect grants two features.",
           "subclass_effects": {
-            "Berserker": "Lift skill. Brutal Blows: When you make a melee strike, you deal extra damage equal to your Might score.",
-            "Reaver": "Hide skill. Cunning Ambush: You and allies adjacent to you gain edge on attacks against surprised targets. First attack deals extra damage equal to Might.",
-            "Stormwight": "Track skill. Animal Form: As a free maneuver, transform into animal form gaining specific movement benefits (fly, burrow, climb, or swim speed equal to Might score)."
+            "Berserker": "Primordial Strength: Weapon strikes deal extra Might score damage to objects. Pushing creature into object deals extra Might score damage. Kit: Can use and gain benefits of a kit.",
+            "Reaver": "Primordial Cunning: Never surprised. Whenever you push with forced movement, can slide instead. Kit: Can use and gain benefits of a kit.",
+            "Stormwight": "Beast Shape: Can use and gain benefits of stormwight kit (tied to Growing Ferocity). Relentless Hunter: Edge on tests using Track skill."
           },
           "level": 1
         }
