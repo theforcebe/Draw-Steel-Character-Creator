@@ -327,29 +327,43 @@ export function AbilitiesStep() {
       </div>
 
       {/* Signature Abilities Section */}
-      <section>
-        <div className="mb-4">
-          <h3 className="font-heading text-lg text-gold-light tracking-wide">
-            Signature Ability
-          </h3>
-          <p className="font-body text-xs text-cream-dark/50 mt-1">
-            Choose one signature ability. This ability costs no {resource} and defines your core
-            combat style.
-          </p>
-        </div>
+      {signature_abilities.length > 0 ? (
+        <section>
+          <div className="mb-4">
+            <h3 className="font-heading text-lg text-gold-light tracking-wide">
+              Signature Ability
+            </h3>
+            <p className="font-body text-xs text-cream-dark/50 mt-1">
+              Choose one signature ability. This ability costs no {resource} and defines your core
+              combat style.
+            </p>
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {signature_abilities.map((ability) => (
-            <AbilityCard
-              key={ability.name}
-              ability={ability}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {signature_abilities.map((ability) => (
+              <AbilityCard
+                key={ability.name}
+                ability={ability}
 
-              selected={selectedSigName === ability.name}
-              onSelect={() => handleSelectSignature(ability.name)}
-            />
-          ))}
-        </div>
-      </section>
+                selected={selectedSigName === ability.name}
+                onSelect={() => handleSelectSignature(ability.name)}
+              />
+            ))}
+          </div>
+        </section>
+      ) : (
+        <section>
+          <div className="card px-5 py-4">
+            <h3 className="font-heading text-base text-gold-light tracking-wide mb-1">
+              Signature Ability
+            </h3>
+            <p className="font-body text-xs text-cream-dark/50">
+              Your signature ability comes from your kit selection. Make sure you've chosen a kit
+              in the Kit step.
+            </p>
+          </div>
+        </section>
+      )}
 
       {/* Heroic Abilities - 3 Cost */}
       {cost3.length > 0 && (

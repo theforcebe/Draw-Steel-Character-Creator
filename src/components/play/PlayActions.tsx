@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useCharacterStore } from '../../stores/character-store';
 import abilitiesData from '../../data/abilities.json';
+import classFeaturesData from '../../data/class-features.json';
 import kitsData from '../../data/kits.json';
 import ancestriesData from '../../data/ancestries.json';
 import { resolveAbility } from '../../engine/ability-resolver';
@@ -62,6 +63,21 @@ interface AncestryData {
 }
 
 const ancestries = (ancestriesData as Record<string, unknown>).ancestries as Record<string, AncestryData>;
+
+interface ClassFeature {
+  name: string;
+  type: string;
+  description: string;
+  level: number;
+}
+
+interface ClassFeaturesEntry {
+  resource_name: string;
+  resource_generation: string[];
+  features: ClassFeature[];
+}
+
+const classFeatures = (classFeaturesData as { classes: Record<string, ClassFeaturesEntry> }).classes;
 
 const STANDARD_ACTIONS: {
   category: string;
@@ -197,6 +213,7 @@ export function PlayActions() {
   const classChoice = character.classChoice;
   const [filter, setFilter] = useState<ActionCategory>('all');
   const [expandedStandard, setExpandedStandard] = useState(true);
+  const [expandedClassFeatures, setExpandedClassFeatures] = useState(true);
   const [expandedAbilities, setExpandedAbilities] = useState(true);
   const [expandedKit, setExpandedKit] = useState(true);
   const [expandedTraits, setExpandedTraits] = useState(true);
@@ -278,6 +295,30 @@ export function PlayActions() {
 
     return result;
   }, [character.ancestryId, character.formerLifeAncestryId, character.selectedTraits]);
+
+  // Class features (triggered actions, resource gen, passives)
+  const classFeaturesForClass = useMemo(() => {
+    const classId = classChoice?.classId;
+    if (!classId) return null;
+    return classFeatures[classId] ?? null;
+  }, [classChoice?.classId]);
+
+  const filteredClassFeatures = useMemo(() => {
+    if (!classFeaturesForClass) return [];
+    const level = character.level ?? 1;
+    return classFeaturesForClass.features.filter((f) => {
+      if (f.level > level) return false;
+      if (filter === 'all') return true;
+      if (filter === 'Triggered action') {
+        return f.type.includes('Triggered') || f.type.includes('triggered');
+      }
+      if (filter === 'Main action') return f.type === 'Main action';
+      if (filter === 'Maneuver') return f.type === 'Maneuver' || f.type === 'Free maneuver';
+      return false;
+    });
+  }, [classFeaturesForClass, character.level, filter]);
+
+  const showClassFeatures = classFeaturesForClass && (filter === 'all' || filteredClassFeatures.length > 0);
 
   // Filter standard actions
   const filteredStandard = STANDARD_ACTIONS.filter((cat) => {
@@ -363,6 +404,83 @@ export function PlayActions() {
                       </p>
                     </div>
                   ))}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Class Features */}
+      {showClassFeatures && classFeaturesForClass && (
+        <div className="card px-4 py-3">
+          <button
+            type="button"
+            onClick={() => setExpandedClassFeatures(!expandedClassFeatures)}
+            className="w-full flex items-center justify-between"
+          >
+            <h3 className="font-heading text-xs uppercase tracking-wider text-gold">
+              Class Features
+            </h3>
+            <span className="font-heading text-xs text-gold-muted">
+              {expandedClassFeatures ? '\u2212' : '+'}
+            </span>
+          </button>
+
+          {expandedClassFeatures && (
+            <div className="mt-3 flex flex-col gap-2">
+              {/* Resource Generation Rules */}
+              {filter === 'all' && (
+                <div className="px-3 py-2.5 rounded-xl bg-surface-light/20 border border-gold/5 mb-1">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="font-heading text-xs text-gold-light font-semibold">
+                      {classFeaturesForClass.resource_name} Generation
+                    </span>
+                    <span className="shrink-0 px-2 py-0.5 rounded-full text-[0.5rem] font-heading font-semibold tracking-wider uppercase bg-gold/15 text-gold">
+                      Resource
+                    </span>
+                  </div>
+                  <ul className="flex flex-col gap-1">
+                    {classFeaturesForClass.resource_generation.map((rule, i) => (
+                      <li
+                        key={i}
+                        className="font-body text-[0.65rem] text-cream-dark/50 leading-relaxed pl-2 border-l border-gold/10"
+                      >
+                        {rule}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Feature Actions */}
+              {filteredClassFeatures.map((feature) => (
+                <div
+                  key={feature.name}
+                  className="px-3 py-2.5 rounded-xl bg-surface-light/20 border border-gold/5"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="font-heading text-xs text-gold-light font-semibold">
+                      {feature.name}
+                    </span>
+                    <span
+                      className={[
+                        'shrink-0 px-2 py-0.5 rounded-full text-[0.5rem] font-heading font-semibold tracking-wider uppercase',
+                        feature.type.includes('triggered') || feature.type.includes('Triggered')
+                          ? 'bg-amber-900/30 text-amber-400/80'
+                          : feature.type === 'Passive'
+                            ? 'bg-blue-900/30 text-blue-400/80'
+                            : feature.type === 'Free maneuver'
+                              ? 'bg-emerald-900/30 text-emerald-400/80'
+                              : 'bg-gold/15 text-gold',
+                      ].join(' ')}
+                    >
+                      {feature.type}
+                    </span>
+                  </div>
+                  <p className="font-body text-[0.65rem] text-cream-dark/50 mt-1 leading-relaxed">
+                    {feature.description}
+                  </p>
                 </div>
               ))}
             </div>
@@ -574,7 +692,7 @@ export function PlayActions() {
         </div>
       )}
 
-      {filteredAbilities.length === 0 && filteredStandard.length === 0 && !showKit && !showTraits && (
+      {filteredAbilities.length === 0 && filteredStandard.length === 0 && !showClassFeatures && !showKit && !showTraits && (
         <div className="text-center py-8">
           <p className="font-body text-sm text-cream-dark/40">
             No actions match the current filter.

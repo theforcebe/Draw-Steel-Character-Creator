@@ -52,12 +52,15 @@ export function validateStep(
       if (!character.classChoice?.kitId) return { valid: false, message: 'Please select a kit.' };
       return { valid: true, message: '' };
 
-    case 'abilities':
-      if (!character.classChoice?.signatureAbilityName)
+    case 'abilities': {
+      // Tactician's signature ability comes from their kit, not the abilities list
+      const isTactician = character.classChoice?.classId === 'tactician';
+      if (!isTactician && !character.classChoice?.signatureAbilityName)
         return { valid: false, message: 'Please choose a signature ability.' };
-      if (character.classChoice.heroicAbilities.length < 2)
+      if (character.classChoice && character.classChoice.heroicAbilities.length < 2)
         return { valid: false, message: 'Please choose your heroic abilities (one 3-cost and one 5-cost).' };
       return { valid: true, message: '' };
+    }
 
     case 'complication':
       return { valid: true, message: '' };

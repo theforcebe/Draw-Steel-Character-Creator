@@ -1,5 +1,6 @@
 import { getSavedCharacters, saveCharacter } from './character-storage';
 import type { SavedCharacter } from './character-storage';
+import { usePlayStore } from '../stores/play-store';
 import type { PlayCharacterState } from '../stores/play-store';
 
 interface ExportData {
@@ -11,15 +12,7 @@ interface ExportData {
 
 export function exportAllData(): void {
   const characters = getSavedCharacters();
-
-  let playStates: Record<string, PlayCharacterState> = {};
-  try {
-    const raw = localStorage.getItem('draw-steel-play-states');
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      playStates = parsed?.state?.states ?? {};
-    }
-  } catch { /* ignore */ }
+  const playStates = usePlayStore.getState().states;
 
   const data: ExportData = {
     version: 1,
@@ -62,27 +55,23 @@ export function importData(file: File): Promise<{ imported: number; skipped: num
             skipped++;
             continue;
           }
-          saveCharacter(char.data);
+          // Preserve the original ID so play states stay linked
+          saveCharacter(char.data, char.id);
           imported++;
         }
 
-        // Merge play states
+        // Merge play states into the Zustand store directly
         if (data.playStates) {
-          try {
-            const raw = localStorage.getItem('draw-steel-play-states');
-            const parsed = raw ? JSON.parse(raw) : { state: { states: {}, activeCharacterId: null }, version: 0 };
-            const currentStates = parsed?.state?.states ?? {};
-            const merged = { ...currentStates };
+          const currentStates = usePlayStore.getState().states;
+          const merged = { ...currentStates };
 
-            for (const [id, state] of Object.entries(data.playStates)) {
-              if (!merged[id]) {
-                merged[id] = state;
-              }
+          for (const [id, state] of Object.entries(data.playStates)) {
+            if (!merged[id]) {
+              merged[id] = state;
             }
+          }
 
-            parsed.state.states = merged;
-            localStorage.setItem('draw-steel-play-states', JSON.stringify(parsed));
-          } catch { /* ignore play state merge errors */ }
+          usePlayStore.setState({ states: merged });
         }
 
         resolve({ imported, skipped });

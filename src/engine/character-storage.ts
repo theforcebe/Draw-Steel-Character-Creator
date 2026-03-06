@@ -23,10 +23,10 @@ export function getSavedCharacters(): SavedCharacter[] {
   }
 }
 
-export function saveCharacter(data: CharacterData): SavedCharacter {
+export function saveCharacter(data: CharacterData, id?: string): SavedCharacter {
   const characters = getSavedCharacters();
   const entry: SavedCharacter = {
-    id: generateId(),
+    id: id ?? generateId(),
     name: data.name || 'Unnamed Hero',
     savedAt: new Date().toISOString(),
     data,
