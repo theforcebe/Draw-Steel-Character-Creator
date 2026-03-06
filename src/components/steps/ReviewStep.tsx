@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { useCharacterStore } from '../../stores/character-store';
+import { usePlayStore } from '../../stores/play-store';
 import { ParchmentCard } from '../ui/ParchmentCard';
 import { exportCharacterPdf, exportAbilityCardsPdf } from '../../engine/pdf-exporter';
 import { exportCombatReferencePdf } from '../../engine/combat-reference-pdf';
 import { BattleCardsView } from '../battle/BattleCardsView';
 import { getCharacterSkills } from '../../engine/skill-mapper';
-import { saveCharacter } from '../../engine/character-storage';
+import { saveCharacter, updateSavedCharacter } from '../../engine/character-storage';
 import { CharacterPortrait } from '../portrait/CharacterPortrait';
+import { computeAllStats } from '../../engine/stat-calculator';
+import { getComplicationStatBonuses } from '../../engine/complication-stats';
 import type { CharacterData } from '../../types/character';
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
@@ -51,6 +54,10 @@ function ExportButtons({ character }: { character: CharacterData }) {
   const [exportingCards, setExportingCards] = useState(false);
   const [exportingRef, setExportingRef] = useState(false);
   const [saved, setSaved] = useState(false);
+  const setMode = useCharacterStore((s) => s.setMode);
+  const setPlayingCharacterId = useCharacterStore((s) => s.setPlayingCharacterId);
+  const playingCharacterId = useCharacterStore((s) => s.playingCharacterId);
+  const initPlayState = usePlayStore((s) => s.initPlayState);
 
   async function handleExportSheet() {
     setExporting(true);
@@ -91,8 +98,64 @@ function ExportButtons({ character }: { character: CharacterData }) {
     setTimeout(() => setSaved(false), 2000);
   }
 
+  function handleSaveAndPlay() {
+    // Ensure stats are computed
+    const compBonuses = getComplicationStatBonuses(character.complication, character.level);
+    const stats = computeAllStats({
+      level: character.level,
+      ancestryId: character.ancestryId,
+      formerLifeAncestryId: character.formerLifeAncestryId,
+      classId: character.classChoice?.classId ?? null,
+      kitId: character.classChoice?.kitId ?? null,
+      selectedTraits: character.selectedTraits,
+      complicationBonuses: compBonuses,
+    });
+    if (stats) {
+      useCharacterStore.setState({
+        character: { ...character, computedStats: stats },
+      });
+    }
+
+    // Save or update character
+    let charId = playingCharacterId;
+    if (charId) {
+      updateSavedCharacter(charId, { ...character, computedStats: stats ?? character.computedStats });
+    } else {
+      const saved = saveCharacter({ ...character, computedStats: stats ?? character.computedStats });
+      charId = saved.id;
+    }
+
+    // Initialize play state
+    const stamina = stats?.stamina ?? character.computedStats?.stamina ?? 21;
+    const recoveries = stats?.recoveries ?? character.computedStats?.recoveries ?? 8;
+    const recoveryValue = stats?.recoveryValue ?? character.computedStats?.recoveryValue ?? 7;
+    initPlayState(charId, stamina, recoveries, recoveryValue);
+
+    setPlayingCharacterId(charId);
+    setMode('play');
+  }
+
+  const hasClass = !!character.classChoice;
+
   return (
     <div className="flex flex-col items-center gap-3 pt-4 pb-8">
+      {/* Play Mode Button */}
+      {hasClass && (
+        <>
+          <button
+            type="button"
+            className="btn-primary text-lg px-10 py-4 shadow-[0_0_30px_rgba(212,168,67,0.2)]"
+            onClick={handleSaveAndPlay}
+          >
+            Save &amp; Play
+          </button>
+          <p className="font-body text-xs text-cream-dark/40 -mt-1">
+            Enter play mode to track combat, resources &amp; progression
+          </p>
+          <div className="divider w-48 my-2" />
+        </>
+      )}
+
       <button
         type="button"
         className="btn-primary text-lg px-10 py-4"

@@ -36,6 +36,20 @@ export function saveCharacter(data: CharacterData): SavedCharacter {
   return entry;
 }
 
+export function updateSavedCharacter(id: string, data: CharacterData): void {
+  const characters = getSavedCharacters();
+  const index = characters.findIndex((c) => c.id === id);
+  if (index >= 0) {
+    characters[index] = {
+      ...characters[index],
+      name: data.name || 'Unnamed Hero',
+      savedAt: new Date().toISOString(),
+      data,
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(characters));
+  }
+}
+
 export function deleteCharacter(id: string): void {
   const characters = getSavedCharacters().filter((c) => c.id !== id);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(characters));

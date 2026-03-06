@@ -1,6 +1,9 @@
 import { useState, useCallback } from 'react';
 import { useCharacterStore } from '../../stores/character-store';
+import { usePlayStore } from '../../stores/play-store';
 import { getSavedCharacters, deleteCharacter } from '../../engine/character-storage';
+import { computeAllStats } from '../../engine/stat-calculator';
+import { getComplicationStatBonuses } from '../../engine/complication-stats';
 import type { SavedCharacter } from '../../engine/character-storage';
 import type { CharacterData } from '../../types/character';
 
@@ -15,14 +18,17 @@ function formatId(id: string): string {
 function SavedCharacterCard({
   entry,
   onLoad,
+  onPlay,
   onDelete,
 }: {
   entry: SavedCharacter;
   onLoad: (data: CharacterData) => void;
+  onPlay: (entry: SavedCharacter) => void;
   onDelete: (id: string) => void;
 }) {
   const d = entry.data;
   const date = new Date(entry.savedAt);
+  const hasClass = !!d.classChoice;
   return (
     <div className="card flex items-center justify-between gap-3 px-5 py-4">
       <div className="min-w-0 flex-1">
@@ -38,6 +44,15 @@ function SavedCharacterCard({
         </p>
       </div>
       <div className="flex gap-2 shrink-0">
+        {hasClass && (
+          <button
+            type="button"
+            className="rounded-xl bg-gold/15 px-3.5 py-2 font-heading text-xs font-semibold text-gold hover:bg-gold/25 transition-all border border-gold/20 hover:border-gold/40"
+            onClick={() => onPlay(entry)}
+          >
+            Play
+          </button>
+        )}
         <button
           type="button"
           className="rounded-xl bg-gold/10 px-3.5 py-2 font-heading text-xs font-semibold text-gold-light hover:bg-gold/20 transition-all border border-gold/10 hover:border-gold/30"
@@ -74,8 +89,38 @@ export function WelcomeStep() {
     useCharacterStore.setState({ character: { ...data }, currentStep: 'review' });
   };
 
+  const handlePlay = (entry: SavedCharacter) => {
+    const data = entry.data;
+    // Compute stats
+    const compBonuses = getComplicationStatBonuses(data.complication, data.level);
+    const stats = computeAllStats({
+      level: data.level,
+      ancestryId: data.ancestryId,
+      formerLifeAncestryId: data.formerLifeAncestryId,
+      classId: data.classChoice?.classId ?? null,
+      kitId: data.classChoice?.kitId ?? null,
+      selectedTraits: data.selectedTraits,
+      complicationBonuses: compBonuses,
+    });
+    const charWithStats = { ...data, computedStats: stats ?? data.computedStats };
+
+    // Load character into store
+    useCharacterStore.setState({
+      character: charWithStats,
+      playingCharacterId: entry.id,
+      mode: 'play',
+    });
+
+    // Initialize play state
+    const stamina = stats?.stamina ?? data.computedStats?.stamina ?? 21;
+    const recoveries = stats?.recoveries ?? data.computedStats?.recoveries ?? 8;
+    const recoveryValue = stats?.recoveryValue ?? data.computedStats?.recoveryValue ?? 7;
+    usePlayStore.getState().initPlayState(entry.id, stamina, recoveries, recoveryValue);
+  };
+
   const handleDelete = (id: string) => {
     deleteCharacter(id);
+    usePlayStore.getState().deletePlayState(id);
     refreshSaved();
   };
 
@@ -182,6 +227,7 @@ export function WelcomeStep() {
                   key={entry.id}
                   entry={entry}
                   onLoad={handleLoad}
+                  onPlay={handlePlay}
                   onDelete={handleDelete}
                 />
               ))}

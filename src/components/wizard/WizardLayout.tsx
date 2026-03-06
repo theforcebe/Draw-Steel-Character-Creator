@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useCharacterStore } from '../../stores/character-store';
+import { usePlayStore } from '../../stores/play-store';
 import { WIZARD_STEPS } from '../../types/character';
 import type { WizardStepId } from '../../types/character';
 import type { CharacterData } from '../../types/character';
@@ -7,6 +8,8 @@ import { CharacterPreview } from './CharacterPreview';
 import { GoldButton } from '../ui/GoldButton';
 import { exportCharacterPdf } from '../../engine/pdf-exporter';
 import { getSavedCharacters, deleteCharacter } from '../../engine/character-storage';
+import { computeAllStats } from '../../engine/stat-calculator';
+import { getComplicationStatBonuses } from '../../engine/complication-stats';
 import type { SavedCharacter } from '../../engine/character-storage';
 
 const STEP_LABELS: Record<WizardStepId, string> = {
@@ -41,8 +44,36 @@ function SavedCharactersModal({
 
   const handleDelete = useCallback((id: string) => {
     deleteCharacter(id);
+    usePlayStore.getState().deletePlayState(id);
     setChars(getSavedCharacters());
   }, []);
+
+  const handlePlay = useCallback((entry: SavedCharacter) => {
+    const data = entry.data;
+    const compBonuses = getComplicationStatBonuses(data.complication, data.level);
+    const stats = computeAllStats({
+      level: data.level,
+      ancestryId: data.ancestryId,
+      formerLifeAncestryId: data.formerLifeAncestryId,
+      classId: data.classChoice?.classId ?? null,
+      kitId: data.classChoice?.kitId ?? null,
+      selectedTraits: data.selectedTraits,
+      complicationBonuses: compBonuses,
+    });
+    const charWithStats = { ...data, computedStats: stats ?? data.computedStats };
+
+    useCharacterStore.setState({
+      character: charWithStats,
+      playingCharacterId: entry.id,
+      mode: 'play',
+    });
+
+    const stamina = stats?.stamina ?? data.computedStats?.stamina ?? 21;
+    const recoveries = stats?.recoveries ?? data.computedStats?.recoveries ?? 8;
+    const recoveryValue = stats?.recoveryValue ?? data.computedStats?.recoveryValue ?? 7;
+    usePlayStore.getState().initPlayState(entry.id, stamina, recoveries, recoveryValue);
+    onClose();
+  }, [onClose]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md" onClick={onClose}>
@@ -83,6 +114,15 @@ function SavedCharactersModal({
                     </p>
                   </div>
                   <div className="flex gap-2 shrink-0">
+                    {entry.data.classChoice && (
+                      <button
+                        type="button"
+                        className="rounded-xl bg-gold/15 px-3.5 py-2 font-heading text-xs font-semibold text-gold hover:bg-gold/25 transition-all border border-gold/20 hover:border-gold/40"
+                        onClick={() => handlePlay(entry)}
+                      >
+                        Play
+                      </button>
+                    )}
                     <button
                       type="button"
                       className="rounded-xl bg-gold/10 px-3.5 py-2 font-heading text-xs font-semibold text-gold-light hover:bg-gold/20 transition-all border border-gold/10 hover:border-gold/30"

@@ -154,3 +154,50 @@ export const WIZARD_STEPS = [
 ] as const;
 
 export type WizardStepId = (typeof WIZARD_STEPS)[number];
+
+// ── Play Mode Types ──
+
+export type Condition =
+  | 'bleeding'
+  | 'dazed'
+  | 'frightened'
+  | 'grabbed'
+  | 'prone'
+  | 'restrained'
+  | 'slowed'
+  | 'taunted'
+  | 'weakened';
+
+export const CONDITIONS: Condition[] = [
+  'bleeding', 'dazed', 'frightened', 'grabbed', 'prone',
+  'restrained', 'slowed', 'taunted', 'weakened',
+];
+
+export const CONDITION_DESCRIPTIONS: Record<Condition, string> = {
+  bleeding: 'Extra damage at start of each turn. Can stack.',
+  dazed: "Can't use triggered actions. Speed halved.",
+  frightened: "Can't willingly move closer to source of fear.",
+  grabbed: "Can't move. Bane on power rolls. Speed is 0.",
+  prone: 'On the ground. Bane on melee strikes. Speed halved.',
+  restrained: "Can't move. Bane on all power rolls. Attacks against have edge.",
+  slowed: 'Speed reduced by 2 (minimum 2).',
+  taunted: "Bane on attacks that don't include the taunter.",
+  weakened: 'Attacks deal half damage.',
+};
+
+export const ABILITY_GRANT_LEVELS = [2, 3, 5, 6, 8, 9] as const;
+
+export const VICTORIES_TO_LEVEL_UP = 10;
+
+export const CLASS_RESOURCES: Record<string, string> = {
+  censor: 'Wrath',
+  conduit: 'Piety',
+  elementalist: 'Essence',
+  fury: 'Ferocity',
+  null: 'Discipline',
+  shadow: 'Insight',
+  tactician: 'Focus',
+  talent: 'Clarity',
+  troubadour: 'Drama',
+  summoner: 'Essence',
+};

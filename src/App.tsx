@@ -14,6 +14,7 @@ import { ComplicationStep } from './components/steps/ComplicationStep';
 import { DetailsStep } from './components/steps/DetailsStep';
 import { ModelStep } from './components/steps/ModelStep';
 import { ReviewStep } from './components/steps/ReviewStep';
+import { PlayMode } from './components/play/PlayMode';
 
 function StepRouter() {
   const currentStep = useCharacterStore((s) => s.currentStep);
@@ -53,6 +54,12 @@ function StepRouter() {
 }
 
 export function App() {
+  const mode = useCharacterStore((s) => s.mode);
+
+  if (mode === 'play') {
+    return <PlayMode />;
+  }
+
   return (
     <WizardLayout>
       <StepRouter />

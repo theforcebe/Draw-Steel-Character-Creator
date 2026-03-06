@@ -32,11 +32,17 @@ const DEFAULT_CHARACTER: CharacterData = {
 interface CharacterStore {
   character: CharacterData;
   currentStep: WizardStepId;
+  mode: 'create' | 'play';
+  playingCharacterId: string | null;
 
   // Navigation
   setStep: (step: WizardStepId) => void;
   nextStep: () => void;
   prevStep: () => void;
+
+  // Mode
+  setMode: (mode: 'create' | 'play') => void;
+  setPlayingCharacterId: (id: string | null) => void;
 
   // Setters
   setName: (name: string) => void;
@@ -61,6 +67,8 @@ export const useCharacterStore = create<CharacterStore>()(
     (set) => ({
       character: { ...DEFAULT_CHARACTER },
       currentStep: 'welcome',
+      mode: 'create',
+      playingCharacterId: null,
 
       // Navigation
       setStep: (step) => set({ currentStep: step }),
@@ -82,6 +90,10 @@ export const useCharacterStore = create<CharacterStore>()(
           }
           return state;
         }),
+
+      // Mode
+      setMode: (mode) => set({ mode }),
+      setPlayingCharacterId: (id) => set({ playingCharacterId: id }),
 
       // Setters
       setName: (name) =>
@@ -158,6 +170,8 @@ export const useCharacterStore = create<CharacterStore>()(
         set({
           character: { ...DEFAULT_CHARACTER },
           currentStep: 'welcome',
+          mode: 'create',
+          playingCharacterId: null,
         }),
     }),
     {
@@ -198,6 +212,13 @@ export const useCharacterStore = create<CharacterStore>()(
           if (ps && !('armorColor' in ps)) {
             ps.armorColor = '#757575';
           }
+        }
+        // Ensure mode and playingCharacterId exist
+        if (!('mode' in state)) {
+          state.mode = 'create';
+        }
+        if (!('playingCharacterId' in state)) {
+          state.playingCharacterId = null;
         }
         return state;
       },
