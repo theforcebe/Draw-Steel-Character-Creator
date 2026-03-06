@@ -1,37 +1,43 @@
 {
-  "version": 1,
-  "source": "Draw Steel Core Rulebook",
+  "version": 2,
+  "source": "Draw Steel Heroes v1.01",
   "classes": {
     "censor": {
       "resource_name": "Wrath",
       "resource_generation": [
-        "Start of combat: Gain Wrath equal to your Victories.",
-        "+2 Wrath at the start of each of your turns.",
-        "+1 Wrath the first time each round you deal damage to or take damage from a creature you have Judged (max 2 per round from this)."
+        "Start of combat: Gain wrath equal to your Victories.",
+        "+2 wrath at the start of each of your turns.",
+        "+1 wrath the first time each round you deal damage to a creature judged by you.",
+        "+1 wrath the first time each round a creature judged by you deals damage to you."
       ],
       "features": [
         {
           "name": "Judgment",
           "type": "Maneuver",
-          "description": "You place your divine judgment on a creature within 10 squares. While judged, whenever you or an ally deals damage to that creature, the damage dealt increases by an amount equal to your Presence score. Only one creature can be judged at a time. The judgment lasts until the creature dies, you use Judgment again, or the encounter ends.",
+          "keywords": ["Magic", "Ranged"],
+          "distance": "Ranged 10",
+          "target": "One enemy",
+          "description": "Target is judged by you until end of encounter, until you use this ability again, or until you are dying. While judged target uses a main action within your line of effect, deal holy damage equal to twice your Presence score to them as a free triggered action. When judged creature is reduced to 0 Stamina, use Judgment on a new target as a free triggered action.",
+          "subclass_effects": {
+            "Exorcist": "When you Judge, teleport up to 2× Presence squares (closer to judged creature).",
+            "Oracle": "When you Judge, deal holy damage equal to 2× Presence to judged creature.",
+            "Paragon": "When you Judge, vertical pull judged creature up to 2× Presence squares."
+          },
           "level": 1
         },
         {
-          "name": "Wrath Spend — Eye of the Gods",
+          "name": "Judgment — Wrath Spends",
           "type": "Free triggered",
-          "description": "When a hidden creature is revealed within 10 squares of you, you can spend 1 Wrath to use Judgment on them as a free triggered action.",
+          "description": "Spend 1 Wrath each when triggered. Choose one: (1) Adjacent judged creature starts to shift → melee free strike + target's speed becomes 0 until end of current turn. (2) Judged creature within 10 squares makes power roll → target takes bane on roll. (3) Judged creature within 10 squares uses single-target ability → potency reduced by 1. (4) You deal melee damage to judged creature → creature is taunted by you until end of their next turn.",
           "level": 1
         },
         {
-          "name": "Punish the Wicked",
-          "type": "Free triggered",
-          "description": "When you reduce a creature you have Judged to 0 Stamina, you can immediately use Judgment on another creature within 10 squares as a free triggered action.",
-          "level": 1
-        },
-        {
-          "name": "Fearsome Presence",
-          "type": "Passive",
-          "description": "Creatures with a Presence score lower than yours who start their turn adjacent to you are frightened of you until the start of their next turn.",
+          "name": "My Life for Yours",
+          "type": "Triggered",
+          "keywords": ["Magic", "Ranged"],
+          "distance": "Ranged 10",
+          "target": "Self or one ally",
+          "description": "Trigger: Target starts their turn or takes damage. Effect: Spend a Recovery; target regains Stamina equal to your recovery value. Spend 1 Wrath: End one effect on target that is ended by a saving throw or that ends at end of their turn, or a prone target can stand up.",
           "level": 1
         }
       ]
@@ -39,27 +45,50 @@
     "conduit": {
       "resource_name": "Piety",
       "resource_generation": [
-        "Piety is not lost outside of combat.",
-        "+2 Piety at the start of each of your turns in combat.",
-        "Prayer ability: Main action that generates additional Piety (costs escalate with each use per encounter)."
+        "Start of combat: Gain piety equal to your Victories.",
+        "+1d3 piety at the start of each of your turns.",
+        "Before rolling piety each turn, you can pray (no action required). Roll 1d3: On 1, gain 1 extra piety but take psychic damage equal to 1d6 + your level. On 2, gain 1 extra piety. On 3, gain 2 extra piety and activate a domain effect.",
+        "Each domain grants +2 piety the first time a specific trigger occurs per encounter (see domain descriptions).",
+        "Piety is lost at end of encounter."
       ],
       "features": [
         {
-          "name": "Prayer",
-          "type": "Main action",
-          "description": "You beseech your god for aid. Gain Piety. The first use each encounter costs nothing. Each subsequent use takes a cumulative bane on the power roll. Power Roll + Presence: 11-: gain 2 Piety; 12+: gain 4 Piety; 17+: gain 7 Piety.",
-          "level": 1
-        },
-        {
           "name": "Healing Grace",
           "type": "Maneuver",
-          "description": "You reach out with divine energy to heal an ally. Choose one ally within 5 squares. That ally can spend a Recovery.",
+          "keywords": ["Magic", "Ranged"],
+          "distance": "Ranged 10",
+          "target": "Self or one ally",
+          "description": "Your divine energy restores the righteous. The target can spend a Recovery. Spend 1+ Piety: For each piety spent, choose one: target one additional ally within distance; end one effect on a target ended by a saving throw or ending at end of their turn; a prone target can stand up; a target can spend 1 additional Recovery.",
           "level": 1
         },
         {
-          "name": "Piety Overflow",
-          "type": "Free triggered",
-          "description": "When your Piety would exceed your maximum, you can use a free triggered action to let one ally within 10 squares spend a Recovery.",
+          "name": "Ray of Wrath",
+          "type": "Main action",
+          "keywords": ["Magic", "Ranged", "Strike"],
+          "distance": "Ranged 10",
+          "target": "One creature or object",
+          "description": "You unleash a blast of holy light upon your foe. Can be used as a ranged free strike. Power Roll + Intuition: 11-: 2 + I damage; 12+: 4 + I damage; 17+: 6 + I damage. Effect: You can have this ability deal holy damage.",
+          "level": 1
+        },
+        {
+          "name": "Word of Guidance",
+          "type": "Triggered",
+          "keywords": ["Magic", "Ranged"],
+          "distance": "Ranged 10",
+          "target": "One ally",
+          "description": "Trigger: The target makes an ability roll for a damage-dealing ability. Effect: The power roll gains an edge. Spend 1 Piety: The power roll has a double edge instead. (Alternative: Word of Judgment — Trigger: Target would take damage from ability with power roll. Effect: Power roll takes a bane against target. Spend 1 Piety: Double bane instead.)",
+          "level": 1
+        },
+        {
+          "name": "Prayer (Passive Blessing)",
+          "type": "Passive",
+          "description": "Choose one prayer as a respite activity: Prayer of Destruction (+1 rolled damage with magic abilities), Prayer of Distance (+2 distance on ranged magic abilities), Prayer of Soldier's Skill (light armor +3 Stamina, light weapon +1 damage), Prayer of Speed (+1 speed and disengage distance), Prayer of Steel (+6 Stamina and +1 stability).",
+          "level": 1
+        },
+        {
+          "name": "Conduit Ward",
+          "type": "Passive",
+          "description": "Choose one ward as a respite activity: Bastion Ward (+1 saving throws), Quickness Ward (shift up to Intuition squares when adjacent creature damages you), Sanctuary Ward (creature that damages you can't target you with strikes until you harm them or their ally), Spirit Ward (adjacent creature that damages you takes corruption damage equal to your Intuition).",
           "level": 1
         }
       ]
@@ -67,27 +96,25 @@
     "elementalist": {
       "resource_name": "Essence",
       "resource_generation": [
-        "Start of combat: Gain Essence equal to your Victories.",
-        "+2 Essence at the start of each of your turns (reduced by the total persistent value of your active persistent effects).",
-        "+1 Essence the first time each round a creature within 10 squares takes damage of a type other than holy or untyped."
+        "Start of combat: Gain essence equal to your Victories.",
+        "+2 essence at the start of each of your turns, reduced by the total persistent value of your active persistent effects.",
+        "+1 essence the first time each round a creature within 10 squares takes damage of a type other than holy or untyped.",
+        "Essence is lost at end of encounter."
       ],
       "features": [
         {
           "name": "Hurl Element",
           "type": "Main action",
-          "description": "You hurl a chunk of elemental matter at a foe. Ranged 5, one creature. Power Roll + Reason: 11-: 2 + R damage; 12+: 6 + R damage; 17+: 9 + R damage. Choose the damage type each time: cold, corruption, fire, or lightning.",
+          "keywords": ["Magic", "Ranged", "Strike"],
+          "distance": "Ranged 5",
+          "target": "One creature or object",
+          "description": "You hurl a chunk of elemental matter at a foe. Can be used as a ranged free strike. Power Roll + Reason: 11-: 2 + R damage; 12+: 6 + R damage; 17+: 9 + R damage. Choose damage type each time: cold, corruption, fire, or lightning.",
           "level": 1
         },
         {
           "name": "Persistent Magic",
           "type": "Passive",
-          "description": "Some of your abilities have a persistent effect that remains active. At the start of each of your turns, your Essence generation is reduced by the total persistent value of all your active persistent effects. You can end any persistent effect as a free maneuver.",
-          "level": 1
-        },
-        {
-          "name": "Mantle of Essence",
-          "type": "Passive",
-          "description": "While you have 3 or more Essence, a visible mantle of elemental energy surrounds you in an aura with a size equal to your Reason score. You choose the element when the mantle activates. Enemies who enter or start their turn in the aura take damage equal to your Reason score of the chosen type.",
+          "description": "Some of your abilities have a persistent effect with a persistent value. At the start of each of your turns, your essence generation is reduced by the total persistent value of all your active persistent effects. You can end any persistent effect as a free maneuver.",
           "level": 1
         },
         {
@@ -95,22 +122,29 @@
           "type": "Free maneuver",
           "description": "You can end any of your active persistent effects as a free maneuver on your turn.",
           "level": 1
+        },
+        {
+          "name": "Mantle of Essence",
+          "type": "Passive",
+          "description": "While you have 3 or more Essence, a visible mantle of elemental energy surrounds you in an aura with a size equal to your Reason score. You choose the element when the mantle activates. Enemies who enter or start their turn in the aura take damage equal to your Reason score of the chosen type.",
+          "level": 1
         }
       ]
     },
     "fury": {
       "resource_name": "Ferocity",
       "resource_generation": [
-        "Start of combat: Gain Ferocity equal to your Victories.",
-        "+1d3 Ferocity at the start of each of your turns.",
-        "+1 Ferocity the first time each turn you take damage.",
-        "+1d3 Ferocity when you become winded or dying."
+        "Start of combat: Gain ferocity equal to your Victories.",
+        "+1d3 ferocity at the start of each of your turns.",
+        "+1 ferocity the first time each turn you take damage.",
+        "+1d3 ferocity when you become winded or dying.",
+        "Ferocity is lost at end of encounter."
       ],
       "features": [
         {
           "name": "Growing Ferocity",
           "type": "Passive",
-          "description": "Your rage grows as Ferocity increases. At 3+ Ferocity: +1 to weapon damage. At 6+ Ferocity: +2 to weapon damage and you can shift 1 extra square when you shift. At 9+ Ferocity: +3 to weapon damage, shift 2 extra squares, and your weapon attacks gain an edge.",
+          "description": "You gain benefits in combat based on ferocity amount (benefits last until end of your turn even if you spend ferocity): 3+ Ferocity: +1 bonus to weapon damage; your attacks deal extra damage equal to Might score. 6+ Ferocity: Speed +1, shift +1 extra square; melee strikes deal extra damage equal to 2× Might. 9+ Ferocity: Edge on melee attacks; extra damage equal to 3× Might.",
           "level": 1
         },
         {
@@ -120,15 +154,25 @@
           "level": 1
         },
         {
-          "name": "Reckless Attack",
-          "type": "Passive",
-          "description": "When you make a strike, you can gain an edge on the power roll. If you do, enemies gain an edge on attacks against you until the start of your next turn.",
+          "name": "Aspect Triggered Action",
+          "type": "Triggered",
+          "description": "Your primordial aspect grants you a triggered action. Berserker: Relentless Tread — Trigger: You are force moved. Effect: Reduce distance by Might score; if reduced to 0, use free maneuver to Knockback source. Reaver: Pounce — Trigger: Enemy within Might score squares becomes bleeding/frightened/weakened. Effect: Move up to speed toward them; make free strike against them if adjacent at end. Stormwight: Stormwhelm — Trigger: Take damage. Cost: 1 Ferocity. Effect: Deal lightning damage equal to Might score to source of damage.",
+          "subclass_effects": {
+            "Berserker": "Relentless Tread: When force moved, reduce distance by Might score. If reduced to 0, free Knockback against source.",
+            "Reaver": "Pounce: When enemy within Might squares becomes bleeding/frightened/weakened, move up to speed toward them and make free strike.",
+            "Stormwight": "Stormwhelm (1 Ferocity): When you take damage, deal lightning damage equal to Might score to the source."
+          },
           "level": 1
         },
         {
-          "name": "Danger Sense",
+          "name": "Aspect Features",
           "type": "Passive",
-          "description": "You can't be surprised. You gain an edge on Agility tests to determine combat order.",
+          "description": "Your primordial aspect grants two features. Berserker: Lift skill + Brutal Blows (melee strikes deal extra damage equal to Might score). Reaver: Hide skill + Cunning Ambush (you and adjacent allies gain edge on attacks against surprised targets; deal extra damage equal to Might on first attack). Stormwight: Track skill + Animal Form (transform into animal as free maneuver; gain specific movement benefits).",
+          "subclass_effects": {
+            "Berserker": "Lift skill. Brutal Blows: When you make a melee strike, you deal extra damage equal to your Might score.",
+            "Reaver": "Hide skill. Cunning Ambush: You and allies adjacent to you gain edge on attacks against surprised targets. First attack deals extra damage equal to Might.",
+            "Stormwight": "Track skill. Animal Form: As a free maneuver, transform into animal form gaining specific movement benefits (fly, burrow, climb, or swim speed equal to Might score)."
+          },
           "level": 1
         }
       ]
@@ -136,33 +180,63 @@
     "null": {
       "resource_name": "Discipline",
       "resource_generation": [
-        "+2 Discipline at the start of each of your turns.",
-        "+1 Discipline the first time each round an enemy in your Null Field uses a main action.",
-        "+1 Discipline the first time each round the Director uses a Malice ability."
+        "+2 discipline at the start of each of your turns.",
+        "+1 discipline the first time each combat round an enemy in your Null Field uses a main action.",
+        "+1 discipline the first time the Director uses an ability costing Malice.",
+        "Discipline is lost at end of encounter."
       ],
       "features": [
         {
           "name": "Null Field",
           "type": "Passive",
-          "description": "You emanate a null field in an aura with a size equal to your Intuition score. Enemies in your null field have their potency reduced by 1 for all abilities. The field moves with you and is always active.",
+          "description": "You emanate a null field in an aura with a size equal to your Intuition score. Enemies in your null field have their potency reduced by 1 for all abilities. The field moves with you and is always active (even outside combat). Ends only if you are dying or willingly end it.",
           "level": 1
         },
         {
-          "name": "Psionic Disruption",
-          "type": "Free triggered",
-          "description": "When an enemy in your Null Field uses an ability with the Magic or Psionic keyword, you can use a free triggered action to force them to make a Reason test against your Intuition score. On a failure, the ability is negated and the action is wasted.",
-          "level": 1
-        },
-        {
-          "name": "Mental Fortitude",
-          "type": "Passive",
-          "description": "You gain an edge on resistance rolls against effects with the Magic or Psionic keyword. You can't be dazed by magic or psionic effects.",
+          "name": "Null Field — Discipline Spend",
+          "type": "Free maneuver",
+          "keywords": ["Area", "Psionic"],
+          "distance": "1 aura",
+          "target": "Each enemy in area",
+          "description": "Once per turn, spend 1 Discipline to choose one effect until start of next turn: Gravitic Disruption — First time each enemy takes damage on their turn, slide them up to 2 squares. Inertial Anchor — Enemies starting turn in area can't shift. Synaptic Break — When you or ally uses ability against target with potency effect, potency increased by 1.",
           "level": 1
         },
         {
           "name": "Inertial Shield",
+          "type": "Triggered",
+          "keywords": ["Psionic"],
+          "distance": "Self",
+          "target": "Self",
+          "description": "Trigger: You take damage. Effect: You take half the damage. Spend 1 Discipline: Reduce potency of one effect associated with damage by 1 for you.",
+          "level": 1
+        },
+        {
+          "name": "Discipline Mastery — Inertial Shield Bonus",
           "type": "Free triggered",
-          "description": "When you or an ally in your Null Field takes damage, you can spend 1 Discipline to reduce the damage by an amount equal to your Intuition score.",
+          "description": "When you use Inertial Shield, gain a subclass-specific bonus. Chronokinetic: Disengage as free triggered action. Cryokinetic: Grab maneuver as free triggered action. Metakinetic: Knockback maneuver as free triggered action.",
+          "subclass_effects": {
+            "Chronokinetic": "When using Inertial Shield, use Disengage move action as free triggered action.",
+            "Cryokinetic": "When using Inertial Shield, use Grab maneuver as free triggered action.",
+            "Metakinetic": "When using Inertial Shield, use Knockback maneuver as free triggered action."
+          },
+          "level": 1
+        },
+        {
+          "name": "Null Speed",
+          "type": "Passive",
+          "description": "You gain a bonus to speed and to distance you can shift with Disengage move action equal to your Agility score.",
+          "level": 1
+        },
+        {
+          "name": "Psionic Martial Arts",
+          "type": "Passive",
+          "description": "When using Knockback or Grab maneuver, use Intuition instead of Might for the power roll and for determining if you can target larger creatures. With Knockback, you can choose to slide the target instead of pushing.",
+          "level": 1
+        },
+        {
+          "name": "Discipline Mastery — Growing Benefits",
+          "type": "Passive",
+          "description": "Benefits scale with Discipline amount. 2+ Discipline: Edge on Grab and Knockback (subclass-specific bonus). 4+ Discipline: Gain 1 surge on specific trigger (varies by subclass). 6+ Discipline: Edge on Grab and Knockback maneuvers.",
           "level": 1
         }
       ]
@@ -170,33 +244,42 @@
     "shadow": {
       "resource_name": "Insight",
       "resource_generation": [
-        "Insight is not lost outside of combat.",
-        "+2 Insight at the start of each of your turns in combat.",
-        "+1 Insight whenever you get a tier 3 result on an attack."
+        "Start of combat: Gain insight equal to your Victories.",
+        "+1d3 insight at the start of each of your turns.",
+        "+1 insight the first time each combat round you deal damage while you have 1+ surges.",
+        "Heroic abilities with power rolls cost 1 fewer insight if you have an edge or double edge on the roll.",
+        "Insight is lost at end of encounter."
       ],
       "features": [
         {
-          "name": "Sneak Attack",
-          "type": "Passive",
-          "description": "Once per turn, when you have an edge on an attack or when the target is adjacent to one of your allies, you deal extra damage equal to twice your level on the attack.",
+          "name": "College Feature",
+          "type": "Maneuver",
+          "description": "Your shadow college grants a maneuver. Black Ash Teleport: Teleport up to 5 squares; if destination has cover/concealment, use Hide even if observed. Spend 1+ Insight for 1 extra square each. Coat the Blade: Gain 2 surges; surges can deal poison damage. Spend 1+ Insight for 1 extra surge each. I'm No Threat (Harlequin Mask): Envelop in illusion; strikes gain edge, +1 disengage distance. Spend 1 Insight to appear as specific creature. Smoke Bomb (Caustic Alchemy): Use Hide even without cover; shift Agility squares; if ending with cover, automatically hidden.",
+          "subclass_effects": {
+            "Black Ash": "Black Ash Teleport: Teleport up to 5 squares. If destination has cover/concealment, can Hide even if observed. If you successfully hide, gain 1 surge. Spend 1+ Insight: +1 square per insight.",
+            "Harlequin Mask": "I'm No Threat: Envelop in illusion appearing harmless. Strikes gain edge; +1 disengage distance. Ends when you harm a creature (gain 1 surge). Spend 1 Insight: Appear as specific creature.",
+            "Caustic Alchemy": "Smoke Bomb: Use Hide even without cover/concealment. Shift up to Agility squares. If ending with cover/concealment, automatically hidden."
+          },
           "level": 1
         },
         {
-          "name": "Impact Rolling",
-          "type": "Free triggered",
-          "description": "When you take damage while not grabbed, restrained, or surprised, you can shift up to 2 squares, halve the damage, and ignore any effects associated with that damage.",
+          "name": "College Triggered Action",
+          "type": "Triggered",
+          "description": "Your shadow college grants a triggered action.",
+          "subclass_effects": {
+            "Black Ash": "In All This Confusion: Trigger: You take damage. Effect: Take half damage, then teleport up to 4 squares. Spend 1+ Insight: +1 square per insight.",
+            "Caustic Alchemy": "Defensive Roll: Trigger: Another creature damages you. Effect: Take half damage, shift up to 2 squares. If ending with cover, can Hide. Spend 1 Insight: Reduce potency of associated effects by 1.",
+            "Harlequin Mask": "Clever Trick (1 Insight): Trigger: Enemy targets you with strike. Effect: Choose enemy within distance of triggering strike; strike targets that enemy instead."
+          },
           "level": 1
         },
         {
           "name": "Hesitation Is Weakness",
           "type": "Free triggered",
-          "description": "When an ally ends their turn, you can take your turn immediately (before the next creature in the initiative order). You can only use this once per round.",
-          "level": 1
-        },
-        {
-          "name": "Hide In Combat",
-          "type": "Maneuver",
-          "description": "While you have cover or concealment from an enemy, you can use a maneuver to make an Agility test to become hidden from that enemy. You remain hidden until you attack, move out of cover, or are detected.",
+          "keywords": [],
+          "distance": "Self",
+          "target": "Self",
+          "description": "Trigger: Another hero ends their turn (that hero can't have used this ability to start their turn). Cost: 1 Insight. Effect: You take your turn immediately after the triggering hero. Can only be used once per round.",
           "level": 1
         }
       ]
@@ -204,39 +287,63 @@
     "tactician": {
       "resource_name": "Focus",
       "resource_generation": [
-        "+2 Focus at the start of each of your turns.",
-        "+1 Focus the first time each round an ally attacks a creature you have Marked.",
-        "+1 Focus when an ally within 10 squares uses a heroic ability."
+        "Start of combat: Gain focus equal to your Victories.",
+        "+2 focus at the start of each of your turns.",
+        "+1 focus the first time each round an ally damages a creature you have Marked.",
+        "+1 focus the first time each round an ally within 10 squares uses a heroic ability.",
+        "Focus is lost at end of encounter."
       ],
       "features": [
         {
           "name": "Mark",
           "type": "Maneuver",
-          "description": "You mark a creature within 10 squares. Allies gain an edge on attacks against the marked creature. You can spend additional Focus when marking: 1 Focus to taunt the target (it takes a bane on attacks that don't include you), 2 Focus for taunt plus you can make a melee free strike against the target if it moves while adjacent to you. Only one creature can be marked at a time.",
+          "keywords": ["Ranged"],
+          "distance": "Ranged 10",
+          "target": "One creature",
+          "description": "Target marked until end of encounter, until you're dying, or until you use this ability again. While marked target is in line of effect, you and allies gain edge on power rolls against marked creature. When marked creature reduced to 0 Stamina, use free triggered action to Mark a new target within distance. Spend 1 Focus: Taunt the target (bane on attacks not including you). Spend 2 Focus: Taunt + you can make a melee free strike against the target if it moves while adjacent to you.",
+          "level": 1
+        },
+        {
+          "name": "Mark — Focus Spend on Damage",
+          "type": "Free triggered",
+          "description": "Spend 1 Focus when you or an ally deals rolled damage to marked creature. Choose one benefit (can't gain more than one per trigger): Deal extra damage equal to 2× Reason score; creature dealing damage can spend a Recovery; creature dealing damage can shift up to Reason score squares; if you damage with melee ability, creature is taunted by you (EoT).",
           "level": 1
         },
         {
           "name": "Strike Now",
-          "type": "Maneuver",
-          "description": "Choose one ally within 10 squares. That ally can use a free triggered action to make a free strike.",
+          "type": "Main action",
+          "keywords": ["Ranged"],
+          "distance": "Ranged 10",
+          "target": "One ally",
+          "description": "Target can use a signature ability as a free triggered action. Spend 5 Focus: Target two allies instead of one.",
           "level": 1
         },
         {
-          "name": "Shift Mark",
+          "name": "Doctrine Triggered Action",
           "type": "Free triggered",
-          "description": "When a creature you have Marked is reduced to 0 Stamina, you can use a free triggered action to Mark another creature within 10 squares.",
+          "description": "Your tactical doctrine grants a free triggered action.",
+          "subclass_effects": {
+            "Insurgent": "Advanced Tactics: Trigger: Ally within 10 deals damage. Effect: Ally gains 2 surges (usable on triggering damage). Spend 1 Focus: If damage has potency effect, potency +1.",
+            "Mastermind": "Overwatch: Trigger: Creature within 10 moves. Effect: One ally can make free strike against target during movement. Spend 1 Focus: If target r<v, slowed (EoT).",
+            "Vanguard": "Parry: Trigger: Creature damages you or ally within Melee 2. Effect: Shift 1 square; if adjacent to target after shift, target takes half damage; if potency effect, potency -1. Spend 1 Focus: Distance = Melee 1 + Reason; shift up to Reason squares."
+          },
           "level": 1
         },
         {
-          "name": "Opening Gambit",
-          "type": "Free triggered",
-          "description": "At the start of an encounter, you can use a free triggered action to Mark a creature you can see within 10 squares.",
-          "level": 1
-        },
-        {
-          "name": "Tactical Doctrine",
+          "name": "Field Arsenal",
           "type": "Passive",
-          "description": "Your subclass grants a tactical doctrine that provides passive benefits to you and nearby allies. This doctrine is always active and improves as you level up.",
+          "description": "You can use and gain the benefits of two kits, including both signature abilities. You can choose or change your second kit whenever you choose or change your first kit. If both kits grant the same benefit, take one or the other (can't change until respite).",
+          "level": 1
+        },
+        {
+          "name": "Doctrine Feature",
+          "type": "Passive",
+          "description": "Your tactical doctrine grants a passive feature.",
+          "subclass_effects": {
+            "Insurgent": "Covert Operations: Allies gain edge on intrigue skill tests while in your presence. You can use Lead to assist with intrigue tests.",
+            "Mastermind": "Studied Commander: Allies treat lore research about war/battles one category cheaper. With 24+ hours before encounter and clues, make Reason test for intel.",
+            "Vanguard": "Commanding Presence: Allies treat Renown as 2 higher in negotiations. In combat, allies get double edge on tests to stop combat and start negotiation."
+          },
           "level": 1
         }
       ]
@@ -244,33 +351,55 @@
     "talent": {
       "resource_name": "Clarity",
       "resource_generation": [
-        "Start of combat: Gain Clarity equal to your Victories.",
-        "+1d3 Clarity at the start of each of your turns.",
-        "+1 Clarity the first time each round a creature is force moved."
+        "Start of combat: Gain clarity equal to your Victories.",
+        "+1d3 clarity at the start of each of your turns.",
+        "+1 clarity the first time each round a creature is force moved.",
+        "Can spend clarity you don't have, going negative to minimum of -(1 + Reason score). While negative, you are Strained and take 1 damage per negative clarity point at end of each turn.",
+        "Clarity is lost (or reset from negative) at end of encounter."
       ],
       "features": [
         {
           "name": "Strain",
           "type": "Passive",
-          "description": "You can spend Clarity you don't have, going into negative Clarity (minimum of -(1 + Reason score)). While your Clarity is negative, you are Strained: you take damage equal to your negative Clarity at the start of each of your turns, and some abilities have enhanced (or worsened) effects while Strained.",
+          "description": "You can spend Clarity you don't have, going into negative Clarity (minimum of -(1 + Reason score)). While your Clarity is negative, you are Strained: you take damage equal to your negative Clarity at the end of each of your turns. Some abilities have enhanced (or worsened) effects while Strained.",
           "level": 1
         },
         {
-          "name": "Telekinetic Force",
-          "type": "Free maneuver",
-          "description": "You can use a free maneuver to force move a creature or unattended object of your size or smaller within 5 squares up to 2 squares in any direction.",
+          "name": "Mind Spike",
+          "type": "Main action",
+          "keywords": ["Psionic", "Ranged", "Strike", "Telepathy"],
+          "distance": "Ranged 10",
+          "target": "One creature",
+          "description": "Can be used as a ranged free strike. Power Roll + Reason: 11-: 2 + R psychic damage; 12+: 4 + R psychic damage; 17+: 6 + R psychic damage. Strained: Target takes extra 2 psychic damage; you take 2 psychic damage (can't be reduced).",
+          "level": 1
+        },
+        {
+          "name": "Telepathic Speech",
+          "type": "Passive",
+          "description": "You know Mindspeech language. You can telepathically communicate with creatures within Mind Spike distance if they share a language with you and you know each other. They can respond telepathically.",
+          "level": 1
+        },
+        {
+          "name": "Talent Ward",
+          "type": "Passive",
+          "description": "Choose one ward (changeable via respite). Entropy Ward: When creature damages you, their speed reduced by Reason; can't use triggered actions until end of their next turn. Repulsive Ward: When adjacent creature damages you, free triggered action to push them up to Reason squares. Steel Ward: When you take damage, gain damage immunity equal to Reason until end of next turn. Vanishing Ward: When you take damage, become invisible until end of next turn.",
+          "level": 1
+        },
+        {
+          "name": "Tradition Features",
+          "type": "Varies",
+          "description": "Your tradition grants two features.",
+          "subclass_effects": {
+            "Chronopathy": "Accelerate (Maneuver, Ranged 10): Target shifts up to Reason squares. Spend 2 Clarity: Target can also use a maneuver. Again (Triggered, Ranged 10): Trigger: Target makes ability roll. Effect: Target must reroll and use new result.",
+            "Telekinesis": "Minor Telekinesis (Maneuver, Ranged 10): Slide target up to Reason squares. Spend 2+ Clarity: +1 size per 2 clarity. Spend 3 Clarity: Can vertical slide. Repel (Triggered, Ranged 10): Trigger: Ally takes damage or is force moved. Effect: Half damage OR reduce forced movement by Reason squares. If movement reduced to 0, can push source Reason squares.",
+            "Telepathy": "Feedback Loop (Triggered, Ranged 10): Trigger: Target deals damage to ally. Effect: Target takes psychic damage equal to half triggering damage. Remote Assistance (Maneuver, Ranged 10): Next ability roll ally makes against target gains edge. Spend 1 Clarity: +1 target."
+          },
           "level": 1
         },
         {
           "name": "Psionic Augmentation",
           "type": "Passive",
-          "description": "Your psionic power enhances your physical capabilities. You can jump twice your normal distance, and you can use Reason in place of Might for tests involving lifting, pushing, or breaking objects.",
-          "level": 1
-        },
-        {
-          "name": "Mind Shield",
-          "type": "Free triggered",
-          "description": "When you or an ally within 5 squares is targeted by a psionic or magic ability, you can spend 1 Clarity to impose a bane on the attacker's power roll.",
+          "description": "Choose one (changeable via respite). Battle Augmentation: Light armor +3 Stamina, light weapon +1 damage. Density Augmentation: +6 Stamina, +1 stability. Distance Augmentation: +2 ranged psionic ability distance. Force Augmentation: +1 rolled damage on psionic abilities. Speed Augmentation: +1 speed and disengage distance.",
           "level": 1
         }
       ]
@@ -278,36 +407,66 @@
     "troubadour": {
       "resource_name": "Drama",
       "resource_generation": [
-        "Start of combat: Gain Drama equal to your Victories.",
-        "+1d3 Drama at the start of each of your turns.",
-        "+2 Drama when 3 or more heroes use abilities on the same turn.",
-        "+2 Drama when any hero becomes winded.",
-        "+3 Drama when any creature rolls a natural 19 or 20.",
-        "+10 Drama when any hero dies."
+        "Start of combat: Gain drama equal to your Victories.",
+        "+1d3 drama at the start of each of your turns.",
+        "+2 drama the first time 3 or more heroes use an ability on the same turn.",
+        "+2 drama the first time any hero is made winded during the encounter.",
+        "+3 drama whenever a creature within line of effect rolls a natural 19 or 20.",
+        "+10 drama when you or another hero dies.",
+        "If dead with body intact and reach 30 drama during encounter, come back to life with 1 Stamina and 0 drama.",
+        "Drama is lost at end of encounter."
       ],
       "features": [
         {
-          "name": "Inspiring Word",
-          "type": "Maneuver",
-          "description": "Choose one ally within 5 squares. That ally gains temporary stamina equal to twice your Presence score.",
+          "name": "Routines",
+          "type": "No action",
+          "description": "At the start of each combat round (if not dazed, dead, or surprised), choose a performance or maintain your current one. Performances are magical abilities with the Performance keyword. You start with Choreography and Revitalizing Limerick. Your class act grants additional performances.",
           "level": 1
         },
         {
-          "name": "Routine",
-          "type": "Free maneuver",
-          "description": "At the start of each round, you activate a routine. Your subclass determines your available routines. A routine provides benefits to you and nearby allies until the start of the next round.",
+          "name": "Choreography",
+          "type": "No action",
+          "keywords": ["Area", "Magic", "Performance"],
+          "distance": "5 aura",
+          "target": "Self and each ally in the area",
+          "description": "While this performance is active, each target who starts their turn in the area gains a +2 bonus to speed until end of their turn.",
+          "level": 1
+        },
+        {
+          "name": "Revitalizing Limerick",
+          "type": "No action",
+          "keywords": ["Area", "Magic", "Performance"],
+          "distance": "5 aura",
+          "target": "Self and each ally in the area",
+          "description": "At the end of each of your turns while this performance is active, you can choose up to a number of targets equal to your Presence score. Each chosen target can spend a Recovery.",
+          "level": 1
+        },
+        {
+          "name": "Class Act Triggered Action",
+          "type": "Triggered",
+          "description": "Your troubadour class act grants a triggered action.",
+          "subclass_effects": {
+            "Auteur": "Turnabout Is Fair Play (Ranged 10): Trigger: Target makes ability roll with edge/double edge/bane/double bane. Effect: Edge becomes bane (or double edge becomes edge). Bane becomes edge (or double bane becomes bane). Spend 3 Drama: Edge becomes double bane (or double edge negated). Bane becomes double edge (or double bane negated).",
+            "Duelist": "Riposte (Melee 1): Trigger: Target (self or ally) takes damage from melee strike. Effect: Target makes a free strike against the creature who made the triggering strike.",
+            "Virtuoso": "Harmonize (3 Drama, Ranged 5): Trigger: Ally uses ability targeting one enemy costing 3 or fewer heroic resource. Effect: Ally can choose one additional target; damage to additional target is sonic. Spend 1+ Drama: Trigger threshold increases by 1 per drama."
+          },
+          "level": 1
+        },
+        {
+          "name": "Class Act Features",
+          "type": "Varies",
+          "description": "Your class act grants two features.",
+          "subclass_effects": {
+            "Auteur": "Blocking (Performance, 2 aura): At end of each turn, teleport up to Presence targets to unoccupied spaces in area. Dramatic Monologue (Maneuver, Ranged 10): Choose one: ally gains edge on next power roll; ally gains 1 surge; enemy takes bane on next power roll. Spend 1 Drama: Two targets for chosen effect.",
+            "Duelist": "Acrobatics (Performance, 5 aura): Targets auto-succeed on tier 3 for jump/tumble/climb tests. Star Power (1 Drama, Maneuver): +2 speed this turn; next power roll can't be lower than tier 2. Spend 1 Drama: +4 speed instead.",
+            "Virtuoso": "Thunder Mother (Performance, Ranged 10): At end of each round, power roll vs target (ignores cover). Damage: level / 5+level / 10+level lightning. Ballad of the Beast (Performance, 5 aura): Each target starting turn gains 1 surge. Power Chord (Maneuver, 2 burst): Power Roll + Presence vs enemies: push 1/2/3."
+          },
           "level": 1
         },
         {
           "name": "Scene Partner",
           "type": "Passive",
-          "description": "You can bond with an NPC during a negotiation or social encounter. While bonded, you gain an edge on Presence tests made to influence or understand that NPC.",
-          "level": 1
-        },
-        {
-          "name": "Dramatic Timing",
-          "type": "Free triggered",
-          "description": "When an ally within 10 squares rolls a natural 19 or 20, you can use a free triggered action to let that ally shift up to 2 squares and gain temporary stamina equal to your Presence score.",
+          "description": "When you succeed on a test to interact with an NPC using an interpersonal skill, form a bond. Bonded NPC's patience +1 in negotiation (max 5). First argument that would increase interest by 1 increases by 2 instead (max 5). You can have bonds equal to your level.",
           "level": 1
         }
       ]
@@ -315,34 +474,35 @@
     "summoner": {
       "resource_name": "Essence",
       "resource_generation": [
-        "Start of combat: Gain Essence equal to your Victories.",
-        "+2 Essence at the start of each of your turns.",
-        "+1 Essence when one of your summoned creatures is destroyed.",
-        "You can sacrifice a summoned creature as a free maneuver to gain 2 Essence."
+        "Start of combat: Gain essence equal to your Victories.",
+        "+2 essence at the start of each of your turns.",
+        "+1 essence when one of your summoned creatures is destroyed.",
+        "You can sacrifice a summoned creature as a free maneuver to gain 2 essence.",
+        "Essence is lost at end of encounter."
       ],
       "features": [
         {
           "name": "Summon Minions",
           "type": "Free maneuver",
-          "description": "At the start of each round, you summon four signature minions in unoccupied spaces within 5 squares of you. Your subclass determines the type of minion. Minions act on your turn and follow your commands.",
+          "description": "At the start of each round, summon four signature minions in unoccupied spaces within 5 squares. Your subclass determines minion type. Minions act on your turn.",
           "level": 1
         },
         {
           "name": "Command Minions",
           "type": "Maneuver",
-          "description": "You command your summoned minions. Each minion can move up to their speed and make one attack. Alternatively, you can sacrifice a minion to gain 2 Essence.",
+          "description": "Command your summoned minions. Each minion can move up to their speed and make one attack.",
           "level": 1
         },
         {
           "name": "Summon Champion",
           "type": "Main action",
-          "description": "You summon a powerful champion creature in an unoccupied space within 5 squares. The champion has more stamina and stronger attacks than minions. Only one champion can be active at a time. Your subclass determines the champion type.",
+          "description": "Summon a powerful champion creature in an unoccupied space within 5 squares. Champions have more stamina and stronger attacks than minions. Only one champion active at a time. Your subclass determines the champion type.",
           "level": 1
         },
         {
           "name": "Sacrifice Minion",
           "type": "Free maneuver",
-          "description": "You can sacrifice one of your summoned minions as a free maneuver. The minion is destroyed and you gain 2 Essence.",
+          "description": "Sacrifice one of your summoned minions as a free maneuver. The minion is destroyed and you gain 2 Essence.",
           "level": 1
         }
       ]

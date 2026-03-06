@@ -69,6 +69,7 @@ interface ClassFeature {
   type: string;
   description: string;
   level: number;
+  subclass_effects?: Record<string, string>;
 }
 
 interface ClassFeaturesEntry {
@@ -297,6 +298,7 @@ export function PlayActions() {
   }, [character.ancestryId, character.formerLifeAncestryId, character.selectedTraits]);
 
   // Class features (triggered actions, resource gen, passives)
+  const subclassId = classChoice?.subclassId;
   const classFeaturesForClass = useMemo(() => {
     const classId = classChoice?.classId;
     if (!classId) return null;
@@ -481,6 +483,22 @@ export function PlayActions() {
                   <p className="font-body text-[0.65rem] text-cream-dark/50 mt-1 leading-relaxed">
                     {feature.description}
                   </p>
+                  {feature.subclass_effects && subclassId && (() => {
+                    const match = Object.entries(feature.subclass_effects).find(
+                      ([key]) => key.toLowerCase() === subclassId.toLowerCase(),
+                    );
+                    if (!match) return null;
+                    return (
+                      <div className="mt-1.5 px-2 py-1.5 rounded-lg bg-gold/5 border border-gold/10">
+                        <p className="font-heading text-[0.5rem] text-gold-muted uppercase tracking-wider mb-0.5">
+                          {match[0]}
+                        </p>
+                        <p className="font-body text-[0.6rem] text-cream-dark/60 leading-relaxed">
+                          {match[1]}
+                        </p>
+                      </div>
+                    );
+                  })()}
                 </div>
               ))}
             </div>
