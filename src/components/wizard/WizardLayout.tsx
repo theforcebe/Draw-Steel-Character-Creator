@@ -1,8 +1,9 @@
 import { useState, useCallback } from 'react';
 import { useCharacterStore } from '../../stores/character-store';
 import { usePlayStore } from '../../stores/play-store';
-import type { CharacterData } from '../../types/character';
+import type { CharacterData, WizardStepId } from '../../types/character';
 import { GoldButton } from '../ui/GoldButton';
+import { validateStep } from '../../engine/step-validation';
 import { exportCharacterPdf, exportAbilityCardsPdf } from '../../engine/pdf-exporter';
 import {
   getSavedCharacters,
@@ -288,6 +289,16 @@ export function WizardLayout({ children }: WizardLayoutProps) {
   const currentCategory = getCategoryForStep(currentStep);
   const hasSubTabs = currentCategory != null && currentCategory.steps.length > 1;
   const hasClass = !!character.classChoice;
+
+  // Steps that must be valid before Play is allowed
+  const REQUIRED_STEPS: WizardStepId[] = [
+    'ancestry', 'ancestry-traits', 'culture', 'career',
+    'class', 'subclass', 'characteristics', 'kit', 'abilities', 'details',
+  ];
+  const firstFailingStep = REQUIRED_STEPS.find(
+    (step) => !validateStep(step, character).valid,
+  );
+  const isReadyToPlay = !firstFailingStep;
 
   /* ── Handlers ── */
 
@@ -792,17 +803,20 @@ export function WizardLayout({ children }: WizardLayoutProps) {
             <div className="hidden sm:flex items-center gap-3">
               <div className="h-px w-8 bg-gradient-to-r from-transparent to-gold/20" />
               <span className="font-heading text-[0.65rem] uppercase tracking-[0.15em] text-gold-muted">
-                {currentCategory ? currentCategory.label : 'Review'}
-                {hasSubTabs && ` \u2014 ${currentCategory!.stepLabels[currentStep]}`}
+                {isReview && !isReadyToPlay
+                  ? validateStep(firstFailingStep!, character).message
+                  : currentCategory
+                    ? `${currentCategory.label}${hasSubTabs ? ` \u2014 ${currentCategory.stepLabels[currentStep]}` : ''}`
+                    : 'Review'}
               </span>
               <div className="h-px w-8 bg-gradient-to-l from-transparent to-gold/20" />
             </div>
 
             <GoldButton
-              onClick={isReview ? handleExport : nextStep}
-              disabled={isReview && exporting}
+              onClick={isReview ? handleSaveAndPlay : nextStep}
+              disabled={isReview && !isReadyToPlay}
             >
-              {isReview ? (exporting ? 'Exporting...' : 'Export PDF') : 'Continue'}
+              {isReview ? 'Save & Play' : 'Continue'}
             </GoldButton>
           </div>
         </footer>
