@@ -32,7 +32,8 @@ function getAspectSkills(aspect: CultureAspect): string[] {
 }
 
 export function CultureStep() {
-  const { character, setCulture } = useCharacterStore();
+  const character = useCharacterStore((s) => s.character);
+  const setCulture = useCharacterStore((s) => s.setCulture);
 
   const selectedEnvironment = character.culture?.environment ?? null;
   const selectedOrganization = character.culture?.organization ?? null;

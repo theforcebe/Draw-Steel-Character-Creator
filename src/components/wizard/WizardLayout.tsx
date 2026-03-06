@@ -3,8 +3,13 @@ import { useCharacterStore } from '../../stores/character-store';
 import { usePlayStore } from '../../stores/play-store';
 import type { CharacterData } from '../../types/character';
 import { GoldButton } from '../ui/GoldButton';
-import { exportCharacterPdf } from '../../engine/pdf-exporter';
-import { getSavedCharacters, deleteCharacter } from '../../engine/character-storage';
+import { exportCharacterPdf, exportAbilityCardsPdf } from '../../engine/pdf-exporter';
+import {
+  getSavedCharacters,
+  deleteCharacter,
+  saveCharacter,
+  updateSavedCharacter,
+} from '../../engine/character-storage';
 import { computeAllStats } from '../../engine/stat-calculator';
 import { getComplicationStatBonuses } from '../../engine/complication-stats';
 import {
@@ -87,7 +92,7 @@ function CategoryIcon({ id, className = '' }: { id: string; className?: string }
   }
 }
 
-/* ─── Saved Characters Modal (unchanged) ─── */
+/* ─── Saved Characters Modal ─── */
 
 function SavedCharactersModal({
   onClose,
@@ -225,6 +230,37 @@ function SavedCharactersModal({
   );
 }
 
+/* ─── Action Buttons Shared ─── */
+
+function ActionButton({
+  onClick,
+  disabled,
+  children,
+  variant = 'default',
+}: {
+  onClick: () => void;
+  disabled?: boolean;
+  children: React.ReactNode;
+  variant?: 'default' | 'primary';
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={[
+        'w-full flex items-center gap-2 px-3 py-2 rounded-xl font-heading text-[0.65rem] uppercase tracking-wider transition-all',
+        disabled ? 'opacity-40 cursor-not-allowed' : '',
+        variant === 'primary'
+          ? 'bg-gold/15 text-gold-light border border-gold/25 hover:bg-gold/25 hover:border-gold/40 font-semibold'
+          : 'text-cream-dark/70 hover:text-gold-light hover:bg-surface-lighter/50',
+      ].join(' ')}
+    >
+      {children}
+    </button>
+  );
+}
+
 /* ─── Main Layout ─── */
 
 interface WizardLayoutProps {
@@ -240,13 +276,20 @@ export function WizardLayout({ children }: WizardLayoutProps) {
   const resetCharacter = useCharacterStore((s) => s.resetCharacter);
   const validationError = useCharacterStore((s) => s.validationError);
   const clearValidationError = useCharacterStore((s) => s.clearValidationError);
+
   const [exporting, setExporting] = useState(false);
+  const [exportingCards, setExportingCards] = useState(false);
   const [showSaved, setShowSaved] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [showMobileActions, setShowMobileActions] = useState(false);
 
   const isWelcome = currentStep === 'welcome';
   const isReview = currentStep === 'review';
   const currentCategory = getCategoryForStep(currentStep);
   const hasSubTabs = currentCategory != null && currentCategory.steps.length > 1;
+  const hasClass = !!character.classChoice;
+
+  /* ── Handlers ── */
 
   async function handleExport() {
     setExporting(true);
@@ -257,6 +300,57 @@ export function WizardLayout({ children }: WizardLayoutProps) {
     } finally {
       setExporting(false);
     }
+  }
+
+  async function handleExportCards() {
+    setExportingCards(true);
+    try {
+      await exportAbilityCardsPdf(character);
+    } catch (err) {
+      alert(`Export failed: ${err instanceof Error ? err.message : String(err)}`);
+    } finally {
+      setExportingCards(false);
+    }
+  }
+
+  function handleSave() {
+    saveCharacter(character);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  }
+
+  function handleSaveAndPlay() {
+    const compBonuses = getComplicationStatBonuses(character.complication, character.level);
+    const stats = computeAllStats({
+      level: character.level,
+      ancestryId: character.ancestryId,
+      formerLifeAncestryId: character.formerLifeAncestryId,
+      classId: character.classChoice?.classId ?? null,
+      kitId: character.classChoice?.kitId ?? null,
+      selectedTraits: character.selectedTraits,
+      complicationBonuses: compBonuses,
+    });
+
+    const charWithStats = { ...character, computedStats: stats ?? character.computedStats };
+
+    let charId = useCharacterStore.getState().playingCharacterId;
+    if (charId) {
+      updateSavedCharacter(charId, charWithStats);
+    } else {
+      const savedChar = saveCharacter(charWithStats);
+      charId = savedChar.id;
+    }
+
+    const stamina = stats?.stamina ?? character.computedStats?.stamina ?? 21;
+    const recoveries = stats?.recoveries ?? character.computedStats?.recoveries ?? 8;
+    const recoveryValue = stats?.recoveryValue ?? character.computedStats?.recoveryValue ?? 7;
+    usePlayStore.getState().initPlayState(charId, stamina, recoveries, recoveryValue);
+
+    useCharacterStore.setState({
+      character: charWithStats,
+      playingCharacterId: charId,
+      mode: 'play',
+    });
   }
 
   function handleNewCharacter() {
@@ -363,7 +457,6 @@ export function WizardLayout({ children }: WizardLayoutProps) {
                         {completion.completed}/{completion.total}
                       </span>
                     </div>
-                    {/* Mini progress bar */}
                     <div className="mt-1.5 h-0.5 rounded-full bg-surface-lighter overflow-hidden">
                       <div
                         className={[
@@ -428,20 +521,58 @@ export function WizardLayout({ children }: WizardLayoutProps) {
           </div>
         </nav>
 
-        {/* Action buttons */}
+        {/* Quick Actions */}
+        <div className="px-3 py-3 border-t border-gold/8 flex flex-col gap-1">
+          <ActionButton onClick={handleSave}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
+              <path d="M17 21v-8H7v8M7 3v5h8" />
+            </svg>
+            {saved ? 'Saved!' : 'Save Character'}
+          </ActionButton>
+          {hasClass && (
+            <ActionButton onClick={handleSaveAndPlay} variant="primary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3" />
+              </svg>
+              Save & Play
+            </ActionButton>
+          )}
+          <ActionButton onClick={handleExport} disabled={exporting}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
+            </svg>
+            {exporting ? 'Exporting...' : 'Export Sheet'}
+          </ActionButton>
+          <ActionButton onClick={handleExportCards} disabled={exportingCards}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2" />
+              <path d="M8 21h8M12 17v4" />
+            </svg>
+            {exportingCards ? 'Exporting...' : 'Export Cards'}
+          </ActionButton>
+        </div>
+
+        {/* New / Saved buttons */}
         <div className="px-3 py-3 border-t border-gold/8 flex gap-2">
           <button
             type="button"
             onClick={handleNewCharacter}
-            className="flex-1 rounded-xl px-3 py-2 font-heading text-[0.6rem] tracking-wider text-gold-muted hover:text-gold hover:bg-gold/8 transition-all uppercase border border-gold/10 hover:border-gold/25"
+            className="flex-1 flex items-center justify-center gap-1.5 rounded-xl px-3 py-2.5 font-heading text-xs tracking-wider text-gold bg-gold/8 border border-gold/20 hover:bg-gold/15 hover:border-gold/35 transition-all uppercase"
           >
-            + New
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+            New
           </button>
           <button
             type="button"
             onClick={() => setShowSaved(true)}
-            className="flex-1 rounded-xl px-3 py-2 font-heading text-[0.6rem] tracking-wider text-gold-muted hover:text-gold hover:bg-gold/8 transition-all uppercase border border-gold/10 hover:border-gold/25"
+            className="flex-1 flex items-center justify-center gap-1.5 rounded-xl px-3 py-2.5 font-heading text-xs tracking-wider text-gold bg-gold/8 border border-gold/20 hover:bg-gold/15 hover:border-gold/35 transition-all uppercase"
           >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z" />
+            </svg>
             Saved
           </button>
         </div>
@@ -455,21 +586,98 @@ export function WizardLayout({ children }: WizardLayoutProps) {
         <div className="lg:hidden shrink-0">
           {/* Header row */}
           <div className="flex items-center justify-between px-3 py-2 border-b border-gold/8">
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1.5">
               <button
                 type="button"
                 onClick={handleNewCharacter}
-                className="rounded-lg px-2 py-1.5 font-heading text-[0.55rem] text-gold-muted hover:text-gold transition-all uppercase"
+                className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 font-heading text-[0.6rem] text-gold bg-gold/8 border border-gold/15 hover:bg-gold/15 transition-all uppercase"
               >
-                + New
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+                New
               </button>
               <button
                 type="button"
                 onClick={() => setShowSaved(true)}
-                className="rounded-lg px-2 py-1.5 font-heading text-[0.55rem] text-gold-muted hover:text-gold transition-all uppercase"
+                className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 font-heading text-[0.6rem] text-gold bg-gold/8 border border-gold/15 hover:bg-gold/15 transition-all uppercase"
               >
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z" />
+                </svg>
                 Saved
               </button>
+              {/* Mobile actions toggle */}
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowMobileActions(!showMobileActions)}
+                  className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 font-heading text-[0.6rem] text-gold bg-gold/8 border border-gold/15 hover:bg-gold/15 transition-all uppercase"
+                >
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="1" /><circle cx="12" cy="5" r="1" /><circle cx="12" cy="19" r="1" />
+                  </svg>
+                  Actions
+                </button>
+                {/* Mobile actions dropdown */}
+                {showMobileActions && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setShowMobileActions(false)} />
+                    <div
+                      className="absolute left-0 top-full mt-1 z-50 w-52 rounded-xl panel-glass border border-gold/15 shadow-2xl py-1.5"
+                      style={{ animation: 'fadeInUp 0.15s ease-out' }}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => { handleSave(); setShowMobileActions(false); }}
+                        className="w-full flex items-center gap-2 px-4 py-2.5 text-left font-heading text-[0.65rem] uppercase tracking-wider text-cream-dark/80 hover:text-gold-light hover:bg-gold/8 transition-all"
+                      >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
+                          <path d="M17 21v-8H7v8M7 3v5h8" />
+                        </svg>
+                        {saved ? 'Saved!' : 'Save Character'}
+                      </button>
+                      {hasClass && (
+                        <button
+                          type="button"
+                          onClick={() => { handleSaveAndPlay(); setShowMobileActions(false); }}
+                          className="w-full flex items-center gap-2 px-4 py-2.5 text-left font-heading text-[0.65rem] uppercase tracking-wider text-gold-light hover:bg-gold/8 transition-all font-semibold"
+                        >
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <polygon points="5 3 19 12 5 21 5 3" />
+                          </svg>
+                          Save & Play
+                        </button>
+                      )}
+                      <div className="my-1 h-px bg-gold/10 mx-3" />
+                      <button
+                        type="button"
+                        disabled={exporting}
+                        onClick={() => { handleExport(); setShowMobileActions(false); }}
+                        className="w-full flex items-center gap-2 px-4 py-2.5 text-left font-heading text-[0.65rem] uppercase tracking-wider text-cream-dark/80 hover:text-gold-light hover:bg-gold/8 transition-all disabled:opacity-40"
+                      >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
+                        </svg>
+                        {exporting ? 'Exporting...' : 'Export Sheet'}
+                      </button>
+                      <button
+                        type="button"
+                        disabled={exportingCards}
+                        onClick={() => { handleExportCards(); setShowMobileActions(false); }}
+                        className="w-full flex items-center gap-2 px-4 py-2.5 text-left font-heading text-[0.65rem] uppercase tracking-wider text-cream-dark/80 hover:text-gold-light hover:bg-gold/8 transition-all disabled:opacity-40"
+                      >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="2" y="3" width="20" height="14" rx="2" />
+                          <path d="M8 21h8M12 17v4" />
+                        </svg>
+                        {exportingCards ? 'Exporting...' : 'Export Cards'}
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
             <span className="font-display text-xs text-gold tracking-wider">Draw Steel</span>
           </div>
@@ -505,7 +713,6 @@ export function WizardLayout({ children }: WizardLayoutProps) {
                 </button>
               );
             })}
-            {/* Review pill */}
             <button
               type="button"
               onClick={() => setStep('review')}
@@ -557,7 +764,6 @@ export function WizardLayout({ children }: WizardLayoutProps) {
 
         {/* ── Bottom Nav ── */}
         <footer className="shrink-0 px-2 sm:px-3 pb-2 sm:pb-3 pt-1">
-          {/* Validation error */}
           {validationError && (
             <div
               className="mx-auto max-w-4xl mb-2 px-4 py-2.5 rounded-xl bg-crimson/15 border border-crimson/30 flex items-center justify-between gap-3"
@@ -571,13 +777,7 @@ export function WizardLayout({ children }: WizardLayoutProps) {
                 onClick={clearValidationError}
                 className="shrink-0 text-crimson/60 hover:text-crimson transition-colors"
               >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path d="M18 6L6 18M6 6l12 12" />
                 </svg>
               </button>
@@ -589,7 +789,6 @@ export function WizardLayout({ children }: WizardLayoutProps) {
               Back
             </GoldButton>
 
-            {/* Current position indicator */}
             <div className="hidden sm:flex items-center gap-3">
               <div className="h-px w-8 bg-gradient-to-r from-transparent to-gold/20" />
               <span className="font-heading text-[0.65rem] uppercase tracking-[0.15em] text-gold-muted">

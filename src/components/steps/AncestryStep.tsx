@@ -18,7 +18,8 @@ const ancestries = ancestryData.ancestries as Record<
 >;
 
 export function AncestryStep() {
-  const { character, setAncestry } = useCharacterStore();
+  const character = useCharacterStore((s) => s.character);
+  const setAncestry = useCharacterStore((s) => s.setAncestry);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-6">

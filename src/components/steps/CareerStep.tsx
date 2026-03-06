@@ -86,7 +86,8 @@ function getFixedGranted(career: CareerData): string[] {
 }
 
 export function CareerStep() {
-  const { character, setCareer } = useCharacterStore();
+  const character = useCharacterStore((s) => s.character);
+  const setCareer = useCharacterStore((s) => s.setCareer);
   const selectedCareerId = character.career?.careerId ?? null;
   const career = selectedCareerId ? careers[selectedCareerId] : null;
 

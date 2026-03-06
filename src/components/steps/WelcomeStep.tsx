@@ -74,7 +74,9 @@ function SavedCharacterCard({
 }
 
 export function WelcomeStep() {
-  const { character, nextStep, resetCharacter } = useCharacterStore();
+  const character = useCharacterStore((s) => s.character);
+  const nextStep = useCharacterStore((s) => s.nextStep);
+  const resetCharacter = useCharacterStore((s) => s.resetCharacter);
   const setLevel = useCharacterStore((s) => s.setLevel);
   const hasExistingCharacter = character.ancestryId !== null;
   const level = character.level;

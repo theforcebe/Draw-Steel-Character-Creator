@@ -99,7 +99,9 @@ function SubChoiceSelect({
 // ---------------------------------------------------------------------------
 
 export function AncestryTraitsStep() {
-  const { character, setSelectedTraits, setFormerLifeAncestry } = useCharacterStore();
+  const character = useCharacterStore((s) => s.character);
+  const setSelectedTraits = useCharacterStore((s) => s.setSelectedTraits);
+  const setFormerLifeAncestry = useCharacterStore((s) => s.setFormerLifeAncestry);
   const ancestryId = character.ancestryId;
 
   // Ensure signature traits that need choices are stored in selectedTraits (cost 0)
