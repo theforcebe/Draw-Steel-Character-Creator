@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useCharacterStore } from '../../stores/character-store';
 import { usePlayStore } from '../../stores/play-store';
-import type { CharacterData, WizardStepId } from '../../types/character';
+import type { WizardStepId } from '../../types/character';
 import { GoldButton } from '../ui/GoldButton';
 import { validateStep } from '../../engine/step-validation';
 import { exportCharacterPdf, exportAbilityCardsPdf } from '../../engine/pdf-exporter';

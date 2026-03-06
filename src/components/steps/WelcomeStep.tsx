@@ -6,7 +6,6 @@ import { computeAllStats } from '../../engine/stat-calculator';
 import { getComplicationStatBonuses } from '../../engine/complication-stats';
 import { exportAllData, importData } from '../../engine/data-export';
 import type { SavedCharacter } from '../../engine/character-storage';
-import type { CharacterData } from '../../types/character';
 
 function getEchelon(level: number): number {
   return Math.floor((level - 1) / 3) + 1;
