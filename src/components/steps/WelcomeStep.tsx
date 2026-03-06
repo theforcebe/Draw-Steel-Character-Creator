@@ -1,9 +1,10 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useCharacterStore } from '../../stores/character-store';
 import { usePlayStore } from '../../stores/play-store';
 import { getSavedCharacters, deleteCharacter } from '../../engine/character-storage';
 import { computeAllStats } from '../../engine/stat-calculator';
 import { getComplicationStatBonuses } from '../../engine/complication-stats';
+import { exportAllData, importData } from '../../engine/data-export';
 import type { SavedCharacter } from '../../engine/character-storage';
 import type { CharacterData } from '../../types/character';
 
@@ -80,8 +81,26 @@ export function WelcomeStep() {
   const echelon = getEchelon(level);
 
   const [savedChars, setSavedChars] = useState<SavedCharacter[]>(() => getSavedCharacters());
+  const [importStatus, setImportStatus] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const refreshSaved = useCallback(() => setSavedChars(getSavedCharacters()), []);
+
+  const handleImport = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const result = await importData(file);
+      setImportStatus(`Imported ${result.imported} character${result.imported !== 1 ? 's' : ''}${result.skipped ? `, ${result.skipped} already existed` : ''}`);
+      refreshSaved();
+      setTimeout(() => setImportStatus(null), 4000);
+    } catch (err) {
+      setImportStatus(`Import failed: ${err instanceof Error ? err.message : String(err)}`);
+      setTimeout(() => setImportStatus(null), 4000);
+    }
+    // Reset input so the same file can be re-selected
+    e.target.value = '';
+  }, [refreshSaved]);
 
   const handleLoad = (data: CharacterData) => {
     const store = useCharacterStore.getState();
@@ -234,6 +253,44 @@ export function WelcomeStep() {
             </div>
           </div>
         )}
+
+        {/* ── Backup / Restore ── */}
+        <div className="mt-10">
+          <div className="ornament-rule mb-5">
+            <span className="font-heading text-[0.65rem] uppercase tracking-[0.2em] text-gold-muted px-4">
+              Backup &amp; Restore
+            </span>
+          </div>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <button
+              type="button"
+              className="btn-secondary w-full sm:w-auto px-6 py-3 text-sm"
+              onClick={() => exportAllData()}
+            >
+              Export Backup
+            </button>
+            <button
+              type="button"
+              className="btn-secondary w-full sm:w-auto px-6 py-3 text-sm"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              Import Backup
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".json"
+              className="hidden"
+              onChange={handleImport}
+            />
+          </div>
+          {importStatus && (
+            <p className="font-body text-sm text-gold text-center mt-3">{importStatus}</p>
+          )}
+          <p className="font-body text-xs text-cream-dark/30 text-center mt-2">
+            Characters are saved locally in your browser. Export a backup to keep your data safe.
+          </p>
+        </div>
 
         {/* Ornamental bottom */}
         <div className="ornament-rule mt-12 mb-4">

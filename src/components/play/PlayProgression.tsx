@@ -6,6 +6,67 @@ import { computeAllStats, getEchelon } from '../../engine/stat-calculator';
 import { getComplicationStatBonuses } from '../../engine/complication-stats';
 import { updateSavedCharacter } from '../../engine/character-storage';
 import { LevelUpModal } from './LevelUpModal';
+import abilitiesData from '../../data/abilities.json';
+import type { RawAbility } from '../../engine/ability-resolver';
+
+interface ClassAbilities {
+  resource: string;
+  primary_characteristics: string[];
+  signature_abilities: RawAbility[];
+  heroic_abilities: RawAbility[];
+}
+
+const classAbilities = abilitiesData.classes as Record<string, ClassAbilities>;
+
+/**
+ * Find abilities that were picked at a specific level.
+ * Matches heroicAbilities entries against the abilities data
+ * to find ones with `level === targetLevel`.
+ */
+function getAbilitiesPickedAtLevel(
+  heroicAbilities: string[],
+  classId: string,
+  subclassId: string | undefined,
+  targetLevel: number,
+): string[] {
+  const classData = classAbilities[classId];
+  if (!classData) return [];
+
+  return heroicAbilities.filter((name) => {
+    const ability = classData.heroic_abilities.find((a) => a.name === name);
+    if (!ability) return false;
+    if (ability.level !== targetLevel) return false;
+    // Also check subclass match
+    if (ability.subclass) {
+      if (!subclassId) return false;
+      return ability.subclass.toLowerCase() === subclassId.toLowerCase();
+    }
+    return true;
+  });
+}
+
+function recalcAndSave(playStore: ReturnType<typeof usePlayStore.getState>, playingCharacterId: string | null) {
+  const char = useCharacterStore.getState().character;
+  const compBonuses = getComplicationStatBonuses(char.complication, char.level);
+  const newStats = computeAllStats({
+    level: char.level,
+    ancestryId: char.ancestryId,
+    formerLifeAncestryId: char.formerLifeAncestryId,
+    classId: char.classChoice?.classId ?? null,
+    kitId: char.classChoice?.kitId ?? null,
+    selectedTraits: char.selectedTraits,
+    complicationBonuses: compBonuses,
+  });
+  if (newStats) {
+    useCharacterStore.setState({
+      character: { ...char, computedStats: newStats },
+    });
+    playStore.updateMaxStats(newStats.stamina, newStats.recoveries, newStats.recoveryValue);
+  }
+  if (playingCharacterId) {
+    updateSavedCharacter(playingCharacterId, useCharacterStore.getState().character);
+  }
+}
 
 export function PlayProgression() {
   const character = useCharacterStore((s) => s.character);
@@ -13,12 +74,14 @@ export function PlayProgression() {
   const playState = playStore.getActiveState();
   const playingCharacterId = useCharacterStore((s) => s.playingCharacterId);
   const [showLevelUp, setShowLevelUp] = useState(false);
+  const [showRevertConfirm, setShowRevertConfirm] = useState(false);
 
   if (!playState) return null;
 
   const currentLevel = character.level;
   const maxLevel = 10;
   const canLevelUp = currentLevel < maxLevel && playState.victories >= VICTORIES_TO_LEVEL_UP;
+  const canRevert = currentLevel > 1;
   const echelon = getEchelon(currentLevel);
   const nextEchelon = currentLevel < maxLevel ? getEchelon(currentLevel + 1) : echelon;
   const echelonChanges = nextEchelon !== echelon;
@@ -30,35 +93,57 @@ export function PlayProgression() {
     100,
   );
 
+  // What would be removed if reverting
+  const currentLevelIsGrantLevel = ABILITY_GRANT_LEVELS.includes(
+    currentLevel as (typeof ABILITY_GRANT_LEVELS)[number],
+  );
+  const abilitiesToRemove = currentLevelIsGrantLevel && character.classChoice
+    ? getAbilitiesPickedAtLevel(
+        character.classChoice.heroicAbilities,
+        character.classChoice.classId,
+        character.classChoice.subclassId,
+        currentLevel,
+      )
+    : [];
+
   function handleLevelUp() {
     setShowLevelUp(true);
   }
 
   function handleLevelUpComplete() {
     setShowLevelUp(false);
-    // Recalculate stats for the new level
-    const char = useCharacterStore.getState().character;
-    const compBonuses = getComplicationStatBonuses(char.complication, char.level);
-    const newStats = computeAllStats({
-      level: char.level,
-      ancestryId: char.ancestryId,
-      formerLifeAncestryId: char.formerLifeAncestryId,
-      classId: char.classChoice?.classId ?? null,
-      kitId: char.classChoice?.kitId ?? null,
-      selectedTraits: char.selectedTraits,
-      complicationBonuses: compBonuses,
-    });
-    if (newStats) {
-      useCharacterStore.setState({
-        character: { ...char, computedStats: newStats },
-      });
-      playStore.updateMaxStats(newStats.stamina, newStats.recoveries, newStats.recoveryValue);
-      playStore.resetVictories();
+    playStore.resetVictories();
+    recalcAndSave(playStore, playingCharacterId);
+  }
+
+  function handleRevertLevel() {
+    if (!character.classChoice || currentLevel <= 1) return;
+
+    const newLevel = currentLevel - 1;
+    const updatedHeroic = character.classChoice.heroicAbilities.filter(
+      (name) => !abilitiesToRemove.includes(name),
+    );
+
+    useCharacterStore.setState((state) => ({
+      character: {
+        ...state.character,
+        level: newLevel,
+        classChoice: {
+          ...state.character.classChoice!,
+          heroicAbilities: updatedHeroic,
+        },
+      },
+    }));
+
+    // Give back victories
+    playStore.resetVictories();
+    // Add back the threshold so they're at max
+    for (let i = 0; i < VICTORIES_TO_LEVEL_UP; i++) {
+      playStore.addVictory();
     }
-    // Save updated character
-    if (playingCharacterId) {
-      updateSavedCharacter(playingCharacterId, useCharacterStore.getState().character);
-    }
+
+    recalcAndSave(playStore, playingCharacterId);
+    setShowRevertConfirm(false);
   }
 
   return (
@@ -201,6 +286,52 @@ export function PlayProgression() {
                 : '?'}
             </p>
           </div>
+        </div>
+      )}
+
+      {/* Revert Level */}
+      {canRevert && (
+        <div className="card px-4 py-3">
+          {!showRevertConfirm ? (
+            <button
+              type="button"
+              onClick={() => setShowRevertConfirm(true)}
+              className="w-full text-center font-heading text-xs uppercase tracking-wider text-crimson/70 hover:text-crimson transition-all py-1"
+            >
+              Revert to Level {currentLevel - 1}
+            </button>
+          ) : (
+            <div className="flex flex-col gap-3">
+              <p className="font-heading text-xs uppercase tracking-wider text-crimson text-center">
+                Revert to Level {currentLevel - 1}?
+              </p>
+              {abilitiesToRemove.length > 0 && (
+                <p className="font-body text-xs text-cream-dark/50 text-center">
+                  This will remove:{' '}
+                  <span className="text-crimson/80">{abilitiesToRemove.join(', ')}</span>
+                </p>
+              )}
+              <p className="font-body text-xs text-cream-dark/40 text-center">
+                Stats will recalculate and victories will be restored.
+              </p>
+              <div className="flex justify-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowRevertConfirm(false)}
+                  className="px-4 py-2 rounded-xl border border-gold/15 font-heading text-xs uppercase tracking-wider text-gold-muted hover:bg-gold/5 transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleRevertLevel}
+                  className="px-4 py-2 rounded-xl bg-crimson/10 border border-crimson/20 font-heading text-xs uppercase tracking-wider text-crimson hover:bg-crimson/20 transition-all"
+                >
+                  Confirm Revert
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
