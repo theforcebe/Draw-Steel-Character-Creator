@@ -2,6 +2,21 @@ import { useCharacterStore } from '../../stores/character-store';
 import { getCharacterSkills } from '../../engine/skill-mapper';
 import { CharacterPortrait } from '../portrait/CharacterPortrait';
 import { CLASS_RESOURCES } from '../../types/character';
+import classFeaturesData from '../../data/class-features.json';
+
+interface ClassFeature {
+  name: string;
+  type: string;
+  description: string;
+  level: number;
+  subclass_effects?: Record<string, string>;
+}
+interface ClassFeaturesEntry {
+  resource_name: string;
+  resource_generation: string[];
+  features: ClassFeature[];
+}
+const classFeatures = (classFeaturesData as { classes: Record<string, ClassFeaturesEntry> }).classes;
 
 function formatId(id: string): string {
   return id.replace(/([A-Z])/g, ' $1').replace(/^./, (c) => c.toUpperCase()).trim();
@@ -127,6 +142,51 @@ export function PlaySheet() {
           {classChoice.subclassSkill && <Row label="Subclass Skill" value={classChoice.subclassSkill} />}
         </Section>
       )}
+
+      {/* Class Features */}
+      {classChoice?.classId && classFeatures[classChoice.classId] && (() => {
+        const cf = classFeatures[classChoice.classId];
+        const features = cf.features.filter((f) => f.level <= character.level);
+        return (
+          <Section title="Class Features">
+            <div className="mb-1.5">
+              <span className="font-heading text-[0.55rem] uppercase tracking-wider text-gold-muted">
+                {cf.resource_name} Generation
+              </span>
+              <ul className="mt-0.5 flex flex-col gap-0.5">
+                {cf.resource_generation.map((rule, i) => (
+                  <li key={i} className="font-body text-[0.55rem] text-cream-dark/60 pl-1.5 border-l border-gold/10">
+                    {rule}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            {features.map((f) => {
+              const subMatch = f.subclass_effects && classChoice.subclassId
+                ? Object.entries(f.subclass_effects).find(
+                    ([key]) => key.toLowerCase() === classChoice.subclassId.toLowerCase(),
+                  )
+                : null;
+              return (
+                <div key={f.name} className="py-1 border-b border-gold/5 last:border-b-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-heading text-[0.65rem] text-gold-light">{f.name}</span>
+                    <span className="text-[0.5rem] font-heading uppercase tracking-wider text-cream-dark/30">
+                      {f.type}
+                    </span>
+                  </div>
+                  <p className="font-body text-[0.55rem] text-cream-dark/50 mt-0.5 leading-relaxed">{f.description}</p>
+                  {subMatch && (
+                    <p className="font-body text-[0.55rem] text-gold-muted/70 mt-0.5 pl-1.5 border-l border-gold/10">
+                      {subMatch[0]}: {subMatch[1]}
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+          </Section>
+        );
+      })()}
 
       {/* Ancestry & Traits */}
       <Section title="Ancestry">

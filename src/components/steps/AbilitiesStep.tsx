@@ -108,19 +108,12 @@ function AbilityCard({
       hoverable
       className="flex flex-col gap-2.5 relative"
     >
-      {/* Header: Name + Selected check + Cost badge */}
+      {/* Header: Name + Cost badge */}
       <div className="flex items-start justify-between gap-2">
         <h4 className="font-heading text-base text-gold tracking-wide leading-tight">
           {ability.name}
         </h4>
         <div className="flex items-center gap-1.5 shrink-0">
-          {selected && (
-            <div className="w-5 h-5 rounded-full bg-gold flex items-center justify-center shadow-lg shadow-gold/40 ring-2 ring-gold/30">
-              <svg className="w-3 h-3 text-ink" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-          )}
           <span
             className={[
               'px-2.5 py-0.5 rounded-full text-xs font-heading font-semibold tracking-wider uppercase whitespace-nowrap',

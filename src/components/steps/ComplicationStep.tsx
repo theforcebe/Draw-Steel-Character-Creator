@@ -370,12 +370,19 @@ export function ComplicationStep() {
                           type="button"
                           onClick={() => handleBenefitChoice(idx)}
                           className={[
-                            'w-full rounded border px-4 py-2 text-left font-body text-sm transition-all',
+                            'relative w-full rounded border px-4 py-2 pr-10 text-left font-body text-sm transition-all',
                             complication.benefitChoiceIndex === idx
                               ? 'border-gold bg-gold/10 text-gold-light'
                               : 'border-gold-dark/30 text-cream-dark/70 hover:border-gold/50',
                           ].join(' ')}
                         >
+                          {complication.benefitChoiceIndex === idx && (
+                            <div className="absolute top-1/2 -translate-y-1/2 right-2.5 w-5 h-5 rounded-full bg-gold flex items-center justify-center shadow-lg shadow-gold/40 ring-2 ring-gold/30 z-10">
+                              <svg className="w-3 h-3 text-ink" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                              </svg>
+                            </div>
+                          )}
                           {option.label}
                         </button>
                       ))}

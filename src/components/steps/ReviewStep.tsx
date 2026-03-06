@@ -10,7 +10,22 @@ import { saveCharacter, updateSavedCharacter } from '../../engine/character-stor
 import { CharacterPortrait } from '../portrait/CharacterPortrait';
 import { computeAllStats } from '../../engine/stat-calculator';
 import { getComplicationStatBonuses } from '../../engine/complication-stats';
+import classFeaturesData from '../../data/class-features.json';
 import type { CharacterData } from '../../types/character';
+
+interface ClassFeature {
+  name: string;
+  type: string;
+  description: string;
+  level: number;
+  subclass_effects?: Record<string, string>;
+}
+interface ClassFeaturesEntry {
+  resource_name: string;
+  resource_generation: string[];
+  features: ClassFeature[];
+}
+const classFeatures = (classFeaturesData as { classes: Record<string, ClassFeaturesEntry> }).classes;
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
@@ -373,6 +388,53 @@ export function ReviewStep() {
             <DetailRow label="Subclass Skill" value={character.classChoice.subclassSkill} />
           )}
         </ParchmentCard>
+
+        {/* Class Features */}
+        {character.classChoice?.classId && classFeatures[character.classChoice.classId] && (() => {
+          const cc = character.classChoice!;
+          const cf = classFeatures[cc.classId];
+          const features = cf.features.filter((f) => f.level <= character.level);
+          return (
+            <ParchmentCard>
+              <SectionHeading>Class Features</SectionHeading>
+              <div className="mb-2">
+                <span className="font-heading text-xs uppercase tracking-wider text-gold-muted">
+                  {cf.resource_name} Generation
+                </span>
+                <ul className="mt-1 flex flex-col gap-0.5">
+                  {cf.resource_generation.map((rule, i) => (
+                    <li key={i} className="font-body text-xs text-cream-dark/70 pl-2 border-l border-gold/10">
+                      {rule}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              {features.map((f) => {
+                const subMatch = f.subclass_effects && cc.subclassId
+                  ? Object.entries(f.subclass_effects).find(
+                      ([key]) => key.toLowerCase() === cc.subclassId.toLowerCase(),
+                    )
+                  : null;
+                return (
+                  <div key={f.name} className="py-1.5 border-b border-gold/10 last:border-b-0">
+                    <div className="flex items-center gap-2">
+                      <span className="font-heading text-sm text-gold-light">{f.name}</span>
+                      <span className="text-[0.6rem] font-heading uppercase tracking-wider text-cream-dark/40">
+                        {f.type}
+                      </span>
+                    </div>
+                    <p className="font-body text-xs text-cream-dark/60 mt-0.5">{f.description}</p>
+                    {subMatch && (
+                      <p className="font-body text-xs text-gold-muted mt-0.5 pl-2 border-l border-gold/10">
+                        {subMatch[0]}: {subMatch[1]}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </ParchmentCard>
+          );
+        })()}
 
         {/* Complication */}
         {character.complication && (

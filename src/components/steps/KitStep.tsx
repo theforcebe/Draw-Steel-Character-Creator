@@ -160,12 +160,6 @@ function KitCard({
         </p>
       </div>
 
-      {/* Selected indicator */}
-      {selected && (
-        <div className="absolute top-3 right-3">
-          <div className="w-3 h-3 rounded-full bg-gold shadow-lg shadow-gold/30" />
-        </div>
-      )}
     </ParchmentCard>
   );
 }

@@ -10,6 +10,7 @@ import complicationsData from '../data/complications.json';
 import perksData from '../data/perks.json';
 import ancestriesData from '../data/ancestries.json';
 import careersData from '../data/careers.json';
+import classFeaturesData from '../data/class-features.json';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -555,18 +556,38 @@ export async function exportCharacterPdf(character: CharacterData): Promise<void
   }
 
   // --- Class features ---
-  const classFeatures: string[] = [];
-  if (classId) classFeatures.push(formatId(classId));
-  if (character.classChoice?.subclassId) classFeatures.push(`Subclass: ${formatId(character.classChoice.subclassId)}`);
-  if (classData?.resource) classFeatures.push(`Resource: ${classData.resource}`);
+  const classFeatLines: string[] = [];
+  if (classId) classFeatLines.push(formatId(classId));
+  if (character.classChoice?.subclassId) classFeatLines.push(`Subclass: ${formatId(character.classChoice.subclassId)}`);
+  if (classData?.resource) classFeatLines.push(`Resource: ${classData.resource}`);
   if (classData?.primary_characteristics) {
-    classFeatures.push(`Primary: ${classData.primary_characteristics.join(', ')}`);
+    classFeatLines.push(`Primary: ${classData.primary_characteristics.join(', ')}`);
   }
-  safeSetText(form, 'Class Features 1', classFeatures.join('\n'));
-  safeSetText(form, 'Class Features List', classFeatures.join('\n'));
+
+  // Add detailed class features from class-features.json
+  const cfData = classId ? (classFeaturesData as { classes: Record<string, { resource_name: string; resource_generation: string[]; features: { name: string; type: string; description: string; level: number; subclass_effects?: Record<string, string> }[] }> }).classes[classId] : null;
+  if (cfData) {
+    classFeatLines.push('');
+    for (const feature of cfData.features) {
+      if (feature.level > character.level) continue;
+      let line = `${feature.name} (${feature.type}): ${feature.description}`;
+      if (feature.subclass_effects && character.classChoice?.subclassId) {
+        const match = Object.entries(feature.subclass_effects).find(
+          ([key]) => key.toLowerCase() === character.classChoice!.subclassId.toLowerCase(),
+        );
+        if (match) line += `\n  → ${match[0]}: ${match[1]}`;
+      }
+      classFeatLines.push(line);
+    }
+  }
+
+  safeSetText(form, 'Class Features 1', classFeatLines.join('\n'));
+  safeSetText(form, 'Class Features List', classFeatLines.join('\n'));
 
   // --- Heroic Resource Rules ---
-  if (classData?.resource) {
+  if (cfData) {
+    safeSetText(form, 'Heroic Resource Rules 1', cfData.resource_generation.join('\n'));
+  } else if (classData?.resource) {
     safeSetText(form, 'Heroic Resource Rules 1',
       `${classData.resource}: You gain ${classData.resource} when you use abilities in combat. Spend ${classData.resource} to power heroic abilities.`);
   }
@@ -646,6 +667,30 @@ export async function exportCharacterPdf(character: CharacterData): Promise<void
       }
     }
   }
+  // Add class feature triggered actions from class-features.json
+  if (cfData) {
+    for (const feature of cfData.features) {
+      if (feature.level > character.level) continue;
+      const ft = feature.type.toLowerCase();
+      if (ft.includes('triggered') || ft === 'free maneuver') {
+        let line = `${feature.name} (${feature.type}) - ${feature.description}`;
+        if (feature.subclass_effects && character.classChoice?.subclassId) {
+          const match = Object.entries(feature.subclass_effects).find(
+            ([key]) => key.toLowerCase() === character.classChoice!.subclassId.toLowerCase(),
+          );
+          if (match) line += ` [${match[0]}: ${match[1]}]`;
+        }
+        if (!triggeredLines.some((l) => l.startsWith(feature.name))) {
+          if (ft === 'free maneuver') {
+            maneuverLines.push(line);
+          } else {
+            triggeredLines.push(line);
+          }
+        }
+      }
+    }
+  }
+
   triggeredLines.push('Opportunity Attack - Free strike when enemy leaves adjacent square without shifting');
 
   safeSetText(form, 'Main Actions List', mainActions.join('\n'));
