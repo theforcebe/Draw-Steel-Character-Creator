@@ -174,7 +174,7 @@ export function ModelStep() {
         </div>
       )}
 
-      <div className="flex flex-col lg:flex-row gap-8 items-start justify-center max-w-4xl mx-auto w-full">
+      <div className="flex flex-col lg:flex-row gap-8 items-center lg:items-start justify-center max-w-4xl mx-auto w-full">
         {/* Model Preview */}
         <div className="flex-shrink-0 flex flex-col items-center gap-4">
           <div className="relative bg-gradient-to-b from-surface-light/50 to-surface/30 rounded-2xl border border-gold/10 p-6">

@@ -79,7 +79,7 @@ export function PlayMode() {
   const displayName = character.name || 'Unnamed Hero';
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden">
+    <div className="flex h-screen flex-col">
       {/* Header */}
       <header className="shrink-0 px-2 sm:px-3 pt-2 sm:pt-3">
         <div className="mx-auto max-w-4xl panel-glass rounded-2xl px-3 sm:px-4 py-2.5 flex items-center justify-between">
