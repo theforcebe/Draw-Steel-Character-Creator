@@ -1,117 +1,47 @@
 import { useEffect } from 'react';
 import type { CharacterData } from '../../types/character';
-import {
-  ANCESTRY_MODELS,
-  KIT_EQUIPMENT,
-  MODEL_CSS,
-  getWeaponOverlay,
-  getArmorOverlay,
-  getHairOverlay,
-  recolorSvg,
-  buildClothingReplacements,
-  parseArmorWeight,
-  parseHasShield,
-} from './models';
-import type { HairStyleId } from './models';
-
-// ---------------------------------------------------------------------------
-// Inject model CSS once
-// ---------------------------------------------------------------------------
-
-let cssInjected = false;
-function ensureModelCss() {
-  if (cssInjected) return;
-  const style = document.createElement('style');
-  style.textContent = MODEL_CSS;
-  document.head.appendChild(style);
-  cssInjected = true;
-}
+import { ANCESTRY_ID_MAP, getTier, ANCESTRY_DEFAULTS } from './model-data';
+import type { ColorOverride } from './model-data';
+import { renderAncestryModel } from './ancestry-renderers';
+import { ensureEnhancedModelCss } from './model-css';
 
 // ---------------------------------------------------------------------------
 // Build complete SVG string for a character
 // ---------------------------------------------------------------------------
 
-/** Strip outer <svg ...> and </svg> tags, returning just the inner content */
-function stripSvgWrapper(svg: string): string {
-  return svg.replace(/^<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
-}
-
 export function buildCharacterSvg(character: CharacterData): string | null {
   const ancestryId = character.ancestryId;
   if (!ancestryId) return null;
 
-  // For revenants, show the former life ancestry with revenant styling
   const isRevenant = ancestryId === 'revenant';
-  const modelId = isRevenant
+  const modelAncestry = isRevenant
     ? (character.formerLifeAncestryId ?? 'revenant')
     : ancestryId;
 
-  const model = ANCESTRY_MODELS[modelId];
-  if (!model) return null;
+  const level = character.level || 1;
+  const kitId = character.classChoice?.kitId ?? null;
+  const weaponId = character.portraitSettings?.weaponId ?? null;
 
-  const { viewW, viewH } = model;
-  let bodySvg = isRevenant ? model.revenant : model.living;
-
-  // Strip the <svg> wrapper — we'll composite everything in our own <svg>
-  bodySvg = stripSvgWrapper(bodySvg);
-
-  // Apply clothing color replacement (only for living models — revenant has its own palette)
-  if (!isRevenant && character.portraitSettings?.clothingColor) {
-    const replacements = buildClothingReplacements(model, character.portraitSettings.clothingColor);
-    bodySvg = recolorSvg(bodySvg, replacements);
+  // Build color overrides from portrait settings
+  let colorOverride: ColorOverride | undefined;
+  if (character.portraitSettings) {
+    const ps = character.portraitSettings;
+    colorOverride = {
+      skin: ps.skinColor || null,
+      armor: ps.armorColor || null,
+      accent: ps.accentColor || null,
+      gem: ps.gemColor || null,
+    };
   }
 
-  // Apply hair color replacement
-  if (!isRevenant && model.hairColor && character.portraitSettings?.hairColor) {
-    bodySvg = bodySvg.replaceAll(model.hairColor, character.portraitSettings.hairColor);
-  }
-
-  // Hair overlay
-  let hairSvg = '';
-  if (model.hasHair && character.portraitSettings?.hairStyle) {
-    const hairColor = isRevenant
-      ? '#1a2020'
-      : (character.portraitSettings?.hairColor || model.defaultHairColor);
-    hairSvg = getHairOverlay(
-      character.portraitSettings.hairStyle as HairStyleId,
-      hairColor,
-      viewW,
-      viewH,
-      model,
-    );
-  }
-
-  // Kit equipment
-  let weaponSvg = '';
-  let armorSvg = '';
-  const kitId = character.classChoice?.kitId;
-  if (kitId) {
-    const kit = KIT_EQUIPMENT[kitId];
-    if (kit) {
-      // Weapon
-      if (kit.weapons[0]) {
-        weaponSvg = getWeaponOverlay(kit.weapons[0], viewW, viewH, model);
-      }
-      // Armor
-      const armorWeight = parseArmorWeight(kit.armor);
-      const hasShield = parseHasShield(kit.armor);
-      const armorColor = character.portraitSettings?.armorColor || '#757575';
-      armorSvg = getArmorOverlay(armorWeight, hasShield, armorColor, viewW, viewH, model);
-    }
-  }
-
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${viewW} ${viewH}" width="100%" height="100%">
-    <style>
-      @keyframes ghostFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
-      @keyframes soulPulse { 0%,100%{opacity:0.7} 50%{opacity:1} }
-      .rev-glow { animation: ghostFloat 3s ease-in-out infinite; }
-      .soul-eye { animation: soulPulse 2s ease-in-out infinite; }
-    </style>
-    ${bodySvg}
-    ${armorSvg}
-    ${weaponSvg}
-    ${hairSvg}
-  </svg>`;
+  return renderAncestryModel(
+    modelAncestry,
+    level,
+    isRevenant,
+    kitId,
+    weaponId,
+    colorOverride,
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -125,12 +55,11 @@ interface CharacterPortraitProps {
 }
 
 export function CharacterPortrait({ character, size = 200, className = '' }: CharacterPortraitProps) {
-  useEffect(ensureModelCss, []);
+  useEffect(() => ensureEnhancedModelCss(), []);
 
   const svgString = buildCharacterSvg(character);
 
   if (!svgString) {
-    // Placeholder when no ancestry selected
     return (
       <div
         className={`flex items-center justify-center ${className}`}

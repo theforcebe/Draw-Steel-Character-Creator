@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { useCharacterStore } from '../../stores/character-store';
 import abilitiesData from '../../data/abilities.json';
+import kitsData from '../../data/kits.json';
+import ancestriesData from '../../data/ancestries.json';
 import { resolveAbility } from '../../engine/ability-resolver';
 import type { RawAbility, ResolvedAbility } from '../../engine/ability-resolver';
 
@@ -12,6 +14,54 @@ interface ClassAbilities {
 }
 
 const classAbilities = abilitiesData.classes as Record<string, ClassAbilities>;
+
+interface KitSignatureAbility {
+  name: string;
+  flavor?: string;
+  keywords: string[];
+  type: string;
+  distance: string;
+  target: string;
+  powerRoll?: string;
+  tier1?: string;
+  tier2?: string;
+  tier3?: string;
+  effect?: string;
+}
+
+interface KitData {
+  name: string;
+  description: string;
+  signatureAbility?: KitSignatureAbility;
+}
+
+const standardKits = (kitsData as Record<string, unknown>).standardKits as Record<string, KitData>;
+
+interface AncestryTrait {
+  name: string;
+  cost: number;
+  description: string;
+  ability?: {
+    name: string;
+    keywords: string[];
+    type: string;
+    distance: string;
+    target: string;
+    power_roll?: string;
+    tier1?: string;
+    tier2?: string;
+    tier3?: string;
+    effect?: string;
+  };
+}
+
+interface AncestryData {
+  name: string;
+  signatureTraits: { name: string; description: string }[];
+  purchasedTraits: AncestryTrait[];
+}
+
+const ancestries = (ancestriesData as Record<string, unknown>).ancestries as Record<string, AncestryData>;
 
 const STANDARD_ACTIONS: {
   category: string;
@@ -133,12 +183,23 @@ const CATEGORY_FILTERS: { id: ActionCategory; label: string }[] = [
   { id: 'Triggered action', label: 'Triggered' },
 ];
 
+/** Check if a type string loosely matches a filter category */
+function matchesFilter(type: string, filter: ActionCategory): boolean {
+  if (filter === 'all') return true;
+  if (filter === 'Triggered action') {
+    return type.includes('Triggered') || type.includes('triggered');
+  }
+  return type === filter;
+}
+
 export function PlayActions() {
   const character = useCharacterStore((s) => s.character);
   const classChoice = character.classChoice;
   const [filter, setFilter] = useState<ActionCategory>('all');
   const [expandedStandard, setExpandedStandard] = useState(true);
   const [expandedAbilities, setExpandedAbilities] = useState(true);
+  const [expandedKit, setExpandedKit] = useState(true);
+  const [expandedTraits, setExpandedTraits] = useState(true);
 
   // Group character abilities by action type
   const abilityGroups = useMemo(() => {
@@ -169,22 +230,76 @@ export function PlayActions() {
     return groups;
   }, [classChoice]);
 
+  // Kit signature ability
+  const kitAbility = useMemo(() => {
+    const kitId = classChoice?.kitId;
+    if (!kitId) return null;
+    const kit = standardKits[kitId];
+    if (!kit?.signatureAbility) return null;
+    return kit.signatureAbility;
+  }, [classChoice?.kitId]);
+
+  // Ancestry traits with triggered/special actions
+  const traitActions = useMemo(() => {
+    const ancestryId = character.ancestryId === 'revenant'
+      ? character.formerLifeAncestryId
+      : character.ancestryId;
+    if (!ancestryId) return [];
+
+    const ancestry = ancestries[ancestryId];
+    if (!ancestry) return [];
+
+    const selectedTraitNames = new Set(character.selectedTraits.map((t) => t.name));
+
+    const result: { name: string; description: string; type: string; hasAbility: boolean; ability?: AncestryTrait['ability'] }[] = [];
+
+    // Signature traits (always active)
+    for (const trait of ancestry.signatureTraits) {
+      const desc = trait.description.toLowerCase();
+      if (desc.includes('triggered') || desc.includes('free strike') || desc.includes('maneuver') || desc.includes('action')) {
+        result.push({ name: trait.name, description: trait.description, type: 'Signature Trait', hasAbility: false });
+      }
+    }
+
+    // Purchased traits (only selected ones)
+    for (const trait of ancestry.purchasedTraits) {
+      if (!selectedTraitNames.has(trait.name)) continue;
+      const desc = trait.description.toLowerCase();
+      if (desc.includes('triggered') || desc.includes('free strike') || desc.includes('maneuver')) {
+        result.push({
+          name: trait.name,
+          description: trait.description,
+          type: 'Ancestry Trait',
+          hasAbility: !!trait.ability,
+          ability: trait.ability,
+        });
+      }
+    }
+
+    return result;
+  }, [character.ancestryId, character.formerLifeAncestryId, character.selectedTraits]);
+
   // Filter standard actions
   const filteredStandard = STANDARD_ACTIONS.filter((cat) => {
     if (filter === 'all') return true;
-    return cat.actions.some((a) => a.type === filter || (filter === 'Triggered action' && a.type.includes('Triggered')));
+    return cat.actions.some((a) => matchesFilter(a.type, filter));
   }).map((cat) => ({
     ...cat,
     actions: filter === 'all'
       ? cat.actions
-      : cat.actions.filter((a) => a.type === filter || (filter === 'Triggered action' && a.type.includes('Triggered'))),
+      : cat.actions.filter((a) => matchesFilter(a.type, filter)),
   })).filter((cat) => cat.actions.length > 0);
 
   // Filter abilities
-  const filteredAbilities = Array.from(abilityGroups.entries()).filter(([type]) => {
-    if (filter === 'all') return true;
-    return type === filter;
-  });
+  const filteredAbilities = Array.from(abilityGroups.entries()).filter(([type]) =>
+    matchesFilter(type, filter),
+  );
+
+  // Filter kit ability
+  const showKit = kitAbility && (filter === 'all' || matchesFilter(kitAbility.type, filter));
+
+  // Filter trait actions
+  const showTraits = traitActions.length > 0 && (filter === 'all' || filter === 'Triggered action');
 
   return (
     <div className="flex flex-col gap-4">
@@ -219,7 +334,7 @@ export function PlayActions() {
               Standard Actions
             </h3>
             <span className="font-heading text-xs text-gold-muted">
-              {expandedStandard ? '−' : '+'}
+              {expandedStandard ? '\u2212' : '+'}
             </span>
           </button>
 
@@ -255,6 +370,75 @@ export function PlayActions() {
         </div>
       )}
 
+      {/* Kit Signature Ability */}
+      {showKit && kitAbility && (
+        <div className="card px-4 py-3">
+          <button
+            type="button"
+            onClick={() => setExpandedKit(!expandedKit)}
+            className="w-full flex items-center justify-between"
+          >
+            <h3 className="font-heading text-xs uppercase tracking-wider text-gold">
+              Kit Ability
+            </h3>
+            <span className="font-heading text-xs text-gold-muted">
+              {expandedKit ? '\u2212' : '+'}
+            </span>
+          </button>
+
+          {expandedKit && (
+            <div className="mt-3">
+              <div className="px-3 py-2.5 rounded-xl bg-surface-light/20 border border-gold/5">
+                <div className="flex items-start justify-between gap-2">
+                  <span className="font-heading text-xs text-gold-light font-semibold">
+                    {kitAbility.name}
+                  </span>
+                  <span className="shrink-0 px-2 py-0.5 rounded-full text-[0.5rem] font-heading font-semibold tracking-wider uppercase bg-gold/15 text-gold">
+                    Kit
+                  </span>
+                </div>
+                {kitAbility.flavor && (
+                  <p className="font-body text-[0.6rem] text-cream-dark/40 italic mt-0.5">
+                    {kitAbility.flavor}
+                  </p>
+                )}
+                <div className="flex flex-wrap gap-x-2 text-[0.6rem] font-body text-cream-dark/40 mt-1">
+                  <span>{kitAbility.type}</span>
+                  <span>{kitAbility.distance}</span>
+                  <span>{kitAbility.target}</span>
+                </div>
+                {kitAbility.keywords.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {kitAbility.keywords.map((kw) => (
+                      <span key={kw} className="text-[0.5rem] font-heading uppercase tracking-wider text-gold-muted/60 bg-gold/5 px-1.5 py-0.5 rounded">
+                        {kw}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                {kitAbility.powerRoll && (
+                  <p className="font-heading text-[0.55rem] text-gold-muted mt-1">
+                    Power Roll + {kitAbility.powerRoll}
+                  </p>
+                )}
+                {kitAbility.tier1 && (
+                  <div className="mt-1 text-[0.6rem] font-body text-cream-dark/45 flex flex-col gap-0.5">
+                    <span>11-: {kitAbility.tier1}</span>
+                    <span>12+: {kitAbility.tier2}</span>
+                    <span className="text-gold-light/80">17+: {kitAbility.tier3}</span>
+                  </div>
+                )}
+                {kitAbility.effect && (
+                  <p className="font-body text-[0.6rem] text-cream-dark/40 mt-1">
+                    Effect: {kitAbility.effect}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Character Abilities by Type */}
       {filteredAbilities.length > 0 && (
         <div className="card px-4 py-3">
@@ -264,10 +448,10 @@ export function PlayActions() {
             className="w-full flex items-center justify-between"
           >
             <h3 className="font-heading text-xs uppercase tracking-wider text-gold">
-              Your Abilities
+              Class Abilities
             </h3>
             <span className="font-heading text-xs text-gold-muted">
-              {expandedAbilities ? '−' : '+'}
+              {expandedAbilities ? '\u2212' : '+'}
             </span>
           </button>
 
@@ -328,7 +512,69 @@ export function PlayActions() {
         </div>
       )}
 
-      {filteredAbilities.length === 0 && filteredStandard.length === 0 && (
+      {/* Ancestry & Trait Triggered Actions */}
+      {showTraits && (
+        <div className="card px-4 py-3">
+          <button
+            type="button"
+            onClick={() => setExpandedTraits(!expandedTraits)}
+            className="w-full flex items-center justify-between"
+          >
+            <h3 className="font-heading text-xs uppercase tracking-wider text-gold">
+              Ancestry &amp; Trait Actions
+            </h3>
+            <span className="font-heading text-xs text-gold-muted">
+              {expandedTraits ? '\u2212' : '+'}
+            </span>
+          </button>
+
+          {expandedTraits && (
+            <div className="mt-3 flex flex-col gap-1.5">
+              {traitActions.map((trait) => (
+                <div
+                  key={trait.name}
+                  className="px-3 py-2.5 rounded-xl bg-surface-light/20 border border-gold/5"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="font-heading text-xs text-gold-light font-semibold">
+                      {trait.name}
+                    </span>
+                    <span className="shrink-0 px-2 py-0.5 rounded-full text-[0.5rem] font-heading font-semibold tracking-wider uppercase bg-emerald-900/30 text-emerald-400/80">
+                      {trait.type}
+                    </span>
+                  </div>
+                  <p className="font-body text-[0.6rem] text-cream-dark/50 mt-1 leading-relaxed">
+                    {trait.description}
+                  </p>
+                  {trait.hasAbility && trait.ability && (
+                    <div className="mt-2 px-2 py-2 rounded-lg bg-surface/30 border border-gold/5">
+                      <div className="flex flex-wrap gap-x-2 text-[0.55rem] font-body text-cream-dark/40">
+                        <span>{trait.ability.type}</span>
+                        <span>{trait.ability.distance}</span>
+                        <span>{trait.ability.target}</span>
+                      </div>
+                      {trait.ability.tier1 && (
+                        <div className="mt-1 text-[0.55rem] font-body text-cream-dark/40 flex flex-col gap-0.5">
+                          <span>11-: {trait.ability.tier1}</span>
+                          <span>12+: {trait.ability.tier2}</span>
+                          <span className="text-gold-light/80">17+: {trait.ability.tier3}</span>
+                        </div>
+                      )}
+                      {trait.ability.effect && (
+                        <p className="font-body text-[0.55rem] text-cream-dark/40 mt-1">
+                          Effect: {trait.ability.effect}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {filteredAbilities.length === 0 && filteredStandard.length === 0 && !showKit && !showTraits && (
         <div className="text-center py-8">
           <p className="font-body text-sm text-cream-dark/40">
             No actions match the current filter.

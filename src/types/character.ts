@@ -105,6 +105,10 @@ export interface PortraitSettings {
   hairColor: string;
   clothingColor: string;
   armorColor: string;
+  weaponId?: string;
+  skinColor?: string;
+  accentColor?: string;
+  gemColor?: string;
 }
 
 export interface CharacterData {

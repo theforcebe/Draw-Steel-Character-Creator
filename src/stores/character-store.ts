@@ -204,13 +204,15 @@ export const useCharacterStore = create<CharacterStore>()(
             classChoice.subclassSkill = '';
           }
 
-          // Ensure portraitSettings exists and has armorColor
+          // Ensure portraitSettings exists and has all expected fields
           if (!('portraitSettings' in character)) {
             character.portraitSettings = null;
           }
           const ps = character.portraitSettings as Record<string, unknown> | null;
-          if (ps && !('armorColor' in ps)) {
-            ps.armorColor = '#757575';
+          if (ps) {
+            if (!('armorColor' in ps)) ps.armorColor = '#757575';
+            // New fields from enhanced model system (weaponId, skinColor, accentColor, gemColor)
+            // These default to undefined/null which is fine — the model system uses ancestry defaults
           }
         }
         // Ensure mode and playingCharacterId exist
