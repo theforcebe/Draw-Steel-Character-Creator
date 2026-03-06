@@ -1,17 +1,18 @@
 import type { Characteristics } from '../types/character';
 
-/** Shape of a raw ability from abilities.json */
+/** Shape of a raw ability from abilities.json (two schemas exist in the data) */
 export interface RawAbility {
   name: string;
   cost: string;
   keywords: string[];
-  type: string;
+  type?: string;
+  action?: string; // alternate field name for type
   distance: string;
   target: string;
-  power_roll: string | null;
-  tier1: string | null;
-  tier2: string | null;
-  tier3: string | null;
+  power_roll: string | { characteristic: string; tier1: string; tier2: string; tier3: string } | null;
+  tier1?: string | null;
+  tier2?: string | null;
+  tier3?: string | null;
   effect?: string | null;
   flavor?: string | null;
   subclass?: string;
@@ -32,6 +33,64 @@ export interface ResolvedAbility {
   tier3: string | null;
   effect: string | null;
   flavor: string | null;
+}
+
+/**
+ * Normalize a raw ability from JSON (handles both data schemas).
+ * Returns a consistent shape with `type`, `power_roll` (string), and top-level tiers.
+ */
+export function normalizeRawAbility(raw: RawAbility): {
+  name: string;
+  cost: string;
+  keywords: string[];
+  type: string;
+  distance: string;
+  target: string;
+  power_roll: string | null;
+  tier1: string | null;
+  tier2: string | null;
+  tier3: string | null;
+  effect: string | null;
+  flavor: string | null;
+  subclass?: string;
+  level?: number;
+} {
+  const abilityType = raw.type || raw.action || 'Action';
+
+  let powerRollStr: string | null = null;
+  let tier1: string | null = null;
+  let tier2: string | null = null;
+  let tier3: string | null = null;
+
+  if (raw.power_roll && typeof raw.power_roll === 'object') {
+    const pr = raw.power_roll;
+    powerRollStr = `Power Roll + ${pr.characteristic}`;
+    tier1 = pr.tier1;
+    tier2 = pr.tier2;
+    tier3 = pr.tier3;
+  } else {
+    powerRollStr = raw.power_roll as string | null;
+    tier1 = raw.tier1 ?? null;
+    tier2 = raw.tier2 ?? null;
+    tier3 = raw.tier3 ?? null;
+  }
+
+  return {
+    name: raw.name,
+    cost: raw.cost,
+    keywords: raw.keywords ?? [],
+    type: abilityType,
+    distance: raw.distance,
+    target: raw.target,
+    power_roll: powerRollStr,
+    tier1,
+    tier2,
+    tier3,
+    effect: raw.effect ?? null,
+    flavor: raw.flavor ?? null,
+    subclass: raw.subclass,
+    level: raw.level,
+  };
 }
 
 /** Map from single-letter abbreviation to characteristic key */
@@ -172,20 +231,20 @@ export function resolveAbility(
   ability: RawAbility,
   chars: Characteristics,
 ): ResolvedAbility {
+  const n = normalizeRawAbility(ability);
+
   return {
-    name: ability.name,
-    cost: ability.cost,
-    keywords: ability.keywords,
-    type: ability.type,
-    distance: ability.distance,
-    target: ability.target,
-    powerRoll: ability.power_roll
-      ? resolvePowerRoll(ability.power_roll, chars)
-      : null,
-    tier1: ability.tier1 ? resolveText(ability.tier1, chars) : null,
-    tier2: ability.tier2 ? resolveText(ability.tier2, chars) : null,
-    tier3: ability.tier3 ? resolveText(ability.tier3, chars) : null,
-    effect: ability.effect ? resolveText(ability.effect, chars) : null,
-    flavor: ability.flavor ?? null,
+    name: n.name,
+    cost: n.cost,
+    keywords: n.keywords,
+    type: n.type,
+    distance: n.distance,
+    target: n.target,
+    powerRoll: n.power_roll ? resolvePowerRoll(n.power_roll, chars) : null,
+    tier1: n.tier1 ? resolveText(n.tier1, chars) : null,
+    tier2: n.tier2 ? resolveText(n.tier2, chars) : null,
+    tier3: n.tier3 ? resolveText(n.tier3, chars) : null,
+    effect: n.effect ? resolveText(n.effect, chars) : null,
+    flavor: n.flavor,
   };
 }

@@ -1,22 +1,16 @@
 import { useCharacterStore } from '../../stores/character-store';
 import { ParchmentCard } from '../ui/ParchmentCard';
 import abilitiesData from '../../data/abilities.json';
+import { normalizeRawAbility } from '../../engine/ability-resolver';
+import type { RawAbility } from '../../engine/ability-resolver';
 
-interface Ability {
-  name: string;
-  cost: string;
-  keywords: string[];
-  type: string;
-  distance: string;
-  target: string;
-  power_roll: string | null;
-  tier1: string | null;
-  tier2: string | null;
-  tier3: string | null;
-  effect?: string | null;
-  flavor?: string | null;
-  subclass?: string;
-  level?: number;
+type Ability = ReturnType<typeof normalizeRawAbility>;
+
+interface ClassAbilitiesRaw {
+  resource: string;
+  primary_characteristics: string[];
+  signature_abilities: RawAbility[];
+  heroic_abilities: RawAbility[];
 }
 
 interface ClassAbilities {
@@ -26,7 +20,18 @@ interface ClassAbilities {
   heroic_abilities: Ability[];
 }
 
-const classAbilities = abilitiesData.classes as Record<string, ClassAbilities>;
+const rawClassAbilities = abilitiesData.classes as Record<string, ClassAbilitiesRaw>;
+
+// Normalize all abilities at load time so both data schemas are handled
+const classAbilities: Record<string, ClassAbilities> = {};
+for (const [id, raw] of Object.entries(rawClassAbilities)) {
+  classAbilities[id] = {
+    resource: raw.resource,
+    primary_characteristics: raw.primary_characteristics,
+    signature_abilities: raw.signature_abilities.map(normalizeRawAbility),
+    heroic_abilities: raw.heroic_abilities.map(normalizeRawAbility),
+  };
+}
 
 /** Levels that grant new ability choices (excluding level 1 which is handled separately). */
 const ABILITY_GRANT_LEVELS = [2, 3, 5, 6, 8, 9] as const;

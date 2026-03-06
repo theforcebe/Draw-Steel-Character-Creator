@@ -1,4 +1,5 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, Component } from 'react';
+import type { ReactNode, ErrorInfo } from 'react';
 import { useCharacterStore } from '../../stores/character-store';
 import { usePlayStore } from '../../stores/play-store';
 import { updateSavedCharacter } from '../../engine/character-storage';
@@ -8,6 +9,32 @@ import { PlayAbilities } from './PlayAbilities';
 import { PlayActions } from './PlayActions';
 import { PlaySheet } from './PlaySheet';
 import { PlayProgression } from './PlayProgression';
+
+class TabErrorBoundary extends Component<{ children: ReactNode; onReset: () => void }, { error: Error | null }> {
+  state: { error: Error | null } = { error: null };
+  static getDerivedStateFromError(error: Error) { return { error }; }
+  componentDidCatch(error: Error, info: ErrorInfo) { console.error('Tab render error:', error, info); }
+  componentDidUpdate(prevProps: { children: ReactNode }) {
+    if (prevProps.children !== this.props.children && this.state.error) {
+      this.setState({ error: null });
+    }
+  }
+  render() {
+    if (this.state.error) {
+      return (
+        <div className="text-center py-12">
+          <p className="font-heading text-sm text-crimson mb-2">Something went wrong rendering this tab.</p>
+          <p className="font-body text-xs text-cream-dark/40 mb-4">{this.state.error.message}</p>
+          <button type="button" onClick={() => { this.setState({ error: null }); this.props.onReset(); }}
+            className="px-4 py-2 rounded-xl border border-gold/30 font-heading text-xs uppercase tracking-wider text-gold-muted hover:text-gold">
+            Go to Combat Tab
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 type PlayTab = 'combat' | 'actions' | 'abilities' | 'sheet' | 'progress';
 
@@ -215,11 +242,13 @@ export function PlayMode() {
       {/* Tab Content */}
       <main className="flex-1 overflow-y-auto px-2 sm:px-3 py-3 sm:py-4">
         <div className="mx-auto max-w-4xl" style={{ animation: 'fadeInUp 0.3s ease-out' }}>
-          {activeTab === 'combat' && <PlayCombat />}
-          {activeTab === 'actions' && <PlayActions />}
-          {activeTab === 'abilities' && <PlayAbilities />}
-          {activeTab === 'sheet' && <PlaySheet />}
-          {activeTab === 'progress' && <PlayProgression />}
+          <TabErrorBoundary onReset={() => setActiveTab('combat')}>
+            {activeTab === 'combat' && <PlayCombat />}
+            {activeTab === 'actions' && <PlayActions />}
+            {activeTab === 'abilities' && <PlayAbilities />}
+            {activeTab === 'sheet' && <PlaySheet />}
+            {activeTab === 'progress' && <PlayProgression />}
+          </TabErrorBoundary>
         </div>
       </main>
 
