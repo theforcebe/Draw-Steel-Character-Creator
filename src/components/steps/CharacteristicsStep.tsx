@@ -29,6 +29,10 @@ function formatArrayLabel(arr: number[]): string {
     .join(', ');
 }
 
+function formatValue(v: number): string {
+  return v >= 0 ? `+${v}` : `${v}`;
+}
+
 function capitalize(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
@@ -38,11 +42,15 @@ export function CharacteristicsStep() {
   const setClassChoice = useCharacterStore((s) => s.setClassChoice);
 
   const [selectedArrayIndex, setSelectedArrayIndex] = useState<number | null>(null);
+  // assignments[i] = which characteristic name is assigned array value i
+  const [assignments, setAssignments] = useState<(CharacteristicName | '')[]>([]);
 
-  // Reset array selection when class changes
   const classId = classChoice?.classId ?? null;
+
+  // Reset when class changes
   useEffect(() => {
     setSelectedArrayIndex(null);
+    setAssignments([]);
   }, [classId]);
 
   if (!classChoice) {
@@ -69,8 +77,10 @@ export function CharacteristicsStep() {
   const fixedStats = classData.fixed;
   const remainingStats = ALL_CHARACTERISTICS.filter((stat) => !(stat in fixedStats));
 
-  function buildCharacteristics(arrayIndex: number): Characteristics {
-    const arr = classData.arrays[arrayIndex];
+  function buildCharacteristics(arr: number[], assigns: (CharacteristicName | '')[]): Characteristics | null {
+    // All slots must be assigned
+    if (assigns.some((a) => !a)) return null;
+
     const result: Characteristics = { might: 0, agility: 0, reason: 0, intuition: 0, presence: 0 };
 
     // Apply fixed values
@@ -78,10 +88,9 @@ export function CharacteristicsStep() {
       result[stat as CharacteristicName] = value;
     }
 
-    // Auto-assign array values to remaining stats in alphabetical order
-    const sorted = [...remainingStats].sort();
-    sorted.forEach((stat, i) => {
-      result[stat] = arr[i];
+    // Apply assigned array values
+    assigns.forEach((stat, i) => {
+      if (stat) result[stat] = arr[i];
     });
 
     return result;
@@ -89,17 +98,53 @@ export function CharacteristicsStep() {
 
   function handleSelectArray(index: number) {
     setSelectedArrayIndex(index);
+    // Reset assignments when picking a new array
+    const arr = classData.arrays[index];
+    const blank: (CharacteristicName | '')[] = new Array(arr.length).fill('');
+    setAssignments(blank);
 
+    // Clear characteristics until they assign all values
     if (!classChoice) return;
-    const characteristics = buildCharacteristics(index);
     setClassChoice({
       ...classChoice,
-      characteristics,
+      characteristics: { might: 0, agility: 0, reason: 0, intuition: 0, presence: 0 },
     });
   }
 
-  const currentCharacteristics = selectedArrayIndex !== null
-    ? buildCharacteristics(selectedArrayIndex)
+  function handleAssign(slotIndex: number, stat: CharacteristicName | '') {
+    if (selectedArrayIndex === null || !classChoice) return;
+    const arr = classData.arrays[selectedArrayIndex];
+
+    const updated = [...assignments];
+
+    // If this stat is already assigned to a different slot, swap them
+    if (stat) {
+      const existingSlot = updated.findIndex((a) => a === stat);
+      if (existingSlot !== -1 && existingSlot !== slotIndex) {
+        updated[existingSlot] = updated[slotIndex]; // swap: give old slot the current slot's value
+      }
+    }
+
+    updated[slotIndex] = stat;
+    setAssignments(updated);
+
+    // If all assigned, save to store
+    const chars = buildCharacteristics(arr, updated);
+    if (chars) {
+      setClassChoice({ ...classChoice, characteristics: chars });
+    } else {
+      // Clear if incomplete
+      setClassChoice({
+        ...classChoice,
+        characteristics: { might: 0, agility: 0, reason: 0, intuition: 0, presence: 0 },
+      });
+    }
+  }
+
+  const selectedArray = selectedArrayIndex !== null ? classData.arrays[selectedArrayIndex] : null;
+  const allAssigned = assignments.length > 0 && assignments.every((a) => a !== '');
+  const finalCharacteristics = selectedArray && allAssigned
+    ? buildCharacteristics(selectedArray, assignments)
     : null;
 
   const className = classChoice.classId.charAt(0).toUpperCase() + classChoice.classId.slice(1);
@@ -112,7 +157,8 @@ export function CharacteristicsStep() {
           Set Characteristics
         </h2>
         <p className="font-body mt-2 text-lg text-cream-dark/80">
-          Your {className} has fixed characteristics and an array you assign to the rest.
+          Your {className} has fixed characteristics. Choose an array and assign
+          each value to a remaining characteristic.
         </p>
       </div>
 
@@ -144,11 +190,6 @@ export function CharacteristicsStep() {
           <span>Choose an Array</span>
           <span className="h-px flex-1 bg-gradient-to-l from-gold-dark/50 to-transparent" />
         </h3>
-        <p className="font-body mb-4 text-center text-sm text-cream-dark/70">
-          Values are assigned to{' '}
-          {remainingStats.sort().map((s) => capitalize(s)).join(', ')}{' '}
-          in alphabetical order.
-        </p>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {classData.arrays.map((arr, index) => {
             const isSelected = selectedArrayIndex === index;
@@ -174,8 +215,80 @@ export function CharacteristicsStep() {
         </div>
       </div>
 
+      {/* Assignment UI */}
+      {selectedArray && (
+        <div className="mb-8">
+          <h3 className="mb-4 flex items-center gap-2 font-heading text-xl text-gold-light">
+            <span className="h-px flex-1 bg-gradient-to-r from-gold-dark/50 to-transparent" />
+            <span>Assign Values</span>
+            <span className="h-px flex-1 bg-gradient-to-l from-gold-dark/50 to-transparent" />
+          </h3>
+          <p className="font-body mb-4 text-center text-sm text-cream-dark/70">
+            Assign each array value to one of your remaining characteristics:{' '}
+            {remainingStats.map((s) => capitalize(s)).join(', ')}.
+          </p>
+          <div className="mx-auto max-w-md flex flex-col gap-3">
+            {selectedArray.map((value, slotIndex) => {
+              const currentAssign = assignments[slotIndex] ?? '';
+              // Available stats: remaining stats not already assigned to another slot
+              const takenByOthers = assignments
+                .filter((_, i) => i !== slotIndex)
+                .filter(Boolean);
+
+              return (
+                <div
+                  key={slotIndex}
+                  className="flex items-center gap-3 rounded-2xl border border-gold-dark/20 bg-surface-light px-4 py-3"
+                >
+                  <span
+                    className={[
+                      'shrink-0 w-12 h-12 flex items-center justify-center rounded-xl font-heading text-xl font-bold',
+                      value > 0
+                        ? 'bg-gold/15 text-gold-light border border-gold/30'
+                        : value < 0
+                          ? 'bg-crimson/10 text-crimson/80 border border-crimson/20'
+                          : 'bg-surface-lighter text-cream-dark/60 border border-gold-dark/15',
+                    ].join(' ')}
+                  >
+                    {formatValue(value)}
+                  </span>
+                  <svg className="w-4 h-4 text-gold-muted shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                  <select
+                    value={currentAssign}
+                    onChange={(e) => handleAssign(slotIndex, e.target.value as CharacteristicName | '')}
+                    className={[
+                      'flex-1 rounded-xl border px-3 py-2.5 font-heading text-sm uppercase tracking-wider outline-none transition-colors',
+                      currentAssign
+                        ? 'border-gold/40 bg-gold/10 text-gold-light'
+                        : 'border-gold-dark/30 bg-surface text-cream-dark/60',
+                      'focus:border-gold focus:ring-1 focus:ring-gold',
+                    ].join(' ')}
+                  >
+                    <option value="">— Select —</option>
+                    {remainingStats
+                      .filter((s) => !takenByOthers.includes(s))
+                      .map((s) => (
+                        <option key={s} value={s}>
+                          {capitalize(s)}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+              );
+            })}
+          </div>
+          {!allAssigned && assignments.some((a) => a) && (
+            <p className="mt-3 text-center font-body text-xs text-gold-muted italic">
+              Assign all values to continue.
+            </p>
+          )}
+        </div>
+      )}
+
       {/* Result Preview */}
-      {currentCharacteristics && (
+      {finalCharacteristics && (
         <div>
           <h3 className="mb-4 flex items-center gap-2 font-heading text-xl text-gold-light">
             <span className="h-px flex-1 bg-gradient-to-r from-gold-dark/50 to-transparent" />
@@ -197,7 +310,7 @@ export function CharacteristicsStep() {
                   >
                     <StatBlock
                       label={capitalize(stat)}
-                      value={currentCharacteristics[stat]}
+                      value={finalCharacteristics[stat]}
                       size="md"
                     />
                   </div>

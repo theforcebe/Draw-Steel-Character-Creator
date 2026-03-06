@@ -191,7 +191,7 @@ export const CONDITION_DESCRIPTIONS: Record<Condition, string> = {
 
 export const ABILITY_GRANT_LEVELS = [2, 3, 5, 6, 8, 9] as const;
 
-export const VICTORIES_TO_LEVEL_UP = 10;
+export const VICTORIES_TO_LEVEL_UP = 14;
 
 export const CLASS_RESOURCES: Record<string, string> = {
   censor: 'Wrath',

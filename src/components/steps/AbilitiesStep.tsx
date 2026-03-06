@@ -209,8 +209,12 @@ function AbilityCard({
 
       {/* Selected indicator */}
       {selected && (
-        <div className="absolute top-3 right-12">
-          <div className="w-3 h-3 rounded-full bg-gold shadow-lg shadow-gold/30" />
+        <div className="absolute top-2.5 right-14">
+          <div className="w-5 h-5 rounded-full bg-gold flex items-center justify-center shadow-lg shadow-gold/40 ring-2 ring-gold/30">
+            <svg className="w-3 h-3 text-ink" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
         </div>
       )}
     </ParchmentCard>

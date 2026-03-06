@@ -4,6 +4,7 @@ import careerData from '../../data/careers.json';
 import perkData from '../../data/perks.json';
 import cultureData from '../../data/cultures.json';
 import { SKILL_GROUPS } from '../../data/skill-groups';
+import { getExcludedSkills } from '../../engine/skill-dedup';
 
 const languageList = cultureData.languages.extantLanguages as { language: string; ancestry: string }[];
 
@@ -137,6 +138,9 @@ export function CareerStep() {
   // Derive the currently chosen value per slot from the stored skills array
   const slotValues = skillSlots.map((_, i) => character.career?.skills[fixedSkills.length + i] ?? '');
 
+  // Skills excluded from other creation steps + within-step dedup
+  const excluded = getExcludedSkills(character, 'career');
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
       {/* Header */}
@@ -236,23 +240,30 @@ export function CareerStep() {
                 </div>
               )}
               <div className="flex flex-col gap-3">
-                {skillSlots.map((slot, i) => (
-                  <div key={i}>
-                    <label className="font-heading text-xs uppercase tracking-wider text-gold-muted">
-                      Choose from {slot.label}
-                    </label>
-                    <select
-                      value={slotValues[i]}
-                      onChange={(e) => handleSkillChange(i, e.target.value)}
-                      className="mt-1 w-full rounded border border-gold-dark/30 bg-surface-light px-3 py-2 font-body text-sm text-cream outline-none focus:border-gold focus:ring-1 focus:ring-gold"
-                    >
-                      <option value="">Select a skill...</option>
-                      {slot.skills.map((s) => (
-                        <option key={s} value={s}>{s}</option>
-                      ))}
-                    </select>
-                  </div>
-                ))}
+                {skillSlots.map((slot, i) => {
+                  // Filter: exclude skills from other steps + other slots in this step + fixed granted
+                  const otherSlotPicks = slotValues.filter((v, j) => j !== i && v);
+                  const filteredSkills = slot.skills.filter(
+                    (s) => !excluded.includes(s) && !otherSlotPicks.includes(s) && !fixedSkills.includes(s),
+                  );
+                  return (
+                    <div key={i}>
+                      <label className="font-heading text-xs uppercase tracking-wider text-gold-muted">
+                        Choose from {slot.label}
+                      </label>
+                      <select
+                        value={slotValues[i]}
+                        onChange={(e) => handleSkillChange(i, e.target.value)}
+                        className="mt-1 w-full rounded border border-gold-dark/30 bg-surface-light px-3 py-2 font-body text-sm text-cream outline-none focus:border-gold focus:ring-1 focus:ring-gold"
+                      >
+                        <option value="">Select a skill...</option>
+                        {filteredSkills.map((s) => (
+                          <option key={s} value={s}>{s}</option>
+                        ))}
+                      </select>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}

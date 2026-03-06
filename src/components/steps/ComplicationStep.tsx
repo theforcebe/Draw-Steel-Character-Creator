@@ -5,6 +5,7 @@ import complicationsData from '../../data/complications.json';
 import cultureData from '../../data/cultures.json';
 import { COMPLICATION_CHOICES } from '../../data/complication-choices';
 import { getSkillsFromGroups, getSkillsExcludingGroups, getAllSkills } from '../../data/skill-groups';
+import { getExcludedSkills } from '../../engine/skill-dedup';
 
 interface Complication {
   name: string;
@@ -104,6 +105,9 @@ export function ComplicationStep() {
     if (!complication) return;
     setComplication({ ...complication, benefitChoiceIndex: index });
   }
+
+  // Skills excluded from other creation steps
+  const excluded = getExcludedSkills(character, 'complication');
 
   const meta = selectedName ? COMPLICATION_CHOICES[selectedName] : null;
   const fixedSkillCount = meta?.fixedSkills?.length ?? 0;
@@ -263,25 +267,36 @@ export function ComplicationStep() {
                         ? 'listed skills'
                         : 'any group';
 
+                  // Get all complication skill picks (excluding fixed) for within-step dedup
+                  const allCompSkillPicks = complication.skills.slice(fixedSkillCount).filter(Boolean);
+
                   return (
                     <div key={choiceIdx} className="mb-4">
                       <p className="font-body text-xs font-semibold uppercase tracking-wider text-gold-muted mb-2">
                         Choose {choice.count} skill{choice.count > 1 ? 's' : ''} ({groupLabel})
                       </p>
                       <div className="flex flex-col gap-2">
-                        {Array.from({ length: choice.count }).map((_, slotIdx) => (
-                          <select
-                            key={slotIdx}
-                            value={complication.skills[offset + slotIdx] ?? ''}
-                            onChange={(e) => handleSkillChange(offset + slotIdx, e.target.value)}
-                            className="w-full rounded border border-gold-dark/30 bg-surface-light px-3 py-2 font-body text-sm text-cream outline-none focus:border-gold focus:ring-1 focus:ring-gold"
-                          >
-                            <option value="">Select a skill...</option>
-                            {available.map((skill) => (
-                              <option key={skill} value={skill}>{skill}</option>
-                            ))}
-                          </select>
-                        ))}
+                        {Array.from({ length: choice.count }).map((_, slotIdx) => {
+                          const currentVal = complication.skills[offset + slotIdx] ?? '';
+                          // Exclude: other steps + other slots in this step (but keep current selection visible)
+                          const otherPicks = allCompSkillPicks.filter((s) => s !== currentVal);
+                          const filteredSkills = available.filter(
+                            (s) => !excluded.includes(s) && !otherPicks.includes(s) && !meta.fixedSkills?.includes(s),
+                          );
+                          return (
+                            <select
+                              key={slotIdx}
+                              value={currentVal}
+                              onChange={(e) => handleSkillChange(offset + slotIdx, e.target.value)}
+                              className="w-full rounded border border-gold-dark/30 bg-surface-light px-3 py-2 font-body text-sm text-cream outline-none focus:border-gold focus:ring-1 focus:ring-gold"
+                            >
+                              <option value="">Select a skill...</option>
+                              {filteredSkills.map((skill) => (
+                                <option key={skill} value={skill}>{skill}</option>
+                              ))}
+                            </select>
+                          );
+                        })}
                       </div>
                     </div>
                   );

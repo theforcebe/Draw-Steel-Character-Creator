@@ -2,6 +2,7 @@ import { useCharacterStore } from '../../stores/character-store';
 import { ParchmentCard } from '../ui/ParchmentCard';
 import cultureData from '../../data/cultures.json';
 import { getSkillsFromGroups } from '../../data/skill-groups';
+import { getExcludedSkills } from '../../engine/skill-dedup';
 import type { EnvironmentId, OrganizationId, UpbringingId } from '../../types/character';
 
 interface CultureAspect {
@@ -93,9 +94,18 @@ export function CultureStep() {
     updateCulture({ upb: id, upbSkill: keep });
   };
 
-  const envSkills = selectedEnvironment ? getAspectSkills(environments[selectedEnvironment]) : [];
-  const orgSkills = selectedOrganization ? getAspectSkills(organizations[selectedOrganization]) : [];
-  const upbSkills = selectedUpbringing ? getAspectSkills(upbringings[selectedUpbringing]) : [];
+  // Skills excluded from other creation steps
+  const excluded = getExcludedSkills(character, 'culture');
+
+  // Raw skill lists per aspect
+  const rawEnvSkills = selectedEnvironment ? getAspectSkills(environments[selectedEnvironment]) : [];
+  const rawOrgSkills = selectedOrganization ? getAspectSkills(organizations[selectedOrganization]) : [];
+  const rawUpbSkills = selectedUpbringing ? getAspectSkills(upbringings[selectedUpbringing]) : [];
+
+  // Filter: exclude cross-step duplicates + within-step picks from other dropdowns
+  const envSkills = rawEnvSkills.filter((s) => !excluded.includes(s) && s !== selectedOrgSkill && s !== selectedUpbSkill);
+  const orgSkills = rawOrgSkills.filter((s) => !excluded.includes(s) && s !== selectedEnvSkill && s !== selectedUpbSkill);
+  const upbSkills = rawUpbSkills.filter((s) => !excluded.includes(s) && s !== selectedEnvSkill && s !== selectedOrgSkill);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">

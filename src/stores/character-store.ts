@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { WIZARD_STEPS } from '../types/character';
+import { validateStep } from '../engine/step-validation';
 import type {
   CharacterData,
   AncestryId,
@@ -34,11 +35,13 @@ interface CharacterStore {
   currentStep: WizardStepId;
   mode: 'create' | 'play';
   playingCharacterId: string | null;
+  validationError: string | null;
 
   // Navigation
   setStep: (step: WizardStepId) => void;
   nextStep: () => void;
   prevStep: () => void;
+  clearValidationError: () => void;
 
   // Mode
   setMode: (mode: 'create' | 'play') => void;
@@ -69,15 +72,20 @@ export const useCharacterStore = create<CharacterStore>()(
       currentStep: 'welcome',
       mode: 'create',
       playingCharacterId: null,
+      validationError: null,
 
       // Navigation
-      setStep: (step) => set({ currentStep: step }),
+      setStep: (step) => set({ currentStep: step, validationError: null }),
 
       nextStep: () =>
         set((state) => {
           const currentIndex = WIZARD_STEPS.indexOf(state.currentStep);
           if (currentIndex < WIZARD_STEPS.length - 1) {
-            return { currentStep: WIZARD_STEPS[currentIndex + 1] };
+            const result = validateStep(state.currentStep, state.character);
+            if (!result.valid) {
+              return { validationError: result.message };
+            }
+            return { currentStep: WIZARD_STEPS[currentIndex + 1], validationError: null };
           }
           return state;
         }),
@@ -86,10 +94,12 @@ export const useCharacterStore = create<CharacterStore>()(
         set((state) => {
           const currentIndex = WIZARD_STEPS.indexOf(state.currentStep);
           if (currentIndex > 0) {
-            return { currentStep: WIZARD_STEPS[currentIndex - 1] };
+            return { currentStep: WIZARD_STEPS[currentIndex - 1], validationError: null };
           }
           return state;
         }),
+
+      clearValidationError: () => set({ validationError: null }),
 
       // Mode
       setMode: (mode) => set({ mode }),
@@ -99,6 +109,7 @@ export const useCharacterStore = create<CharacterStore>()(
       setName: (name) =>
         set((state) => ({
           character: { ...state.character, name },
+          validationError: null,
         })),
 
       setLevel: (level) =>
@@ -115,26 +126,31 @@ export const useCharacterStore = create<CharacterStore>()(
             selectedTraits: [],
             computedStats: null,
           },
+          validationError: null,
         })),
 
       setFormerLifeAncestry: (id) =>
         set((state) => ({
           character: { ...state.character, formerLifeAncestryId: id },
+          validationError: null,
         })),
 
       setSelectedTraits: (traits) =>
         set((state) => ({
           character: { ...state.character, selectedTraits: traits },
+          validationError: null,
         })),
 
       setCulture: (culture) =>
         set((state) => ({
           character: { ...state.character, culture },
+          validationError: null,
         })),
 
       setCareer: (career) =>
         set((state) => ({
           character: { ...state.character, career },
+          validationError: null,
         })),
 
       setClassChoice: (choice) =>
@@ -143,11 +159,13 @@ export const useCharacterStore = create<CharacterStore>()(
             ...state.character,
             classChoice: choice,
           },
+          validationError: null,
         })),
 
       setComplication: (complication) =>
         set((state) => ({
           character: { ...state.character, complication },
+          validationError: null,
         })),
 
       setAppearance: (text) =>
@@ -172,6 +190,7 @@ export const useCharacterStore = create<CharacterStore>()(
           currentStep: 'welcome',
           mode: 'create',
           playingCharacterId: null,
+          validationError: null,
         }),
     }),
     {
