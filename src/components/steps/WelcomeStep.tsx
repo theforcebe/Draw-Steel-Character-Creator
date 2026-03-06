@@ -23,7 +23,7 @@ function SavedCharacterCard({
   onDelete,
 }: {
   entry: SavedCharacter;
-  onLoad: (data: CharacterData) => void;
+  onLoad: (entry: SavedCharacter) => void;
   onPlay: (entry: SavedCharacter) => void;
   onDelete: (id: string) => void;
 }) {
@@ -57,7 +57,7 @@ function SavedCharacterCard({
         <button
           type="button"
           className="rounded-xl bg-gold/10 px-3.5 py-2 font-heading text-xs font-semibold text-gold-light hover:bg-gold/20 transition-all border border-gold/10 hover:border-gold/30"
-          onClick={() => onLoad(entry.data)}
+          onClick={() => onLoad(entry)}
         >
           Load
         </button>
@@ -104,10 +104,10 @@ export function WelcomeStep() {
     e.target.value = '';
   }, [refreshSaved]);
 
-  const handleLoad = (data: CharacterData) => {
+  const handleLoad = (entry: SavedCharacter) => {
     const store = useCharacterStore.getState();
     store.resetCharacter();
-    useCharacterStore.setState({ character: { ...data }, currentStep: 'review' });
+    useCharacterStore.setState({ character: { ...entry.data }, currentStep: 'review', playingCharacterId: entry.id });
   };
 
   const handlePlay = (entry: SavedCharacter) => {

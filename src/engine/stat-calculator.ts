@@ -63,11 +63,11 @@ const CLASS_STATS: Record<string, ClassBaseStats> = {
   elementalist: { baseStamina: 18, staminaPerLevel: 6, baseRecoveries:  8, speedBonus: 0 },
   fury:         { baseStamina: 21, staminaPerLevel: 9, baseRecoveries: 10, speedBonus: 0 },
   null:         { baseStamina: 21, staminaPerLevel: 9, baseRecoveries:  8, speedBonus: 0 },
-  shadow:       { baseStamina: 18, staminaPerLevel: 6, baseRecoveries:  8, speedBonus: 1 },
+  shadow:       { baseStamina: 18, staminaPerLevel: 6, baseRecoveries:  8, speedBonus: 0 },
   tactician:    { baseStamina: 21, staminaPerLevel: 9, baseRecoveries: 10, speedBonus: 0 },
   talent:       { baseStamina: 18, staminaPerLevel: 6, baseRecoveries:  8, speedBonus: 0 },
   troubadour:   { baseStamina: 18, staminaPerLevel: 6, baseRecoveries:  8, speedBonus: 0 },
-  summoner:     { baseStamina: 18, staminaPerLevel: 6, baseRecoveries:  8, speedBonus: 0 },
+  summoner:     { baseStamina: 15, staminaPerLevel: 6, baseRecoveries:  8, speedBonus: 0 },
 };
 
 // ---------------------------------------------------------------------------

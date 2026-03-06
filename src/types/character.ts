@@ -178,20 +178,20 @@ export const CONDITIONS: Condition[] = [
 ];
 
 export const CONDITION_DESCRIPTIONS: Record<Condition, string> = {
-  bleeding: 'Extra damage at start of each turn. Can stack.',
-  dazed: "Can't use triggered actions. Speed halved.",
-  frightened: "Can't willingly move closer to source of fear.",
-  grabbed: "Can't move. Bane on power rolls. Speed is 0.",
-  prone: 'On the ground. Bane on melee strikes. Speed halved.',
-  restrained: "Can't move. Bane on all power rolls. Attacks against have edge.",
-  slowed: 'Speed reduced by 2 (minimum 2).',
-  taunted: "Bane on attacks that don't include the taunter.",
-  weakened: 'Attacks deal half damage.',
+  bleeding: 'When you use a main action, triggered action, or roll using Might/Agility, lose 1d6 + level stamina after. Cannot be prevented.',
+  dazed: "Can only do one thing on your turn: main action, maneuver, or move action. Can't use triggered actions or free maneuvers.",
+  frightened: "Bane on rolls against fear source. Source's rolls against you gain edge. Can't willingly move closer to source.",
+  grabbed: "Speed 0. Can't be force moved (except by grabber). Bane on abilities that don't target grabber.",
+  prone: 'Your strikes take a bane. Melee abilities against you gain edge. Crawling costs +1 square per square. Cannot climb, jump, swim, or fly.',
+  restrained: "Speed 0. Can't stand up or be force moved. Bane on ability rolls and Might/Agility tests. Abilities against you gain edge. Teleporting ends this.",
+  slowed: 'Speed becomes 2 (unless already lower). Cannot shift.',
+  taunted: "Double bane on ability rolls for abilities that don't target the taunter (requires line of effect).",
+  weakened: 'Bane on all power rolls.',
 };
 
 export const ABILITY_GRANT_LEVELS = [2, 3, 5, 6, 8, 9] as const;
 
-export const VICTORIES_TO_LEVEL_UP = 14;
+export const VICTORIES_TO_LEVEL_UP = 16;
 
 export const CLASS_RESOURCES: Record<string, string> = {
   censor: 'Wrath',

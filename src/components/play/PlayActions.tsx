@@ -88,27 +88,27 @@ const STANDARD_ACTIONS: {
     category: 'Main Actions',
     actions: [
       {
-        name: 'Attack',
+        name: 'Free Strike',
         type: 'Main action',
-        description: 'Use one of your abilities that requires a main action.',
+        description: 'Make a basic melee or ranged attack. Roll 2d10 + characteristic. Damage is based on your kit\'s weapon damage tiers.',
       },
       {
         name: 'Charge',
         type: 'Main action',
         description:
-          'Move up to your speed in a straight line, then make a melee free strike or use an ability with the Charge keyword against a target adjacent to you at the end of the move.',
+          'Move up to your speed in a straight line without shifting, then make a melee free strike or use an ability with the Charge keyword against a creature at the end of the move.',
       },
       {
         name: 'Defend',
         type: 'Main action',
         description:
-          'You have a double edge on resistance rolls until the start of your next turn and enemies take a bane on attacks against you.',
+          'All ability power rolls made against you have a double bane until the start of your next turn. No benefit while another creature is taunted by you.',
       },
       {
         name: 'Heal',
         type: 'Main action',
         description:
-          'Spend a Recovery to regain Stamina equal to your recovery value. You can also use this on an adjacent dying ally.',
+          'Choose an adjacent creature who can spend a Recovery or make a saving throw.',
       },
     ],
   },
@@ -116,37 +116,48 @@ const STANDARD_ACTIONS: {
     category: 'Maneuvers',
     actions: [
       {
-        name: 'Drink Potion',
+        name: 'Aid Attack',
         type: 'Maneuver',
-        description: 'Drink a potion you have equipped or give one to an adjacent willing creature.',
+        description: 'Choose an adjacent enemy. The next ability power roll an ally makes against them before the start of your next turn has an edge.',
       },
       {
-        name: 'Knockback',
+        name: 'Catch Breath',
+        type: 'Maneuver',
+        description: 'Spend a Recovery to regain stamina equal to your recovery value.',
+      },
+      {
+        name: 'Escape Grab',
         type: 'Maneuver',
         description:
-          'Push an adjacent creature 1 square. If the creature is your size or smaller, this automatically succeeds.',
-      },
-      {
-        name: 'Make or Assist a Test',
-        type: 'Maneuver',
-        description: 'Make a test using a skill, or assist an adjacent ally with their test.',
-      },
-      {
-        name: 'Stand Up',
-        type: 'Maneuver',
-        description: 'Stand up from prone. Can only be used while prone.',
+          'Power Roll + M or A. ≤11: No effect. 12-16: You escape but the grabber can make a melee free strike first. 17+: You are no longer grabbed. Bane if your size is smaller than the grabber.',
       },
       {
         name: 'Grab',
         type: 'Maneuver',
         description:
-          'Attempt to grab an adjacent creature of your size or smaller. Make a Might test vs. their Might or Agility.',
+          'Power Roll + M vs. adjacent creature. ≤11: No effect. 12-16: You grab, but target makes a free strike first. 17+: Target is grabbed (speed 0). Usually targets your size or smaller; Might 2+ can target up to your Might score.',
+      },
+      {
+        name: 'Knockback',
+        type: 'Maneuver',
+        description:
+          'Power Roll + M vs. adjacent creature. ≤11: Push 1. 12-16: Push 2. 17+: Push 3. Usually targets your size or smaller; Might 2+ can target up to your Might score.',
       },
       {
         name: 'Hide',
         type: 'Maneuver',
         description:
-          'While you have cover or concealment, make an Agility test to become hidden.',
+          'Become hidden from creatures who aren\'t observing you while you have cover or concealment from them.',
+      },
+      {
+        name: 'Stand Up',
+        type: 'Maneuver',
+        description: 'Stand up from prone, ending that condition. You can also use this to make an adjacent prone creature stand up.',
+      },
+      {
+        name: 'Drink Potion',
+        type: 'Maneuver',
+        description: 'Drink a potion you have equipped or give one to an adjacent willing creature.',
       },
     ],
   },
@@ -154,15 +165,15 @@ const STANDARD_ACTIONS: {
     category: 'Move Actions',
     actions: [
       {
-        name: 'Move',
+        name: 'Advance',
         type: 'Move action',
-        description: 'Move up to your speed in squares.',
+        description: 'Move a number of squares up to your speed. You can break up this movement with your maneuver and action.',
       },
       {
-        name: 'Shift',
+        name: 'Disengage',
         type: 'Move action',
         description:
-          'Move 1 square without provoking opportunity attacks (disengage). Some kits grant bonus disengage squares.',
+          'Shift 1 square. Shifting does not provoke opportunity attacks. You can\'t shift into difficult terrain.',
       },
     ],
   },
@@ -173,18 +184,7 @@ const STANDARD_ACTIONS: {
         name: 'Opportunity Attack',
         type: 'Triggered action',
         description:
-          'When an enemy adjacent to you moves away without shifting, you can make a free strike against them.',
-      },
-    ],
-  },
-  {
-    category: 'Free Actions',
-    actions: [
-      {
-        name: 'Free Strike',
-        type: 'Free',
-        description:
-          'A basic attack available to all heroes. Melee: 2 + M damage. Ranged: 2 + A damage. Used with opportunity attacks and charges.',
+          'When an adjacent enemy moves away without shifting, you can make a melee free strike against them as a free triggered action.',
       },
     ],
   },
@@ -213,11 +213,11 @@ export function PlayActions() {
   const character = useCharacterStore((s) => s.character);
   const classChoice = character.classChoice;
   const [filter, setFilter] = useState<ActionCategory>('all');
-  const [expandedStandard, setExpandedStandard] = useState(true);
-  const [expandedClassFeatures, setExpandedClassFeatures] = useState(true);
-  const [expandedAbilities, setExpandedAbilities] = useState(true);
-  const [expandedKit, setExpandedKit] = useState(true);
-  const [expandedTraits, setExpandedTraits] = useState(true);
+  const [expandedStandard, setExpandedStandard] = useState(false);
+  const [expandedClassFeatures, setExpandedClassFeatures] = useState(false);
+  const [expandedAbilities, setExpandedAbilities] = useState(false);
+  const [expandedKit, setExpandedKit] = useState(false);
+  const [expandedTraits, setExpandedTraits] = useState(false);
 
   // Group character abilities by action type
   const abilityGroups = useMemo(() => {
@@ -371,12 +371,12 @@ export function PlayActions() {
           <button
             type="button"
             onClick={() => setExpandedStandard(!expandedStandard)}
-            className="w-full flex items-center justify-between"
+            className="w-full flex items-center justify-between group"
           >
             <h3 className="font-heading text-xs uppercase tracking-wider text-gold">
               Standard Actions
             </h3>
-            <span className="font-heading text-xs text-gold-muted">
+            <span className="w-6 h-6 flex items-center justify-center rounded-lg border border-gold/20 bg-gold/5 text-gold font-heading text-sm group-hover:border-gold/40 group-hover:bg-gold/10 transition-all">
               {expandedStandard ? '\u2212' : '+'}
             </span>
           </button>
@@ -419,12 +419,12 @@ export function PlayActions() {
           <button
             type="button"
             onClick={() => setExpandedClassFeatures(!expandedClassFeatures)}
-            className="w-full flex items-center justify-between"
+            className="w-full flex items-center justify-between group"
           >
             <h3 className="font-heading text-xs uppercase tracking-wider text-gold">
               Class Features
             </h3>
-            <span className="font-heading text-xs text-gold-muted">
+            <span className="w-6 h-6 flex items-center justify-center rounded-lg border border-gold/20 bg-gold/5 text-gold font-heading text-sm group-hover:border-gold/40 group-hover:bg-gold/10 transition-all">
               {expandedClassFeatures ? '\u2212' : '+'}
             </span>
           </button>
@@ -489,11 +489,11 @@ export function PlayActions() {
                     );
                     if (!match) return null;
                     return (
-                      <div className="mt-1.5 px-2 py-1.5 rounded-lg bg-gold/5 border border-gold/10">
-                        <p className="font-heading text-[0.5rem] text-gold-muted uppercase tracking-wider mb-0.5">
+                      <div className="mt-2 px-3 py-2 rounded-xl bg-amber-900/15 border border-amber-500/20">
+                        <p className="font-heading text-[0.55rem] text-amber-400/80 uppercase tracking-wider mb-1 font-semibold">
                           {match[0]}
                         </p>
-                        <p className="font-body text-[0.6rem] text-cream-dark/60 leading-relaxed">
+                        <p className="font-body text-[0.65rem] text-cream-dark/70 leading-relaxed">
                           {match[1]}
                         </p>
                       </div>
@@ -512,12 +512,12 @@ export function PlayActions() {
           <button
             type="button"
             onClick={() => setExpandedKit(!expandedKit)}
-            className="w-full flex items-center justify-between"
+            className="w-full flex items-center justify-between group"
           >
             <h3 className="font-heading text-xs uppercase tracking-wider text-gold">
               Kit Ability
             </h3>
-            <span className="font-heading text-xs text-gold-muted">
+            <span className="w-6 h-6 flex items-center justify-center rounded-lg border border-gold/20 bg-gold/5 text-gold font-heading text-sm group-hover:border-gold/40 group-hover:bg-gold/10 transition-all">
               {expandedKit ? '\u2212' : '+'}
             </span>
           </button>
@@ -581,12 +581,12 @@ export function PlayActions() {
           <button
             type="button"
             onClick={() => setExpandedAbilities(!expandedAbilities)}
-            className="w-full flex items-center justify-between"
+            className="w-full flex items-center justify-between group"
           >
             <h3 className="font-heading text-xs uppercase tracking-wider text-gold">
               Class Abilities
             </h3>
-            <span className="font-heading text-xs text-gold-muted">
+            <span className="w-6 h-6 flex items-center justify-center rounded-lg border border-gold/20 bg-gold/5 text-gold font-heading text-sm group-hover:border-gold/40 group-hover:bg-gold/10 transition-all">
               {expandedAbilities ? '\u2212' : '+'}
             </span>
           </button>
@@ -654,12 +654,12 @@ export function PlayActions() {
           <button
             type="button"
             onClick={() => setExpandedTraits(!expandedTraits)}
-            className="w-full flex items-center justify-between"
+            className="w-full flex items-center justify-between group"
           >
             <h3 className="font-heading text-xs uppercase tracking-wider text-gold">
               Ancestry &amp; Trait Actions
             </h3>
-            <span className="font-heading text-xs text-gold-muted">
+            <span className="w-6 h-6 flex items-center justify-center rounded-lg border border-gold/20 bg-gold/5 text-gold font-heading text-sm group-hover:border-gold/40 group-hover:bg-gold/10 transition-all">
               {expandedTraits ? '\u2212' : '+'}
             </span>
           </button>

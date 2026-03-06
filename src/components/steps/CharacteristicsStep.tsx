@@ -18,7 +18,7 @@ const CLASS_CHARACTERISTICS: Record<string, ClassCharacteristics> = {
   tactician: { fixed: { might: 2, reason: 2 }, arrays: [[2, -1, -1], [1, 1, -1], [1, 0, 0]] },
   talent: { fixed: { reason: 2, presence: 2 }, arrays: [[2, -1, -1], [1, 1, -1], [1, 0, 0]] },
   troubadour: { fixed: { agility: 2, presence: 2 }, arrays: [[2, -1, -1], [1, 1, -1], [1, 0, 0]] },
-  summoner: { fixed: { reason: 2, presence: 2 }, arrays: [[2, -1, -1], [1, 1, -1], [1, 0, 0]] },
+  summoner: { fixed: { reason: 2 }, arrays: [[2, 2, -1, -1], [2, 1, 1, -1], [2, 1, 0, 0], [1, 1, 1, 0]] },
 };
 
 const ALL_CHARACTERISTICS: CharacteristicName[] = ['might', 'agility', 'reason', 'intuition', 'presence'];

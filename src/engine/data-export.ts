@@ -11,8 +11,20 @@ interface ExportData {
 }
 
 export function exportAllData(): void {
-  const characters = getSavedCharacters();
+  const allCharacters = getSavedCharacters();
   const playStates = usePlayStore.getState().states;
+
+  // Deduplicate: if multiple entries share name + ancestry + class, keep the newest
+  const seen = new Map<string, SavedCharacter>();
+  for (const char of allCharacters) {
+    const d = char.data;
+    const key = `${d.name || ''}|${d.ancestryId || ''}|${d.classChoice?.classId || ''}`;
+    const prev = seen.get(key);
+    if (!prev || char.savedAt > prev.savedAt) {
+      seen.set(key, char);
+    }
+  }
+  const characters = [...seen.values()];
 
   const data: ExportData = {
     version: 1,
@@ -47,30 +59,44 @@ export function importData(file: File): Promise<{ imported: number; skipped: num
         const existing = getSavedCharacters();
         const existingIds = new Set(existing.map((c) => c.id));
 
+        // Deduplicate the import file itself: if multiple entries share the
+        // same name + ancestry + class, keep only the most recently saved one.
+        // This handles backup files created before the duplicate-save bug was fixed.
+        const deduped = new Map<string, SavedCharacter>();
+        for (const char of data.characters) {
+          const d = char.data;
+          const key = `${d.name || ''}|${d.ancestryId || ''}|${d.classChoice?.classId || ''}`;
+          const prev = deduped.get(key);
+          if (!prev || char.savedAt > prev.savedAt) {
+            deduped.set(key, char);
+          }
+        }
+
         let imported = 0;
         let skipped = 0;
 
-        for (const char of data.characters) {
-          if (existingIds.has(char.id)) {
+        // Also track names already in localStorage so we don't import a dup
+        // that happens to have a different ID
+        const existingKeys = new Set(
+          existing.map((c) => `${c.data.name || ''}|${c.data.ancestryId || ''}|${c.data.classChoice?.classId || ''}`),
+        );
+
+        for (const char of deduped.values()) {
+          const key = `${char.data.name || ''}|${char.data.ancestryId || ''}|${char.data.classChoice?.classId || ''}`;
+          if (existingIds.has(char.id) || existingKeys.has(key)) {
             skipped++;
             continue;
           }
           // Preserve the original ID so play states stay linked
           saveCharacter(char.data, char.id);
+          existingKeys.add(key);
           imported++;
         }
 
-        // Merge play states into the Zustand store directly
+        // Merge play states into the Zustand store — imported states overwrite existing
         if (data.playStates) {
           const currentStates = usePlayStore.getState().states;
-          const merged = { ...currentStates };
-
-          for (const [id, state] of Object.entries(data.playStates)) {
-            if (!merged[id]) {
-              merged[id] = state;
-            }
-          }
-
+          const merged = { ...currentStates, ...data.playStates };
           usePlayStore.setState({ states: merged });
         }
 

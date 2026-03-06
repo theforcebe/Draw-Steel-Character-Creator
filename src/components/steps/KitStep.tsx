@@ -11,7 +11,7 @@ const NO_KIT_CLASSES: Record<string, string> = {
   elementalist: 'Enchantment',
   null: 'Psionic Augmentation',
   talent: 'Portfolio',
-  summoner: 'Summoning Pact',
+  summoner: "Summoner's Kit (Level 3)",
 };
 
 interface KitBonuses {

@@ -100,7 +100,7 @@ function SavedCharactersModal({
   onLoad,
 }: {
   onClose: () => void;
-  onLoad: (data: CharacterData) => void;
+  onLoad: (entry: SavedCharacter) => void;
 }) {
   const [chars, setChars] = useState<SavedCharacter[]>(() => getSavedCharacters());
 
@@ -207,7 +207,7 @@ function SavedCharactersModal({
                       type="button"
                       className="rounded-xl bg-gold/10 px-3.5 py-2 font-heading text-xs font-semibold text-gold-light hover:bg-gold/20 transition-all border border-gold/10 hover:border-gold/30"
                       onClick={() => {
-                        onLoad(entry.data);
+                        onLoad(entry);
                         onClose();
                       }}
                     >
@@ -325,7 +325,13 @@ export function WizardLayout({ children }: WizardLayoutProps) {
   }
 
   function handleSave() {
-    saveCharacter(character);
+    const charId = useCharacterStore.getState().playingCharacterId;
+    if (charId) {
+      updateSavedCharacter(charId, character);
+    } else {
+      const saved = saveCharacter(character);
+      useCharacterStore.setState({ playingCharacterId: saved.id });
+    }
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   }
@@ -369,9 +375,9 @@ export function WizardLayout({ children }: WizardLayoutProps) {
     setStep('welcome');
   }
 
-  function handleLoadCharacter(data: CharacterData) {
+  function handleLoadCharacter(entry: SavedCharacter) {
     resetCharacter();
-    useCharacterStore.setState({ character: { ...data }, currentStep: 'review' });
+    useCharacterStore.setState({ character: { ...entry.data }, currentStep: 'review', playingCharacterId: entry.id });
   }
 
   /* ── Welcome screen: full-screen, no sidebar ── */

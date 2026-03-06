@@ -65,9 +65,10 @@ const SUBCLASSES: Record<string, SubclassInfo[]> = {
     { id: 'virtuoso', name: 'Virtuoso', description: 'Channel magic through music and song to inspire and devastate', skill: 'Music' },
   ],
   summoner: [
-    { id: 'beastLord', name: 'Beast Lord', description: 'Command powerful natural creatures to fight by your side', skill: '' },
-    { id: 'demonBinder', name: 'Demon Binder', description: 'Bind and control fiendish entities from other planes', skill: '' },
-    { id: 'spiritCaller', name: 'Spirit Caller', description: 'Summon spectral spirits from the ethereal realm', skill: '' },
+    { id: 'blight', name: 'Circle of Blight', description: 'Demonologist who calls forth demons from the Abyssal Waste. Shapechanging demons that grow in hunger and power.', skill: '' },
+    { id: 'graves', name: 'Circle of Graves', description: 'Necromancer who raises undead from the Necropolitan Ruin. Hardy corporeal and incorporeal creatures.', skill: '' },
+    { id: 'spring', name: 'Circle of Spring', description: 'Feybright who beckons pixies, nixies, and sprites from Arcadia. Ephemeral fey spirits with weird and powerful magic.', skill: '' },
+    { id: 'storms', name: 'Circle of Storms', description: 'Storm caster who summons elementals from Quintessence. Forces of nature that impact the environment.', skill: '' },
   ],
 };
 

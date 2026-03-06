@@ -108,7 +108,12 @@ function ExportButtons({ character }: { character: CharacterData }) {
   }
 
   function handleSave() {
-    saveCharacter(character);
+    if (playingCharacterId) {
+      updateSavedCharacter(playingCharacterId, character);
+    } else {
+      const saved = saveCharacter(character);
+      setPlayingCharacterId(saved.id);
+    }
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   }

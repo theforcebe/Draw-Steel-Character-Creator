@@ -271,10 +271,10 @@ export async function exportCombatReferencePdf(): Promise<void> {
 
   // --- YOUR TURN callout box ---
   y1 = drawCalloutBox(p1, MARGIN, y1, contentW, 'Your Turn', [
-    { label: 'Move Action', desc: 'Move up to your speed in squares. You can split movement before and after your other actions.' },
-    { label: 'Main Action', desc: 'Your primary action each turn -- attack, use an ability, charge, catch breath, defend, stride, or aid.' },
-    { label: 'Maneuver', desc: 'One minor action in addition to your main action -- disengage, hide, grab, knockback, drink potion, etc.' },
-    { label: 'Free Actions', desc: 'Free maneuvers and free triggered actions cost nothing. Use them when their conditions are met.' },
+    { label: 'Move Action', desc: 'Advance up to your speed. You can split movement before and after your other actions. Or Disengage (shift 1 square without provoking).' },
+    { label: 'Main Action', desc: 'Your primary action each turn -- free strike, charge, defend, or heal. You can turn it into an extra move action or maneuver.' },
+    { label: 'Maneuver', desc: 'One minor action in addition to your main action -- catch breath, aid attack, grab, knockback, escape grab, hide, stand up, etc.' },
+    { label: 'Free Actions', desc: 'Free maneuvers and free triggered actions cost nothing. No limit on free actions per turn.' },
     { label: 'Triggered Action', desc: 'A reaction used outside your turn. You get one triggered action per round unless stated otherwise.' },
   ], fonts);
 
@@ -291,11 +291,9 @@ export async function exportCombatReferencePdf(): Promise<void> {
     intro: 'Every hero can take these actions on their turn regardless of class or level.',
     items: [
       { name: 'Free Strike', desc: 'Make a basic melee or ranged attack. Roll 2d10 + characteristic. Damage is based on your kit\'s weapon damage tiers.' },
-      { name: 'Charge', desc: 'Move up to your speed in a straight line, then make a melee free strike. You cannot shift or make ranged attacks during a charge.' },
-      { name: 'Catch Breath', desc: 'Spend one recovery to regain stamina equal to your recovery value. Your primary way to heal during combat.' },
-      { name: 'Defend', desc: 'Take a defensive stance. Enemies have a bane on ability rolls against you until the start of your next turn. Ends early if force moved.' },
-      { name: 'Stride', desc: 'Move up to your speed again. This is in addition to your normal move action, letting you cover extra ground.' },
-      { name: 'Aid', desc: 'Help an ally with a test. They gain an edge on their next test before the end of their next turn.' },
+      { name: 'Charge', desc: 'Move up to your speed in a straight line without shifting, then make a melee free strike or use a Charge keyword ability.' },
+      { name: 'Defend', desc: 'All ability power rolls against you have a double bane until the start of your next turn. No benefit while another creature is taunted by you.' },
+      { name: 'Heal', desc: 'Choose an adjacent creature who can spend a Recovery or make a saving throw.' },
     ],
   }, fonts);
 
@@ -303,13 +301,14 @@ export async function exportCombatReferencePdf(): Promise<void> {
     title: 'Maneuvers',
     intro: 'A maneuver is a minor action taken in addition to your main action. One per turn unless stated otherwise.',
     items: [
-      { name: 'Disengage (Shift)', desc: 'Shift a number of squares up to your disengage value (usually 1). Shifting does not provoke opportunity attacks.' },
-      { name: 'Drink Potion', desc: 'Consume a healing potion or other consumable you are carrying. Can also be administered to an adjacent ally.' },
-      { name: 'Knockback', desc: 'Push an adjacent creature of your size or smaller 1 square. This is forced movement and does not provoke opportunity attacks.' },
-      { name: 'Grab', desc: 'Grab an adjacent creature of your size or smaller. They resist with a Might or Agility test vs. your Might. A grabbed creature has speed 0.' },
-      { name: 'Hide', desc: 'If concealed or behind cover, make an Agility test to become hidden. Attacking or moving into the open ends this.' },
-      { name: 'Make or Assist a Test', desc: 'Use a skill in combat or assist an ally\'s test, giving them an edge.' },
-      { name: 'Stand Up', desc: 'If prone, use your maneuver to stand. Does not cost extra movement.' },
+      { name: 'Aid Attack', desc: 'Choose an adjacent enemy. The next ability power roll an ally makes against them before the start of your next turn has an edge.' },
+      { name: 'Catch Breath', desc: 'Spend a Recovery to regain stamina equal to your recovery value.' },
+      { name: 'Escape Grab', desc: 'Roll + M or A. 11-: No effect. 12+: Escape (grabber may free strike first). 17+: Free. Bane if smaller than grabber.' },
+      { name: 'Grab', desc: 'Roll + M vs. adjacent creature. 11-: No effect. 12+: Grab (target may free strike first). 17+: Grabbed. Usually your size or smaller.' },
+      { name: 'Knockback', desc: 'Roll + M vs. adjacent creature. 11-: Push 1. 12+: Push 2. 17+: Push 3. Usually your size or smaller.' },
+      { name: 'Hide', desc: 'Become hidden from creatures not observing you while you have cover or concealment.' },
+      { name: 'Stand Up', desc: 'Stand up from prone, ending that condition. Can also make an adjacent prone creature stand up.' },
+      { name: 'Drink Potion', desc: 'Consume a potion or give one to an adjacent willing creature.' },
     ],
   }, fonts);
 
@@ -383,9 +382,9 @@ export async function exportCombatReferencePdf(): Promise<void> {
     intro: 'Stamina is your ability to keep fighting. When it runs out, you are in mortal danger.',
     items: [
       { name: 'Winded', desc: 'When stamina drops to your winded value or below, you are winded. Some abilities have bonus effects on winded targets.' },
-      { name: 'Dying', desc: 'At 0 stamina, you begin dying. Each turn, roll 1d10: on 6+, spend a recovery to regain stamina. On 5 or less, lose a recovery.' },
-      { name: 'Death', desc: 'If you begin a turn dying with 0 recoveries, your hero dies.' },
-      { name: 'Recoveries', desc: 'Your pool of healing. Spend a recovery to regain stamina equal to your recovery value. Catch Breath costs one recovery.' },
+      { name: 'Dying', desc: 'At 0 stamina or below, you are dying. While dying, you are bleeding and can\'t use the Catch Breath maneuver. You die when your stamina reaches the negative of your winded value.' },
+      { name: 'Death', desc: 'Your hero dies when their stamina equals the negative of their winded value (e.g., winded 10 means death at -10 stamina).' },
+      { name: 'Recoveries', desc: 'Your pool of healing. Spend a recovery to regain stamina equal to your recovery value. Catch Breath is a maneuver that lets you spend a recovery.' },
     ],
   }, fonts);
 
@@ -422,7 +421,7 @@ export async function exportCombatReferencePdf(): Promise<void> {
 
   // Two-column conditions
   const allConditions: SectionItem[] = [
-    { name: 'Bleeding', desc: 'Whenever you use a main action, triggered action, or roll using Might/Agility, lose stamina equal to 1d6 + your level after the action. This loss cannot be prevented.' },
+    { name: 'Bleeding', desc: 'Whenever you use a main action, triggered action, or make a test or ability power roll using Might or Agility, lose stamina equal to 1d6 + your level after the action or roll. This loss cannot be prevented.' },
     { name: 'Dazed', desc: 'You can only do one thing on your turn: a main action, a maneuver, or a move action. You cannot use triggered actions, free triggered actions, or free maneuvers.' },
     { name: 'Frightened', desc: 'Ability rolls against the fear source take a bane. The source\'s rolls against you gain an edge. You cannot willingly move closer to the source.' },
     { name: 'Grabbed', desc: 'Speed 0. Cannot be force moved except by the grabber. Cannot use Knockback. Bane on abilities not targeting the grabber. Move with the grabber.' },

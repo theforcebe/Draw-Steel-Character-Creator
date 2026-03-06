@@ -14,27 +14,33 @@
         {
           "name": "Judgment",
           "type": "Maneuver",
-          "keywords": ["Magic", "Ranged"],
+          "keywords": [
+            "Magic",
+            "Ranged"
+          ],
           "distance": "Ranged 10",
           "target": "One enemy",
-          "description": "Target is judged by you until end of encounter, until you use this ability again, or until you are dying. While judged target uses a main action within your line of effect, deal holy damage equal to twice your Presence score to them as a free triggered action. When judged creature is reduced to 0 Stamina, use Judgment on a new target as a free triggered action.",
+          "description": "Target is judged by you until end of encounter, until you use this ability again, until you willingly end it (no action required), or until another censor judges the target. While judged target uses a main action within your line of effect, deal holy damage equal to twice your Presence score to them as a free triggered action. When judged creature is reduced to 0 Stamina, use Judgment on a new target as a free triggered action.",
           "subclass_effects": {
-            "Exorcist": "When you Judge, teleport up to 2× Presence squares (closer to judged creature).",
-            "Oracle": "When you Judge, deal holy damage equal to 2× Presence to judged creature.",
-            "Paragon": "When you Judge, vertical pull judged creature up to 2× Presence squares."
+            "Exorcist": "The first time on a turn you Judge a creature: teleport up to 2× Presence squares (must move closer to judged creature). You do not need line of effect to your destination.",
+            "Oracle": "The first time on a turn you Judge a creature: deal holy damage equal to 2× Presence to the judged creature.",
+            "Paragon": "The first time on a turn you Judge a creature: vertical pull the judged creature up to 2× Presence squares."
           },
           "level": 1
         },
         {
           "name": "Judgment — Wrath Spends",
           "type": "Free triggered",
-          "description": "Spend 1 Wrath each when triggered. Choose one: (1) Adjacent judged creature starts to shift → melee free strike + target's speed becomes 0 until end of current turn. (2) Judged creature within 10 squares makes power roll → target takes bane on roll. (3) Judged creature within 10 squares uses single-target ability → potency reduced by 1. (4) You deal melee damage to judged creature → creature is taunted by you until end of their next turn.",
+          "description": "Spend 1 Wrath each when triggered. You can choose only one free triggered action option at a time, even if multiple options are triggered by the same effect. (1) Adjacent judged creature starts to shift → melee free strike + target's speed becomes 0 until end of current turn. (2) Judged creature within 10 squares makes power roll → target takes bane on roll. (3) Judged creature within 10 squares uses single-target ability → potency reduced by 1. (4) You deal melee damage to judged creature → creature is taunted by you until end of their next turn.",
           "level": 1
         },
         {
           "name": "My Life for Yours",
           "type": "Triggered",
-          "keywords": ["Magic", "Ranged"],
+          "keywords": [
+            "Magic",
+            "Ranged"
+          ],
           "distance": "Ranged 10",
           "target": "Self or one ally",
           "description": "Trigger: Target starts their turn or takes damage. Effect: Spend a Recovery; target regains Stamina equal to your recovery value. Spend 1 Wrath: End one effect on target that is ended by a saving throw or that ends at end of their turn, or a prone target can stand up.",
@@ -47,7 +53,7 @@
       "resource_generation": [
         "Start of combat: Gain piety equal to your Victories.",
         "+1d3 piety at the start of each of your turns.",
-        "Before rolling piety each turn, you can pray (no action required). Roll 1d3: On 1, gain 1 extra piety but take psychic damage equal to 1d6 + your level. On 2, gain 1 extra piety. On 3, gain 2 extra piety and activate a domain effect.",
+        "Before rolling piety each turn, you can pray (no action required). Roll 1d3: On 1, gain 1 extra piety but take psychic damage equal to 1d6 + your level (which can't be reduced in any way). On 2, gain 1 extra piety. On 3, gain 2 extra piety and activate a domain effect.",
         "Each domain grants +2 piety the first time a specific trigger occurs per encounter (see domain descriptions).",
         "Piety is lost at end of encounter."
       ],
@@ -55,7 +61,10 @@
         {
           "name": "Healing Grace",
           "type": "Maneuver",
-          "keywords": ["Magic", "Ranged"],
+          "keywords": [
+            "Magic",
+            "Ranged"
+          ],
           "distance": "Ranged 10",
           "target": "Self or one ally",
           "description": "Your divine energy restores the righteous. The target can spend a Recovery. Spend 1+ Piety: For each piety spent, choose one: target one additional ally within distance; end one effect on a target ended by a saving throw or ending at end of their turn; a prone target can stand up; a target can spend 1 additional Recovery.",
@@ -64,7 +73,11 @@
         {
           "name": "Ray of Wrath",
           "type": "Main action",
-          "keywords": ["Magic", "Ranged", "Strike"],
+          "keywords": [
+            "Magic",
+            "Ranged",
+            "Strike"
+          ],
           "distance": "Ranged 10",
           "target": "One creature or object",
           "description": "You unleash a blast of holy light upon your foe. Can be used as a ranged free strike. Power Roll + Intuition: 11-: 2 + I damage; 12+: 4 + I damage; 17+: 6 + I damage. Effect: You can have this ability deal holy damage.",
@@ -73,7 +86,10 @@
         {
           "name": "Word of Guidance",
           "type": "Triggered",
-          "keywords": ["Magic", "Ranged"],
+          "keywords": [
+            "Magic",
+            "Ranged"
+          ],
           "distance": "Ranged 10",
           "target": "One ally",
           "description": "Trigger: The target makes an ability roll for a damage-dealing ability. Effect: The power roll gains an edge. Spend 1 Piety: The power roll has a double edge instead. (Alternative: Word of Judgment — Trigger: Target would take damage from ability with power roll. Effect: Power roll takes a bane against target. Spend 1 Piety: Double bane instead.)",
@@ -82,13 +98,13 @@
         {
           "name": "Prayer (Passive Blessing)",
           "type": "Passive",
-          "description": "Choose one prayer as a respite activity: Prayer of Destruction (+1 rolled damage with magic abilities), Prayer of Distance (+2 distance on ranged magic abilities), Prayer of Soldier's Skill (light armor +3 Stamina, light weapon +1 damage), Prayer of Speed (+1 speed and disengage distance), Prayer of Steel (+6 Stamina and +1 stability).",
+          "description": "Choose one prayer as a respite activity: Prayer of Destruction (+1 rolled damage with magic abilities), Prayer of Distance (+2 distance on ranged magic abilities), Prayer of Soldier's Skill (light armor +3 Stamina increasing by 3 at 4th/7th/10th, light weapon +1 damage; can't take if you have a kit), Prayer of Speed (+1 speed and disengage distance), Prayer of Steel (+6 Stamina increasing by 6 at 4th/7th/10th, and +1 stability).",
           "level": 1
         },
         {
           "name": "Conduit Ward",
           "type": "Passive",
-          "description": "Choose one ward as a respite activity: Bastion Ward (+1 saving throws), Quickness Ward (shift up to Intuition squares when adjacent creature damages you), Sanctuary Ward (creature that damages you can't target you with strikes until you harm them or their ally), Spirit Ward (adjacent creature that damages you takes corruption damage equal to your Intuition).",
+          "description": "Choose one ward as a respite activity: Bastion Ward (+1 saving throws), Quickness Ward (shift up to Intuition squares when adjacent creature damages you), Sanctuary Ward (creature that damages you can't target you with strikes until you harm them or one of their allies, or until end of their next turn), Spirit Ward (adjacent creature that damages you takes corruption damage equal to your Intuition).",
           "level": 1
         }
       ]
@@ -105,7 +121,11 @@
         {
           "name": "Hurl Element",
           "type": "Main action",
-          "keywords": ["Magic", "Ranged", "Strike"],
+          "keywords": [
+            "Magic",
+            "Ranged",
+            "Strike"
+          ],
           "distance": "Ranged 10",
           "target": "One creature or object",
           "description": "You hurl a chunk of elemental matter at a foe. Can be used as a ranged free strike. Power Roll + Reason: 11-: 2 + R damage; 12+: 4 + R damage; 17+: 6 + R damage. Choose damage type each time: acid, cold, corruption, fire, lightning, poison, or sonic.",
@@ -114,7 +134,9 @@
         {
           "name": "Practical Magic",
           "type": "Maneuver",
-          "keywords": ["Magic"],
+          "keywords": [
+            "Magic"
+          ],
           "distance": "Self",
           "target": "Self",
           "description": "Choose one effect: (1) Use Knockback maneuver at range of Hurl Element distance, using Reason instead of Might. (2) Deal Reason score damage of a chosen type (acid, cold, corruption, fire, lightning, poison, sonic) to a creature within Hurl Element range. (3) Teleport up to Reason score squares; can spend essence for +1 square per essence spent.",
@@ -123,7 +145,7 @@
         {
           "name": "Persistent Magic",
           "type": "Passive",
-          "description": "Some abilities have a persistent effect with a persistent value. At the start of each of your turns, your essence generation is reduced by the total persistent value of all your active persistent effects. You can end any persistent effect as a free maneuver.",
+          "description": "Some abilities have a persistent effect with a persistent value. At the start of each of your turns, your essence generation is reduced by the total persistent value of all your active persistent effects. You can't maintain abilities that would make you earn negative essence. You can stop maintaining an ability at any time (no action required). If you maintain the same ability on several targets and the effect includes a power roll, you make that roll once and apply the same effect to all targets. A creature can't be affected by multiple instances of a persistent ability. If you take damage equal to or greater than 5× your Reason score in one turn, you stop maintaining all persistent abilities.",
           "level": 1
         },
         {
@@ -167,9 +189,9 @@
           "type": "Passive",
           "description": "You gain benefits in combat based on ferocity amount (last until end of your turn even if you spend ferocity). Benefits scale by subclass — see your aspect's Growing Ferocity table.",
           "subclass_effects": {
-            "Berserker": "2+: Knockback forced movement gains bonus equal to Might. 4+: First push per turn grants 1 surge. 6+: Edge on Might tests and Knockback.",
-            "Reaver": "2+: Knockback forced movement gains bonus equal to Agility. 4+: First slide per turn grants 1 surge. 6+: Edge on Agility tests and Knockback.",
-            "Stormwight": "Growing benefits tied to animal form and kit bonuses. See Stormwight Growing Ferocity table."
+            "Berserker": "2: Knockback forced movement gains bonus equal to Might. 4: First push per turn grants 1 surge. 6: Edge on Might tests and Knockback. 8 (4th level): First push per turn grants 2 surges. 10 (7th level): Double edge on Might tests and Knockback. 12 (10th level): Heroic abilities grant 10 temporary Stamina; power rolls imposing forced movement gain Might score bonus to distance.",
+            "Reaver": "2: Knockback forced movement gains bonus equal to Agility. 4: First slide per turn grants 1 surge. 6: Edge on Agility tests and Knockback. 8 (4th level): First slide per turn grants 2 surges. 10 (7th level): Double edge on Agility tests and Knockback. 12 (10th level): Heroic abilities grant 10 temporary Stamina; power rolls imposing forced movement gain Agility score bonus to distance.",
+            "Stormwight": "Growing benefits tied to stormwight kit. See Stormwight Growing Ferocity table for specific benefits by kit type."
           },
           "level": 1
         },
@@ -184,7 +206,7 @@
           "type": "Triggered",
           "description": "Your primordial aspect grants a triggered action.",
           "subclass_effects": {
-            "Berserker": "Lines of Force (Melee 1): Trigger: You or adjacent creature would be force moved. Effect: Select new target of same size or smaller to be force moved instead; you become source, determine destination, can push; forced movement gains Might score bonus. Spend 1 Ferocity: Gains 2× Might bonus instead.",
+            "Berserker": "Lines of Force (Melee 1, Self or one creature): Trigger: The target would be force moved. Effect: You can select a new target of the same size or smaller within distance to be force moved instead. You become the source of the forced movement, determine the new target's destination, and can push the target instead of using the original forced movement type. Forced movement distance gains a bonus equal to your Might score. Spend 1 Ferocity: The forced movement distance gains a bonus equal to twice your Might score instead.",
             "Reaver": "Unearthly Reflexes: Trigger: You take damage. Effect: Take half damage; shift up to Agility squares. Spend 1 Ferocity: Reduce potency of associated effects by 1.",
             "Stormwight": "Furious Change: Trigger: You lose Stamina and are not dying. Effect: Gain temporary Stamina equal to Might; can enter animal or hybrid form. Spend 1 Ferocity: If not dying, can spend a Recovery."
           },
@@ -206,6 +228,7 @@
     "null": {
       "resource_name": "Discipline",
       "resource_generation": [
+        "Start of combat: Gain discipline equal to your Victories.",
         "+2 discipline at the start of each of your turns.",
         "+1 discipline the first time each combat round an enemy in your Null Field uses a main action.",
         "+1 discipline the first time the Director uses an ability costing Malice.",
@@ -214,23 +237,34 @@
       "features": [
         {
           "name": "Null Field",
-          "type": "Passive",
-          "description": "You emanate a null field in an aura with a size equal to your Intuition score. Enemies in your null field have their potency reduced by 1 for all abilities. The field moves with you and is always active (even outside combat). Ends only if you are dying or willingly end it.",
+          "type": "Maneuver",
+          "keywords": [
+            "Area",
+            "Psionic"
+          ],
+          "distance": "1 aura",
+          "target": "Each enemy in the area",
+          "description": "You emanate a null field in a 1-square aura. Enemies in your null field have their potency reduced by 1 for all abilities. The field moves with you and is always active (even outside combat). Ends only if you are dying or willingly end it (no action required).",
           "level": 1
         },
         {
           "name": "Null Field — Discipline Spend",
           "type": "Free maneuver",
-          "keywords": ["Area", "Psionic"],
+          "keywords": [
+            "Area",
+            "Psionic"
+          ],
           "distance": "1 aura",
           "target": "Each enemy in area",
-          "description": "Once per turn, spend 1 Discipline to choose one effect until start of next turn: Gravitic Disruption — First time each enemy takes damage on their turn, slide them up to 2 squares. Inertial Anchor — Enemies starting turn in area can't shift. Synaptic Break — When you or ally uses ability against target with potency effect, potency increased by 1.",
+          "description": "Once as a free maneuver on each of your turns, spend 1 Discipline to give your Null Field one additional effect until start of next turn: Gravitic Disruption — First time on a turn that a target takes damage, slide them up to 2 squares. Inertial Anchor — Any target who starts their turn in the area can't shift. Synaptic Break — Whenever you or any ally uses an ability against a target that has a potency effect, the potency is increased by 1.",
           "level": 1
         },
         {
           "name": "Inertial Shield",
           "type": "Triggered",
-          "keywords": ["Psionic"],
+          "keywords": [
+            "Psionic"
+          ],
           "distance": "Self",
           "target": "Self",
           "description": "Trigger: You take damage. Effect: You take half the damage. Spend 1 Discipline: Reduce potency of one effect associated with damage by 1 for you.",
@@ -262,7 +296,18 @@
         {
           "name": "Discipline Mastery — Growing Benefits",
           "type": "Passive",
-          "description": "Benefits scale with Discipline amount. 2+ Discipline: Edge on Grab and Knockback (subclass-specific bonus). 4+ Discipline: Gain 1 surge on specific trigger (varies by subclass). 6+ Discipline: Edge on Grab and Knockback maneuvers.",
+          "description": "Benefits scale with Discipline amount (persist until end of turn even if you spend discipline). Benefits are cumulative except where an improved benefit replaces a lesser benefit. Some benefits require a minimum character level.",
+          "subclass_effects": {
+            "Chronokinetic": "2: Disengage as free triggered action when using Knockback (before or after). 4: Gain 1 surge the first time on a turn you willingly move 1+ squares as part of an ability. 6: Edge on Grab and Knockback. 8 (4th level): Gain 2 surges instead of 1 from the 4-discipline benefit. 10 (7th level): Double edge on Grab and Knockback. 12 (10th level): Force move distance gains Intuition bonus; heroic abilities grant 10 temporary Stamina.",
+            "Cryokinetic": "2: Knockback targets one additional creature; untyped psionic damage can be cold instead. 4: Gain 1 surge the first time on a turn you grab a creature or an enemy moves 1+ squares in your Null Field. 6: Edge on Grab and Knockback. 8 (4th level): Gain 2 surges instead of 1 from the 4-discipline benefit. 10 (7th level): Double edge on Grab and Knockback. 12 (10th level): Force move distance gains Intuition bonus; heroic abilities grant 10 temporary Stamina.",
+            "Metakinetic": "2: Knockback forced movement gains Intuition score bonus. 4: Gain 1 surge the first time per combat round you take damage or are force moved (even if resisted). 6: Edge on Grab and Knockback. 8 (4th level): Gain 2 surges instead of 1 from the 4-discipline benefit. 10 (7th level): Double edge on Grab and Knockback. 12 (10th level): Force move distance gains Intuition bonus; heroic abilities grant 10 temporary Stamina."
+          },
+          "level": 1
+        },
+        {
+          "name": "Psionic Augmentation",
+          "type": "Passive",
+          "description": "Choose one augmentation (changeable via psionic meditation as respite activity). Density Augmentation: +6 Stamina (increases by 6 at 4th, 7th, and 10th levels) and +1 stability. Force Augmentation: +1 rolled damage with damage-dealing psionic abilities. Speed Augmentation: +1 speed and +1 disengage distance.",
           "level": 1
         }
       ]
@@ -272,8 +317,8 @@
       "resource_generation": [
         "Start of combat: Gain insight equal to your Victories.",
         "+1d3 insight at the start of each of your turns.",
-        "+1 insight the first time each combat round you deal damage while you have 1+ surges.",
-        "Heroic abilities with power rolls cost 1 fewer insight if you have an edge or double edge on the roll.",
+        "+1 insight the first time each combat round you deal damage incorporating 1+ surges.",
+        "Heroic abilities with power rolls cost 1 fewer insight if you have an edge or double edge on it. If the ability has multiple targets, the cost is reduced even if the ability gains an edge against only some targets.",
         "Insight is lost at end of encounter."
       ],
       "features": [
@@ -283,8 +328,8 @@
           "description": "Your shadow college grants a maneuver. Black Ash Teleport: Teleport up to 5 squares; if destination has cover/concealment, use Hide even if observed. Spend 1+ Insight for 1 extra square each. Coat the Blade: Gain 2 surges; surges can deal poison damage. Spend 1+ Insight for 1 extra surge each. I'm No Threat (Harlequin Mask): Envelop in illusion; strikes gain edge, +1 disengage distance. Spend 1 Insight to appear as specific creature. Smoke Bomb (Caustic Alchemy): Use Hide even without cover; shift Agility squares; if ending with cover, automatically hidden.",
           "subclass_effects": {
             "Black Ash": "Black Ash Teleport: Teleport up to 5 squares. If destination has cover/concealment, can Hide even if observed. If you successfully hide, gain 1 surge. Spend 1+ Insight: +1 square per insight.",
-            "Harlequin Mask": "I'm No Threat: Envelop in illusion appearing harmless. Strikes gain edge; +1 disengage distance. Ends when you harm a creature (gain 1 surge). Spend 1 Insight: Appear as specific creature.",
-            "Caustic Alchemy": "Smoke Bomb: Use Hide even without cover/concealment. Shift up to Agility squares. If ending with cover/concealment, automatically hidden."
+            "Harlequin Mask": "I'm No Threat: Envelop in illusion appearing harmless. Strikes gain edge; +1 disengage distance. Ends when you harm another creature, when you physically interact with a creature, when you use this ability again, or when you end the illusion (no action required). If you end it by harming another creature, you gain 1 surge. Spend 1 Insight: Appear as specific creature.",
+            "Caustic Alchemy": "Coat the Blade: Gain 2 surges; surges can deal poison damage. Spend 1+ Insight for 1 extra surge each. Smoke Bomb: Use Hide even without cover/concealment. Shift up to Agility squares. If ending with cover/concealment, automatically hidden."
           },
           "level": 1
         },
@@ -294,7 +339,7 @@
           "description": "Your shadow college grants a triggered action.",
           "subclass_effects": {
             "Black Ash": "In All This Confusion: Trigger: You take damage. Effect: Take half damage, then teleport up to 4 squares. Spend 1+ Insight: +1 square per insight.",
-            "Caustic Alchemy": "Defensive Roll: Trigger: Another creature damages you. Effect: Take half damage, shift up to 2 squares. If ending with cover, can Hide. Spend 1 Insight: Reduce potency of associated effects by 1.",
+            "Caustic Alchemy": "Defensive Roll: Trigger: Another creature damages you. Effect: Take half damage, shift up to 2 squares. If ending with concealment or cover, can Hide. Spend 1 Insight: Reduce potency of associated effects by 1.",
             "Harlequin Mask": "Clever Trick (1 Insight): Trigger: Enemy targets you with strike. Effect: Choose enemy within distance of triggering strike; strike targets that enemy instead."
           },
           "level": 1
@@ -305,7 +350,7 @@
           "keywords": [],
           "distance": "Self",
           "target": "Self",
-          "description": "Trigger: Another hero ends their turn (that hero can't have used this ability to start their turn). Cost: 1 Insight. Effect: You take your turn immediately after the triggering hero. Can only be used once per round.",
+          "description": "Trigger: Another hero ends their turn (that hero can't have used this ability to start their turn). Cost: 1 Insight. Effect: You take your turn immediately after the triggering hero.",
           "level": 1
         }
       ]
@@ -315,7 +360,7 @@
       "resource_generation": [
         "Start of combat: Gain focus equal to your Victories.",
         "+2 focus at the start of each of your turns.",
-        "+1 focus the first time each round an ally damages a creature you have Marked.",
+        "+1 focus the first time each round you or any ally damages a creature you have Marked.",
         "+1 focus the first time each round an ally within 10 squares uses a heroic ability.",
         "Focus is lost at end of encounter."
       ],
@@ -323,10 +368,12 @@
         {
           "name": "Mark",
           "type": "Maneuver",
-          "keywords": ["Ranged"],
+          "keywords": [
+            "Ranged"
+          ],
           "distance": "Ranged 10",
           "target": "One creature",
-          "description": "Target marked until end of encounter, until you're dying, or until you use this ability again. While marked target is in line of effect, you and allies gain edge on power rolls against marked creature. When marked creature reduced to 0 Stamina, use free triggered action to Mark a new target within distance. Spend 1 Focus: Taunt the target (bane on attacks not including you). Spend 2 Focus: Taunt + you can make a melee free strike against the target if it moves while adjacent to you.",
+          "description": "Target marked until end of encounter, until you're dying, or until you use this ability again. You can willingly end your mark on a creature (no action required). If another tactician marks a creature, your mark on that creature ends. While marked target is in line of effect, you and allies gain edge on power rolls against marked creature. When marked creature reduced to 0 Stamina, use free triggered action to Mark a new target within distance.",
           "level": 1
         },
         {
@@ -338,7 +385,9 @@
         {
           "name": "Strike Now",
           "type": "Main action",
-          "keywords": ["Ranged"],
+          "keywords": [
+            "Ranged"
+          ],
           "distance": "Ranged 10",
           "target": "One ally",
           "description": "Target can use a signature ability as a free triggered action. Spend 5 Focus: Target two allies instead of one.",
@@ -351,7 +400,7 @@
           "subclass_effects": {
             "Insurgent": "Advanced Tactics: Trigger: Ally within 10 deals damage. Effect: Ally gains 2 surges (usable on triggering damage). Spend 1 Focus: If damage has potency effect, potency +1.",
             "Mastermind": "Overwatch: Trigger: Creature within 10 moves. Effect: One ally can make free strike against target during movement. Spend 1 Focus: If target r<v, slowed (EoT).",
-            "Vanguard": "Parry: Trigger: Creature damages you or ally within Melee 2. Effect: Shift 1 square; if adjacent to target after shift, target takes half damage; if potency effect, potency -1. Spend 1 Focus: Distance = Melee 1 + Reason; shift up to Reason squares."
+            "Vanguard": "Parry: Trigger: Creature damages you or ally within Melee 2. Effect: You can shift 1 square. If the target is you, or if you end this shift adjacent to the target, the target takes half the damage. If the damage has any potency effect associated with it, the potency is decreased by 1. Spend 1 Focus: Distance = Melee 1 + Reason; shift up to Reason squares."
           },
           "level": 1
         },
@@ -380,7 +429,7 @@
         "Start of combat: Gain clarity equal to your Victories.",
         "+1d3 clarity at the start of each of your turns.",
         "+1 clarity the first time each round a creature is force moved.",
-        "Can spend clarity you don't have, going negative to minimum of -(1 + Reason score). While negative, you are Strained and take 1 damage per negative clarity point at end of each turn.",
+        "Can spend clarity you don't have, going negative to minimum of -(1 + Reason score). While negative, you are Strained and take damage equal to your negative clarity at the end of each of your turns.",
         "Clarity is lost (or reset from negative) at end of encounter."
       ],
       "features": [
@@ -393,7 +442,12 @@
         {
           "name": "Mind Spike",
           "type": "Main action",
-          "keywords": ["Psionic", "Ranged", "Strike", "Telepathy"],
+          "keywords": [
+            "Psionic",
+            "Ranged",
+            "Strike",
+            "Telepathy"
+          ],
           "distance": "Ranged 10",
           "target": "One creature",
           "description": "Can be used as a ranged free strike. Power Roll + Reason: 11-: 2 + R psychic damage; 12+: 4 + R psychic damage; 17+: 6 + R psychic damage. Strained: Target takes extra 2 psychic damage; you take 2 psychic damage (can't be reduced).",
@@ -408,7 +462,7 @@
         {
           "name": "Talent Ward",
           "type": "Passive",
-          "description": "Choose one ward (changeable via respite). Entropy Ward: When creature damages you, their speed reduced by Reason; can't use triggered actions until end of their next turn. Repulsive Ward: When adjacent creature damages you, free triggered action to push them up to Reason squares. Steel Ward: When you take damage, gain damage immunity equal to Reason until end of next turn. Vanishing Ward: When you take damage, become invisible until end of next turn.",
+          "description": "Choose one ward (changeable via respite). Entropy Ward: When creature damages you, their speed reduced by Reason; can't use triggered actions until end of their next turn. Repulsive Ward: When adjacent creature damages you, free triggered action to push them up to Reason squares. Steel Ward: When you take damage, gain damage immunity equal to Reason until end of your next turn. Vanishing Ward: When you take damage, become invisible until end of your next turn.",
           "level": 1
         },
         {
@@ -416,8 +470,8 @@
           "type": "Varies",
           "description": "Your tradition grants two features.",
           "subclass_effects": {
-            "Chronopathy": "Accelerate (Maneuver, Ranged 10): Target shifts up to Reason squares. Spend 2 Clarity: Target can also use a maneuver. Again (Triggered, Ranged 10): Trigger: Target makes ability roll. Effect: Target must reroll and use new result.",
-            "Telekinesis": "Minor Telekinesis (Maneuver, Ranged 10): Slide target up to Reason squares. Spend 2+ Clarity: +1 size per 2 clarity. Spend 3 Clarity: Can vertical slide. Repel (Triggered, Ranged 10): Trigger: Ally takes damage or is force moved. Effect: Half damage OR reduce forced movement by Reason squares. If movement reduced to 0, can push source Reason squares.",
+            "Chronopathy": "Accelerate (Maneuver, Ranged 10): Target shifts up to Reason squares. Spend 2 Clarity: Target can also use a maneuver. Again (Triggered, Ranged 10): Trigger: Target makes ability roll. You can use this after seeing the result. Effect: Target must reroll and use new result.",
+            "Telekinesis": "Minor Telekinesis (Maneuver, Ranged 10): Slide target up to Reason squares. Spend 2+ Clarity: +1 size per 2 clarity. Spend 3 Clarity: Can vertical slide. Repel (Triggered, Ranged 10, Self or one ally): Trigger: Target takes damage or is force moved. Effect: Half damage OR reduce forced movement by Reason squares. If movement reduced to 0, can push source Reason squares.",
             "Telepathy": "Feedback Loop (Triggered, Ranged 10): Trigger: Target deals damage to ally. Effect: Target takes psychic damage equal to half triggering damage. Remote Assistance (Maneuver, Ranged 10): Next ability roll ally makes against target gains edge. Spend 1 Clarity: +1 target."
           },
           "level": 1
@@ -452,7 +506,11 @@
         {
           "name": "Choreography",
           "type": "No action",
-          "keywords": ["Area", "Magic", "Performance"],
+          "keywords": [
+            "Area",
+            "Magic",
+            "Performance"
+          ],
           "distance": "5 aura",
           "target": "Self and each ally in the area",
           "description": "While this performance is active, each target who starts their turn in the area gains a +2 bonus to speed until end of their turn.",
@@ -461,7 +519,11 @@
         {
           "name": "Revitalizing Limerick",
           "type": "No action",
-          "keywords": ["Area", "Magic", "Performance"],
+          "keywords": [
+            "Area",
+            "Magic",
+            "Performance"
+          ],
           "distance": "5 aura",
           "target": "Self and each ally in the area",
           "description": "At the end of each of your turns while this performance is active, you can choose up to a number of targets equal to your Presence score. Each chosen target can spend a Recovery.",
@@ -501,35 +563,235 @@
       "resource_name": "Essence",
       "resource_generation": [
         "Start of combat: Gain essence equal to your Victories.",
-        "+2 essence at the start of each of your turns.",
-        "+1 essence when one of your summoned creatures is destroyed.",
-        "You can sacrifice a summoned creature as a free maneuver to gain 2 essence.",
-        "Essence is lost at end of encounter."
+        "+2 essence at the start of each of your turns (increases to +3 at 7th level via Font of Creation).",
+        "+1 essence the first time each combat round that any minion (yours or enemy) dies unwillingly within your Summoner's Range.",
+        "You can sacrifice one or more minions within your Summoner's Range when using a heroic ability or calling forth a minion to reduce the cost by 1 per minion sacrificed. Can't kill minions that used a main action or maneuver during the turn.",
+        "Essence is lost at end of encounter.",
+        "Outside of combat: You can use heroic abilities and essence-cost effects without spending essence, but can't reuse the same ability/effect until you gain a Victory or finish a respite."
       ],
       "features": [
         {
-          "name": "Summon Minions",
-          "type": "Free maneuver",
-          "description": "At the start of each round, summon four signature minions in unoccupied spaces within 5 squares. Your subclass determines minion type. Minions act on your turn.",
+          "name": "Summoner Circle",
+          "type": "Passive",
+          "description": "Choose a summoner circle (subclass). Your circle determines your portfolio of minions and grants additional features.",
+          "subclass_effects": {
+            "Blight": "You are a demonologist who calls forth demons from the Abyssal Waste. Your portfolio includes shapechanging demons that grow in hunger and power over time. You can communicate with creatures that have the Abyssal keyword even if you don't share a language.",
+            "Graves": "You are a necromancer who raises undead creatures from the Necropolitan Ruin. The corporeal and incorporeal creatures under your command are hardy and many. You can communicate with creatures that have the Undead keyword even if you don't share a language.",
+            "Spring": "You are a feybright who beckons pixies, nixies, and sprites from Arcadia. Your portfolio features ephemeral fey spirits surrounded by weird and powerful magic. You can communicate with creatures that have the Fey keyword even if you don't share a language.",
+            "Storms": "You are a storm caster who summons elementals from Quintessence. This portfolio contains forces of nature that leave a big impact on the environment. You can communicate with creatures that have the Elemental keyword even if you don't share a language."
+          },
           "level": 1
         },
         {
-          "name": "Command Minions",
-          "type": "Maneuver",
-          "description": "Command your summoned minions. Each minion can move up to their speed and make one attack.",
+          "name": "Minions",
+          "type": "Passive",
+          "description": "You can summon and maintain up to 8 minions (increases by 4 at 4th level). You can manage up to two squads. Your Summoner's Range is 5 + Reason. Start of combat: summon up to 2 signature minions at no cost. Start of each turn: summon up to 3 signature minions at no cost (4 with Horde Formation; +1 additional at 7th level). Minions act on your turn. Minions pool Stamina in squads. When a squad loses Stamina equal to a single member's value, one minion dies. If all minions in a squad die with excess damage, you take 2 + your level damage.",
           "level": 1
         },
         {
-          "name": "Summon Champion",
+          "name": "Summoner Strike",
           "type": "Main action",
-          "description": "Summon a powerful champion creature in an unoccupied space within 5 squares. Champions have more stamina and stronger attacks than minions. Only one champion active at a time. Your subclass determines the champion type.",
+          "keywords": [
+            "Magic",
+            "Melee",
+            "Ranged",
+            "Strike"
+          ],
+          "distance": "Melee 1 or Ranged 5",
+          "target": "One creature or object",
+          "description": "Replaces both your melee and ranged free strikes. Effect: R damage. If the target has r<w, they are slowed (save ends). Has the Charge keyword when used as a melee strike. At 3rd level (Summoner's Kit): damage increases to 2×R, potency increases to r<v, distance equals Summoner's Range. At 9th level (Kit Improvement): potency increases to r<s.",
           "level": 1
         },
         {
-          "name": "Sacrifice Minion",
-          "type": "Free maneuver",
-          "description": "Sacrifice one of your summoned minions as a free maneuver. The minion is destroyed and you gain 2 Essence.",
+          "name": "Strike for Me",
+          "type": "Free triggered",
+          "keywords": [
+            "Magic",
+            "Ranged"
+          ],
+          "distance": "Summoner's Range",
+          "target": "Each of your minions",
+          "description": "Trigger: You use a triggered action to make a free strike or use a signature ability. Power Roll + Reason: 11-: Up to three targets each make a free strike; 12+: Up to five targets each make a free strike; 17+: Up to seven targets each make a free strike. On a natural 19 or 20, each target makes a free strike. Your minions act in place of you. If the triggered action was against a specific target, your minions must strike the same target. If granted a signature ability, you have an edge on the power roll.",
           "level": 1
+        },
+        {
+          "name": "Call Forth",
+          "type": "Main action",
+          "keywords": [
+            "Magic",
+            "Ranged"
+          ],
+          "distance": "Summoner's Range",
+          "target": "Self",
+          "description": "Summon one or more minions from your portfolio into unoccupied spaces within distance. Signature Minions: summon one per essence spent. All Other Minions: summon the set number listed on the stat block for their essence cost.",
+          "level": 1
+        },
+        {
+          "name": "Minion Bridge",
+          "type": "Maneuver",
+          "keywords": [
+            "Magic"
+          ],
+          "distance": "Melee 1",
+          "target": "One of your minions",
+          "description": "Shift into a square adjacent to the target, including vertically. You can shift into squares containing your minions. Each time you shift into a minion's square, you can shift an additional square. 1 Essence: An adjacent ally can shift alongside you; they must end adjacent to the last minion you moved through.",
+          "level": 1
+        },
+        {
+          "name": "Formation",
+          "type": "Passive",
+          "description": "Choose one formation (changeable via intense study during respite). Horde: Max minions +4; summon 4 signature minions at start of turn instead of 3. Platoon: Whenever a squad uses a damaging ability, choose one target to take additional damage equal to Reason. Elite: Each minion's Stamina +3 and stability +1. Leader: Not affected by excess damage when all minions in a squad die; if minion within Summoner's Range takes damage, you can take damage in place of the minion. Can use light armor and light weapon treasures without a kit.",
+          "level": 1
+        },
+        {
+          "name": "Quick Command",
+          "type": "Triggered",
+          "description": "Choose one quick command (changeable with formation via intense study during respite). Focus Fire!: Trigger: A target (self or one ally within Summoner's Range) deals damage to another creature. Effect: Target gains a surge for each of your minions adjacent to them (max 3), usable on the triggering damage. Spend 1 Essence: If damage is from a power roll ability, the power roll gains an edge. Halt!: Trigger: A target (one creature within Summoner's Range) starts their turn, moves, or is force moved. Effect: Summon a signature minion adjacent to the target. If force moved into the minion, you can negate collision damage. Special: Instead of summoning, you can command one of your minions within distance to shift up to their speed toward a square adjacent to the target. Not Yet!: Cost: 3 Essence. Trigger: A target (self or one ally within Summoner's Range) receives enough damage to die or be destroyed. Special: If a minion, they must be the only one remaining in their squad. Effect: Reduce damage to leave the target alive with 1 Stamina. Shield!: Trigger: A target (self or one ally within Summoner's Range) is targeted by a strike. Effect: If one of your minions is adjacent to the target and within distance of the strike, they become the new target. Spend 1 Essence: Instead of commanding an existing minion, summon a signature minion adjacent to the target to take the strike.",
+          "level": 1
+        },
+        {
+          "name": "1st-Level Circle Features",
+          "type": "Passive",
+          "description": "Your circle grants you features at 1st level.",
+          "subclass_effects": {
+            "Blight": "Death Snap: Whenever one of your demon minions would die unwillingly, they deal damage to an adjacent creature equal to their free strike value before dying. Soulsense: While you have line of effect to a creature with a soul, you can perceive a trail of where they have been in the last 5 x your level minutes. After a respite, you always perceive the soul trails of each creature that took the respite with you.",
+            "Graves": "Dead Men Tell All Tales: Touch a corpse (died within past week) and ask a question. They can answer; additional questions require a medium Reason test (failure breaks connection). Rise!: Once per round, when a creature dies unwillingly within Summoner's Range, use a triggered action to summon a signature undead minion in their space at no cost (even past max), if they can join a squad. Free triggered if the target was a minion.",
+            "Spring": "Fairy Whispers: When sending a minion on a task, they bring back a rumor. Make a Reason test for quality. Pixie Dust: +2 Recoveries. Whenever one of your fey minions dies within Summoner's Range, spend a Recovery to give temporary Stamina equal to 2x Reason to each non-minion ally adjacent to the dying minion.",
+            "Storms": "Elemental Affinity: When using Call Forth for non-signature elementals, summon one bonus signature minion at no cost (must share an Element keyword or be an elemental mote). Heart of Nature: Sense creatures with Elemental or Dragon keywords within 1 mile. Feel their emotions. Can't get below tier 2 on Intuition tests to socially interact with them."
+          },
+          "level": 1
+        },
+        {
+          "name": "Portfolio",
+          "type": "Passive",
+          "description": "Your portfolio comprises the minions you've learned to summon. At 1st level, choose signature minions and 3-essence minions from your circle's portfolio. Blight/Spring/Undead: Select two signature minions and two 3-essence minions. Storms: Gain elemental mote plus one signature minion, then two 3-essence minions. New portfolio minions are gained at 2nd level (5-essence), 5th level (7-essence), and 8th level (champion, 9-essence).",
+          "level": 1
+        },
+        {
+          "name": "Summoner's Dominion",
+          "type": "Maneuver",
+          "description": "Once per encounter, summon a fixture from your minions' native manifold into an unoccupied ground space within Summoner's Range. Spend 1 essence to relocate it as a free maneuver. Stays until end of encounter, reduced to 0 Stamina, or you become dying. Fixture gains features at 5th and 9th level.",
+          "subclass_effects": {
+            "Blight": "The Boil (Hazard Support, Stamina 20+level, Size 2): Hunger Thrush: Each enemy starting turn within 3 squares is i<v taunted (EoT), or i<w taunted and can't move further. Oh, It Pops: When destroyed, enemies within 3 take acid damage = level and are a<s weakened (save ends). Level 5: Soul Rancor - gain surge when demons deal 3+ damage to a creature while you have line of effect. Level 9: Size 3, Fester Field - non-abyssal enemies within 3 take 5 corruption at start of turn.",
+            "Graves": "Barrow Gates (Fortification Defender, Stamina 20+level, Size 2): The Bell Tolls: Enemies starting turn within 3 are i<v frightened (EoT), +1 potency for winded enemies. Undead Dominion: Undead minions have damage immunity 2 within 3 squares. Level 5: Memento Mori - surge when undead minion unwillingly dies with line of effect. Level 9: Size 3, Open the Gates - use Rise! as free triggered when enemy dies within 3 squares.",
+            "Spring": "Glade Pond (Hazard Ambusher, Stamina 20+level, Size 2): Bubbling Boost: Non-minion allies entering or starting turn within 3 get +2 speed until end of turn. Overgrowth: Fey minions ending turn within 3 are hidden until start of next turn. Level 5: Garden of Jest - spend Recovery when creature gains/starts turn with condition. Level 9: Size 3, Folly Field - non-fey enemies within 3 get -1 saving throws.",
+            "Storms": "Primordial Crystal (Relic Artillery, Stamina 20+level, Size 2): Magnetic Pull: Enemies starting turn within 3 are vertically pulled 3. Elemental Boost: Ranged abilities drawing line through crystal get +5 distance. Level 5: Terra Resonance - surge when area gains supernatural terrain effect. Level 9: Size 3, Magnified Strike - ranged strikes through crystal grant surge."
+          },
+          "level": 2
+        },
+        {
+          "name": "Summoner's Kit",
+          "type": "Passive",
+          "description": "You conjure a kit with an implement. Summoner Strike damage increases to 2x Reason, potency increases to r<v, and distance equals Summoner's Range. Choose one ward (changeable via ritual during respite): Conjured Ward (+3 Stamina, increases by 3 at 4th/7th/10th), Emergency Ward (first time each round you take damage, shift 1 and summon a signature minion in the square you left), Howling Ward (1-aura dealing Reason damage to adjacent enemies at start of their turn), Snare Ward (when adjacent creature damages you, pull them toward one of your minions within Summoner's Range a number of squares equal to Reason).",
+          "level": 3
+        },
+        {
+          "name": "Essence Salvage",
+          "type": "Passive",
+          "description": "The first time each combat round that any minion unwillingly dies within your Summoner's Range, you gain 2 essence instead of 1.",
+          "level": 4
+        },
+        {
+          "name": "Minion Chain",
+          "type": "Passive",
+          "description": "When using Minion Bridge, each of your minions within Summoner's Range can shift up to their speed before the maneuver takes effect, as long as each shifting minion ends adjacent to another of your minions. Minions can also chain to form a ladder or swinging rope.",
+          "level": 4
+        },
+        {
+          "name": "5th-Level Circle Feature",
+          "type": "Passive",
+          "description": "Your circle grants you features at 5th level.",
+          "subclass_effects": {
+            "Blight": "Shaping: Spend 1 minute to disguise a minion as a duplicate of you (basic Caelian speech). Up to Reason minions disguised at once. Soul Flense: As a maneuver, command demon minions to each deal free strike damage to an adjacent ally (can't be reduced). The ally ends a condition and confers it to the attacking demon. Additionally, Death Snaps can inflict conditions the minion was suffering from.",
+            "Graves": "Channel: Spend 1 minute to host a willing spirit of a recently deceased creature. Access their memories (24 hours before death) and skills. Can change appearance to look like them. Stopping requires medium Presence test if hostile or hosted 1+ hour; failure = possessed by a haunt. Dread March: You and undead minions ignore difficult terrain speed cost. Undead minions that would die during move action can choose to not die until end of your turn.",
+            "Spring": "Flash Powder: When allies gain temporary Stamina from Pixie Dust, they also gain one effect until end of next turn (or 10 min out of combat): Flight (Fly), Vanish (invisible), Water Weird (teleport to water within 5 as free maneuver once/turn), or Panacea (end one condition or stand up). Pixie Lift: Your speed gains Fly and Hover (lose Hover while dazed, dying, or more than 1 square above ground).",
+            "Storms": "Nature Watch: Spend 1 minute to summon a beacon elemental mote to patrol. It telepathically communicates hostile creatures, hazards, or traps within 20 squares. You know direction but not exact position. Up to level beacons active. Split: Once per turn, free maneuver to deal half max Stamina to an elemental minion to create a copy in adjacent space (added to squad, even past max). Can't use if it would kill a squad member."
+          },
+          "level": 5
+        },
+        {
+          "name": "Return to the Source",
+          "type": "Passive",
+          "description": "When you take a respite, you teleport to your circle's source manifold (Blight: Abyssal Waste, Graves: Necropolitan Ruins, Spring: Arcadia, Storms: Quintessence). You can bring allies. You are seen as a native resident. You teleport back at the end of the respite.",
+          "level": 6
+        },
+        {
+          "name": "Minion Machinations",
+          "type": "Passive",
+          "description": "Your maximum number of followers increases by 2. You can summon and recruit an artisan follower and a sage follower that share a keyword with a minion you can summon.",
+          "level": 6
+        },
+        {
+          "name": "Kit Improvement (6th)",
+          "type": "Passive",
+          "description": "Choose one additional ward from Summoner's Kit. Whenever you reduce an enemy to 0 Stamina with Summoner Strike, you can use Call Forth as a free maneuver (summoned minions can't act this turn).",
+          "level": 6
+        },
+        {
+          "name": "Font of Creation",
+          "type": "Passive",
+          "description": "When you gain essence at the start of each of your turns during combat, you gain 3 essence instead of 2.",
+          "level": 7
+        },
+        {
+          "name": "Their Life for Mine",
+          "type": "Free triggered",
+          "description": "If you or an ally within Summoner's Range would die from a non-age-related effect, sacrifice all your active minions (minimum 1) and spend all your essence (minimum 1). The target comes back to life with 0 Stamina plus 1 per minion and essence used. Must have at least one fragment of the creature's remains, and the creature's soul must be willing to return. Can't use again until you gain a new level or spend 3 eidos.",
+          "level": 7
+        },
+        {
+          "name": "8th-Level Circle Feature",
+          "type": "Passive",
+          "description": "Your circle grants you features at 8th level.",
+          "subclass_effects": {
+            "Blight": "Abyssal Evolution: At the start of each turn, transform up to two demon minions within Summoner's Range. From round 2, a demon can transform into any demon minion you can call forth for half the essence cost.",
+            "Graves": "Kill the Pain: Not affected by excess damage when all minions in a squad die. You and undead minions ignore d3/d6 damage and environmental damage while you are not winded.",
+            "Spring": "Celestial Grace: +2 more Recoveries. Pixie Dust area and fey minion traits affecting adjacent/within 1+ squares increase that distance by 1.",
+            "Storms": "Control the Elements: When using Call Forth, spend essence to change elemental minion size. 1 essence = size 2, 3 essence = size 3, 5 essence = size 4."
+          },
+          "level": 8
+        },
+        {
+          "name": "Portfolio Champion",
+          "type": "Passive",
+          "description": "Add a champion to your portfolio (9 essence). Champions follow minion rules with exceptions: only one instance, own squad (doesn't count toward max squads), can regain Stamina and gain temporary Stamina, use your Recoveries, can Heal and Defend, use normal maneuver rules. You have an edge on Champion keyword abilities from the champion's space. After summoning, can't summon again until you earn a Victory. At 10th level, champion gains a Champion Action (1 eidos, once per encounter, at end of any creature's turn).",
+          "subclass_effects": {
+            "Blight": "Demon Lord's Aspect (Size 2, Speed 5, Stamina = your max, Stability 2, Free Strike 9, Teleport, Corruption damage). Grasping Appendages signature (Melee 5, two targets, pull + grab). Warping Strike (free strikes teleport target 5). Champion's Ire (+Reason damage on single target). I Like Your Taste (free triggered: double edge on next power roll when taking damage). Frenzy (free strike each adjacent enemy when reduced to 0). Level 10: Size 3, Reality Flense (1 eidos: allies teleport speed and make free strike, can pass save-ends conditions).",
+            "Graves": "Avatar of Death (Size 2, Speed 6, Stamina = your max, Stability 3, Free Strike 9, Fly, Holy damage). Culling Scythe signature (Melee 2, two targets, bleeding save ends; creatures still bleeding at end of encounter instantly die). Revelation Strike (free strikes instantly reduce winded non-leader/solo to 0). Champion's Ire. Dust and Rot (free triggered 1 burst: m<v weakened EoT). Drifting Spirit (unaffected by difficult terrain and forced movement damage). Level 10: Size 3, Gravemaker (1 eidos: 5x3 line, 9 holy damage, vertical pull into ground).",
+            "Spring": "Celestial Attendant (Size 2, Speed 7, Stamina = your max, Stability 0, Free Strike 9, Fly/Hover, Poison damage). Pixie Swarm signature (Ranged 10, two targets, slide 3/5/6; ally targeted can spend Recovery and shift instead). Neurotoxic Strike (free strikes: i<v can't establish line of effect beyond 3 EoT). Champion's Ire. Celestial Bell (free triggered: summon signature adjacent when taking damage). Pixie Bouquet (temp Stamina = 2x fey minions within 1 at start of turn). Level 10: Size 3, A Shower of Dust (1 eidos: 20 burst, allies gain 20 temp Stamina + Flash Powder effect).",
+            "Storms": "Dragon's Portent (Size 2, Speed 6, Stamina = your max, Stability 4, Free Strike 9, Fly, Affinity damage - choose acid/cold/corruption/fire/lightning/poison on summon). Elemental Tail Swing signature (Charge, Melee 2, two targets, push 2/4/6). Sealing Strike (free strikes: m<s slowed save ends + 1d6 affinity damage/turn). Champion's Ire. Searing Wyrmscale (adjacent creatures dealing damage take 4 affinity). Dragon Heart (once/turn, take 10 unreducible damage to give ally 1 heroic resource). Level 10: Size 3, A Breath Felt in a Hurricane (1 eidos: 4 cube within 10, 9 affinity damage ignoring immunity, area = difficult terrain + weakness 5)."
+          },
+          "level": 8
+        },
+        {
+          "name": "Kit Improvement (9th)",
+          "type": "Passive",
+          "description": "Summoner Strike potency increases to r<s. Choose one additional ward. Double edge on tests to dissuade or scare enemy minions/lackeys. Clothing and equipment become adorned with elaborate regalia.",
+          "level": 9
+        },
+        {
+          "name": "Steward of Two Worlds",
+          "type": "Passive",
+          "description": "You and your allies are welcome in your circle's source manifold. Negotiations with native denizens have patience increased by 2.",
+          "level": 9
+        },
+        {
+          "name": "Eidos",
+          "type": "Passive",
+          "description": "You gain an epic resource called eidos. When you take a respite, gain eidos equal to XP gained. You can spend eidos as essence on minions and abilities. When you do, summon up to two bonus signature minions. You and your champion also access Champion Action abilities (1 eidos, once per encounter). Eidos remains until spent.",
+          "level": 10
+        },
+        {
+          "name": "No Matter the Cost",
+          "type": "Passive",
+          "description": "When you sacrifice minions, you reduce the cost of a heroic ability or minion by the same amount (to a minimum of 1) instead of only reducing by 1 per sacrifice.",
+          "level": 10
+        },
+        {
+          "name": "Among Our Ranks",
+          "type": "Passive",
+          "description": "As a respite activity, summon a willing and not-restrained NPC or player ally to join your party, regardless of distance or manifold. They stay until the start of your next respite or until killed (immediately dismissed back). Only one character summoned this way at a time.",
+          "level": 10
         }
       ]
     }

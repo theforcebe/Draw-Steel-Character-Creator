@@ -25,13 +25,22 @@ export function getSavedCharacters(): SavedCharacter[] {
 
 export function saveCharacter(data: CharacterData, id?: string): SavedCharacter {
   const characters = getSavedCharacters();
+  const entryId = id ?? generateId();
   const entry: SavedCharacter = {
-    id: id ?? generateId(),
+    id: entryId,
     name: data.name || 'Unnamed Hero',
     savedAt: new Date().toISOString(),
     data,
   };
-  characters.push(entry);
+
+  // Upsert: if an ID was provided and already exists, update in place
+  const existingIndex = id != null ? characters.findIndex((c) => c.id === id) : -1;
+  if (existingIndex >= 0) {
+    characters[existingIndex] = entry;
+  } else {
+    characters.push(entry);
+  }
+
   localStorage.setItem(STORAGE_KEY, JSON.stringify(characters));
   return entry;
 }
