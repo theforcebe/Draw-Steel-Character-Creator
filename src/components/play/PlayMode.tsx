@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useCharacterStore } from '../../stores/character-store';
 import { usePlayStore } from '../../stores/play-store';
 import { updateSavedCharacter } from '../../engine/character-storage';
@@ -22,6 +22,7 @@ const TABS: { id: PlayTab; label: string; icon: string }[] = [
 export function PlayMode() {
   const [activeTab, setActiveTab] = useState<PlayTab>('combat');
   const [showMenu, setShowMenu] = useState(false);
+  const menuBtnRef = useRef<HTMLButtonElement>(null);
   const [saveFlash, setSaveFlash] = useState(false);
   const character = useCharacterStore((s) => s.character);
   const setMode = useCharacterStore((s) => s.setMode);
@@ -124,6 +125,7 @@ export function PlayMode() {
 
             {/* Menu button */}
             <button
+              ref={menuBtnRef}
               type="button"
               onClick={() => setShowMenu(!showMenu)}
               className="rounded-xl p-2 text-gold-muted hover:text-gold hover:bg-gold/8 transition-all"
@@ -135,67 +137,73 @@ export function PlayMode() {
                 <circle cx="12" cy="19" r="1" />
               </svg>
             </button>
-
-            {/* Dropdown menu */}
-            {showMenu && (
-              <>
-                <div className="fixed inset-0 z-40" onClick={() => setShowMenu(false)} />
-                <div className="absolute right-0 top-full mt-2 z-50 w-52 panel-glass rounded-xl border border-gold/15 shadow-xl py-1.5">
-                  <button
-                    type="button"
-                    onClick={() => { saveProgress(); setShowMenu(false); }}
-                    disabled={!playingCharacterId}
-                    className="w-full px-4 py-2.5 text-left font-heading text-xs uppercase tracking-wider text-gold-light hover:bg-gold/8 transition-all flex items-center gap-2.5 disabled:opacity-30"
-                  >
-                    <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                      <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
-                      <polyline points="17 21 17 13 7 13 7 21" />
-                      <polyline points="7 3 7 8 15 8" />
-                    </svg>
-                    Save Progress
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleExport}
-                    className="w-full px-4 py-2.5 text-left font-heading text-xs uppercase tracking-wider text-gold-light hover:bg-gold/8 transition-all flex items-center gap-2.5"
-                  >
-                    <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                      <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
-                      <polyline points="7 10 12 15 17 10" />
-                      <line x1="12" y1="15" x2="12" y2="3" />
-                    </svg>
-                    Export Backup
-                  </button>
-                  <div className="border-t border-gold/10 my-1.5" />
-                  <button
-                    type="button"
-                    onClick={() => { setShowMenu(false); setMode('create'); useCharacterStore.setState({ currentStep: 'review' }); }}
-                    className="w-full px-4 py-2.5 text-left font-heading text-xs uppercase tracking-wider text-gold-light hover:bg-gold/8 transition-all flex items-center gap-2.5"
-                  >
-                    <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                      <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
-                      <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
-                    </svg>
-                    Edit Character
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleSaveAndExit}
-                    className="w-full px-4 py-2.5 text-left font-heading text-xs uppercase tracking-wider text-crimson/80 hover:bg-crimson/8 transition-all flex items-center gap-2.5"
-                  >
-                    <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                      <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
-                      <polyline points="16 17 21 12 16 7" />
-                      <line x1="21" y1="12" x2="9" y2="12" />
-                    </svg>
-                    Save &amp; Exit
-                  </button>
-                </div>
-              </>
-            )}
           </div>
         </div>
       </header>
+
+      {/* Dropdown menu — rendered outside header to escape backdrop-filter stacking context */}
+      {showMenu && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => setShowMenu(false)} />
+          <div
+            className="fixed z-50 w-52 panel-glass rounded-xl border border-gold/15 shadow-xl py-1.5"
+            style={{
+              top: menuBtnRef.current ? menuBtnRef.current.getBoundingClientRect().bottom + 8 : 60,
+              right: menuBtnRef.current ? window.innerWidth - menuBtnRef.current.getBoundingClientRect().right : 8,
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => { saveProgress(); setShowMenu(false); }}
+              disabled={!playingCharacterId}
+              className="w-full px-4 py-2.5 text-left font-heading text-xs uppercase tracking-wider text-gold-light hover:bg-gold/8 transition-all flex items-center gap-2.5 disabled:opacity-30"
+            >
+              <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
+                <polyline points="17 21 17 13 7 13 7 21" />
+                <polyline points="7 3 7 8 15 8" />
+              </svg>
+              Save Progress
+            </button>
+            <button
+              type="button"
+              onClick={handleExport}
+              className="w-full px-4 py-2.5 text-left font-heading text-xs uppercase tracking-wider text-gold-light hover:bg-gold/8 transition-all flex items-center gap-2.5"
+            >
+              <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Export Backup
+            </button>
+            <div className="border-t border-gold/10 my-1.5" />
+            <button
+              type="button"
+              onClick={() => { setShowMenu(false); setMode('create'); useCharacterStore.setState({ currentStep: 'review' }); }}
+              className="w-full px-4 py-2.5 text-left font-heading text-xs uppercase tracking-wider text-gold-light hover:bg-gold/8 transition-all flex items-center gap-2.5"
+            >
+              <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+              </svg>
+              Edit Character
+            </button>
+            <button
+              type="button"
+              onClick={handleSaveAndExit}
+              className="w-full px-4 py-2.5 text-left font-heading text-xs uppercase tracking-wider text-crimson/80 hover:bg-crimson/8 transition-all flex items-center gap-2.5"
+            >
+              <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+              Save &amp; Exit
+            </button>
+          </div>
+        </>
+      )}
 
       {/* Save flash notification */}
       {saveFlash && (
