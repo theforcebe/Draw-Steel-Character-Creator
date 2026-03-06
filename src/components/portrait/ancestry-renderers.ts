@@ -125,7 +125,7 @@ function defs(id: string, skinColor: string, armorColor: string, accent: string,
 // ============================================================
 
 // --- DEVIL ---
-function devilThemeExtras(level: number, tier: Tier, isRev: boolean, id: string, acc: string, sf: string, arm: string, skin: string, w: number, h: number): string {
+function devilThemeExtras(level: number, tier: Tier, isRev: boolean, _id: string, acc: string, _sf: string, _arm: string, _skin: string, w: number, h: number): string {
   let s = '';
   const cx = w / 2;
   const ty = h * 0.38;
@@ -223,7 +223,7 @@ function devilThemeExtras(level: number, tier: Tier, isRev: boolean, id: string,
 }
 
 // --- DRAGON KNIGHT ---
-function dragonKnightThemeExtras(level: number, tier: Tier, isRev: boolean, id: string, acc: string, sf: string, arm: string, skin: string, w: number, h: number): string {
+function dragonKnightThemeExtras(level: number, _tier: Tier, isRev: boolean, _id: string, acc: string, _sf: string, _arm: string, _skin: string, w: number, h: number): string {
   let s = '';
   const cx = w / 2;
   const ty = h * 0.38;
@@ -309,7 +309,7 @@ function dragonKnightThemeExtras(level: number, tier: Tier, isRev: boolean, id: 
 }
 
 // --- DWARF ---
-function dwarfThemeExtras(level: number, tier: Tier, isRev: boolean, id: string, acc: string, sf: string, arm: string, skin: string, w: number, h: number): string {
+function dwarfThemeExtras(level: number, _tier: Tier, isRev: boolean, id: string, acc: string, sf: string, arm: string, _skin: string, w: number, h: number): string {
   let s = '';
   const cx = w / 2;
   const rc = isRev ? '#7fffd4' : acc;
@@ -393,7 +393,7 @@ function dwarfThemeExtras(level: number, tier: Tier, isRev: boolean, id: string,
 }
 
 // --- HAKAAN ---
-function hakaanThemeExtras(level: number, tier: Tier, isRev: boolean, id: string, acc: string, sf: string, arm: string, skin: string, w: number, h: number): string {
+function hakaanThemeExtras(level: number, _tier: Tier, isRev: boolean, _id: string, _acc: string, _sf: string, _arm: string, _skin: string, w: number, h: number): string {
   let s = '';
   const cx = w / 2;
   const ty = h * 0.40;
@@ -466,7 +466,7 @@ function hakaanThemeExtras(level: number, tier: Tier, isRev: boolean, id: string
 }
 
 // --- HIGH ELF ---
-function highElfThemeExtras(level: number, tier: Tier, isRev: boolean, id: string, acc: string, sf: string, arm: string, skin: string, w: number, h: number): string {
+function highElfThemeExtras(level: number, _tier: Tier, isRev: boolean, _id: string, _acc: string, sf: string, arm: string, _skin: string, w: number, h: number): string {
   let s = '';
   const cx = w / 2;
   const ty = h * 0.38;
@@ -541,7 +541,7 @@ function highElfThemeExtras(level: number, tier: Tier, isRev: boolean, id: strin
 }
 
 // --- MEMONEK ---
-function memonekThemeExtras(level: number, tier: Tier, isRev: boolean, id: string, acc: string, sf: string, arm: string, skin: string, w: number, h: number): string {
+function memonekThemeExtras(level: number, _tier: Tier, isRev: boolean, _id: string, _acc: string, _sf: string, _arm: string, _skin: string, w: number, h: number): string {
   let s = '';
   const cx = w / 2;
   const ty = h * 0.38;
@@ -623,7 +623,7 @@ function memonekThemeExtras(level: number, tier: Tier, isRev: boolean, id: strin
 }
 
 // --- ORC ---
-function orcThemeExtras(level: number, tier: Tier, isRev: boolean, id: string, acc: string, sf: string, arm: string, skin: string, w: number, h: number): string {
+function orcThemeExtras(level: number, _tier: Tier, isRev: boolean, _id: string, _acc: string, _sf: string, _arm: string, _skin: string, w: number, h: number): string {
   let s = '';
   const cx = w / 2;
   const ty = h * 0.38;
@@ -692,7 +692,7 @@ function orcThemeExtras(level: number, tier: Tier, isRev: boolean, id: string, a
 }
 
 // --- POLDER ---
-function polderThemeExtras(level: number, tier: Tier, isRev: boolean, id: string, acc: string, sf: string, arm: string, skin: string, w: number, h: number): string {
+function polderThemeExtras(level: number, _tier: Tier, isRev: boolean, _id: string, acc: string, _sf: string, _arm: string, _skin: string, w: number, h: number): string {
   let s = '';
   const cx = w / 2;
   const ty = h * 0.39;
@@ -761,7 +761,7 @@ function polderThemeExtras(level: number, tier: Tier, isRev: boolean, id: string
 }
 
 // --- REVENANT ---
-function revenantThemeExtras(level: number, tier: Tier, isRev: boolean, id: string, acc: string, sf: string, arm: string, skin: string, w: number, h: number): string {
+function revenantThemeExtras(level: number, _tier: Tier, isRev: boolean, _id: string, _acc: string, _sf: string, _arm: string, _skin: string, w: number, h: number): string {
   let s = '';
   const cx = w / 2;
   const ty = h * 0.38;
@@ -830,7 +830,7 @@ function revenantThemeExtras(level: number, tier: Tier, isRev: boolean, id: stri
 }
 
 // --- TIME RAIDER ---
-function timeRaiderThemeExtras(level: number, tier: Tier, isRev: boolean, id: string, acc: string, sf: string, arm: string, skin: string, w: number, h: number): string {
+function timeRaiderThemeExtras(level: number, _tier: Tier, isRev: boolean, _id: string, _acc: string, _sf: string, _arm: string, _skin: string, w: number, h: number): string {
   let s = '';
   const cx = w / 2;
   const ty = h * 0.39;
@@ -908,7 +908,7 @@ function timeRaiderThemeExtras(level: number, tier: Tier, isRev: boolean, id: st
 }
 
 // --- WODE ELF ---
-function wodeElfThemeExtras(level: number, tier: Tier, isRev: boolean, id: string, acc: string, sf: string, arm: string, skin: string, w: number, h: number): string {
+function wodeElfThemeExtras(level: number, _tier: Tier, isRev: boolean, _id: string, _acc: string, _sf: string, _arm: string, _skin: string, w: number, h: number): string {
   let s = '';
   const cx = w / 2;
   const ty = h * 0.38;
@@ -990,12 +990,11 @@ function wodeElfThemeExtras(level: number, tier: Tier, isRev: boolean, id: strin
 }
 
 // --- HUMAN ---
-function humanThemeExtras(level: number, tier: Tier, isRev: boolean, id: string, acc: string, sf: string, arm: string, skin: string, w: number, h: number): string {
+function humanThemeExtras(level: number, _tier: Tier, isRev: boolean, _id: string, _acc: string, _sf: string, arm: string, _skin: string, w: number, h: number): string {
   let s = '';
   const cx = w / 2;
   const ty = h * 0.38;
   const hc = isRev ? '#7fffd4' : '#c9a84c';
-  const hc2 = isRev ? '#5ac8a8' : '#f0d07a';
 
   if (level >= 1) {
     const insY = ty + 10;
@@ -1072,7 +1071,7 @@ function humanThemeExtras(level: number, tier: Tier, isRev: boolean, id: string,
 // ============================================================
 
 // --- DEVIL ARMOR ---
-function buildDevilWeapon(level: number, tier: Tier, isRev: boolean, id: string, acc: string, sf: string): string {
+function buildDevilWeapon(level: number, _tier: Tier, _isRev: boolean, id: string, acc: string, sf: string): string {
   const x = 95, baseY = 60;
   const wlen = 80 + level * 6;
 
@@ -1479,7 +1478,7 @@ function genericArmor(level: number, tier: Tier, isRev: boolean, options: Generi
 }
 
 // --- HUMAN ARMOR ---
-function humanHeadFn(hx: number, hy: number, level: number, tier: Tier, isRev: boolean, id: string, acc: string, sf: string, arm: string, skin: string): string {
+function humanHeadFn(hx: number, hy: number, level: number, _tier: Tier, isRev: boolean, id: string, acc: string, sf: string, _arm: string, skin: string): string {
   let s = `<ellipse cx="${hx}" cy="${hy}" rx="20" ry="22" fill="${skin}"/>
   <path d="M${hx - 20},${hy - 8} Q${hx - 18},${hy - 28} ${hx},${hy - 30} Q${hx + 18},${hy - 28} ${hx + 20},${hy - 8}" fill="${isRev ? '#050404' : '#4a2f1a'}"/>`;
   const ec = isRev ? '#7fffd4' : '#2d1a0e';
@@ -1498,7 +1497,7 @@ function humanHeadFn(hx: number, hy: number, level: number, tier: Tier, isRev: b
   return s;
 }
 
-function humanWeaponFn(level: number, tier: Tier, isRev: boolean, id: string, acc: string, sf: string, arm: string, w: number, h: number): string {
+function humanWeaponFn(level: number, _tier: Tier, _isRev: boolean, id: string, acc: string, sf: string, _arm: string, w: number, h: number): string {
   const sx = w - 14, baseY = h * 0.2;
   const wl = h * 0.5 + level * 3;
   if (level <= 2) return `<rect x="${sx}" y="${baseY}" width="4" height="${wl}" rx="2" fill="${acc}"/>
@@ -1541,7 +1540,7 @@ function humanArmor(level: number, tier: Tier, isRev: boolean, kit: { id: string
 }
 
 // --- HIGH ELF ARMOR ---
-function highElfHeadFn(hx: number, hy: number, level: number, tier: Tier, isRev: boolean, id: string, acc: string, sf: string, arm: string, skin: string): string {
+function highElfHeadFn(hx: number, hy: number, level: number, _tier: Tier, isRev: boolean, _id: string, acc: string, sf: string, _arm: string, skin: string): string {
   let s = `<ellipse cx="${hx}" cy="${hy}" rx="18" ry="21" fill="${skin}"/>
   <path d="M${hx - 16},${hy - 14} Q${hx - 22},${hy - 32} ${hx - 18},${hy - 38} Q${hx - 12},${hy - 28} ${hx - 16},${hy - 14}Z" fill="${skin}"/>
   <path d="M${hx + 16},${hy - 14} Q${hx + 22},${hy - 32} ${hx + 18},${hy - 38} Q${hx + 12},${hy - 28} ${hx + 16},${hy - 14}Z" fill="${skin}"/>
@@ -1563,7 +1562,7 @@ function highElfHeadFn(hx: number, hy: number, level: number, tier: Tier, isRev:
   return s;
 }
 
-function highElfWeaponFn(level: number, tier: Tier, isRev: boolean, id: string, acc: string, sf: string, arm: string, w: number, h: number): string {
+function highElfWeaponFn(level: number, _tier: Tier, _isRev: boolean, id: string, acc: string, sf: string, arm: string, w: number, h: number): string {
   const sx = w - 12, by = h * 0.16;
   if (level <= 2) return `<rect x="${sx}" y="${by}" width="3" height="${h * 0.6}" rx="1.5" fill="${arm}dd"/>
     <ellipse cx="${sx + 1.5}" cy="${by - 2}" rx="7" ry="11" fill="${sf}" opacity="0.7"/>
@@ -1598,7 +1597,7 @@ function highElfArmor(level: number, tier: Tier, isRev: boolean, kit: { id: stri
 }
 
 // --- ORC ARMOR ---
-function orcHeadFn(hx: number, hy: number, level: number, tier: Tier, isRev: boolean, id: string, acc: string, sf: string, arm: string, skin: string): string {
+function orcHeadFn(hx: number, hy: number, level: number, _tier: Tier, isRev: boolean, id: string, acc: string, sf: string, _arm: string, skin: string): string {
   let s = `<ellipse cx="${hx}" cy="${hy}" rx="22" ry="23" fill="${skin}"/>
   <path d="M${hx - 22},${hy - 12} Q${hx},${hy - 22} ${hx + 22},${hy - 12}" fill="${isRev ? '#0d1808' : '#3d5520'}"/>`;
   const ec = isRev ? '#7fffd4' : '#ff5722';
@@ -1618,7 +1617,7 @@ function orcHeadFn(hx: number, hy: number, level: number, tier: Tier, isRev: boo
   return s;
 }
 
-function orcWeaponFn(level: number, tier: Tier, isRev: boolean, id: string, acc: string, sf: string, arm: string, w: number, h: number): string {
+function orcWeaponFn(level: number, tier: Tier, isRev: boolean, id: string, acc: string, sf: string, _arm: string, w: number, h: number): string {
   const sx = w - 16, by = h * 0.18;
   const wl = h * 0.52 + level * 4;
   if (level <= 2) return `<rect x="${sx}" y="${by}" width="5" height="${wl}" rx="2" fill="${isRev ? '#1a2810' : acc}" opacity="0.9"/>
@@ -1658,7 +1657,7 @@ function orcArmor(level: number, tier: Tier, isRev: boolean, kit: { id: string; 
 }
 
 // --- WODE ELF ARMOR ---
-function wodeElfHeadFn(hx: number, hy: number, level: number, tier: Tier, isRev: boolean, id: string, acc: string, sf: string, arm: string, skin: string): string {
+function wodeElfHeadFn(hx: number, hy: number, level: number, _tier: Tier, isRev: boolean, id: string, acc: string, sf: string, _arm: string, skin: string): string {
   let s = `<ellipse cx="${hx}" cy="${hy}" rx="18" ry="20" fill="${skin}"/>
   <path d="M${hx - 16},${hy - 14} Q${hx - 24},${hy - 28} ${hx - 20},${hy - 36} Q${hx - 14},${hy - 24} ${hx - 16},${hy - 14}Z" fill="${skin}"/>
   <path d="M${hx + 16},${hy - 14} Q${hx + 24},${hy - 28} ${hx + 20},${hy - 36} Q${hx + 14},${hy - 24} ${hx + 16},${hy - 14}Z" fill="${skin}"/>
@@ -1678,7 +1677,7 @@ function wodeElfHeadFn(hx: number, hy: number, level: number, tier: Tier, isRev:
   return s;
 }
 
-function wodeElfWeaponFn(level: number, tier: Tier, isRev: boolean, id: string, acc: string, sf: string, arm: string, w: number, h: number): string {
+function wodeElfWeaponFn(level: number, _tier: Tier, isRev: boolean, id: string, acc: string, sf: string, _arm: string, w: number, h: number): string {
   const sx = w - 8, by = h * 0.14;
   const bh = h * 0.58 + level * 3;
   if (level <= 2) return `<path d="M${sx},${by} Q${sx + 12},${by + bh * 0.5} ${sx},${by + bh}" stroke="${isRev ? '#1a0e06' : acc}" stroke-width="3.5" fill="none"/>

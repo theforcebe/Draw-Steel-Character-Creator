@@ -15,7 +15,7 @@ export function mkFilter(id: string, color: string, strength: number = 3): strin
   </filter>`;
 }
 
-export function mkRunes(x: number, y: number, w: number, h: number, color: string, count: number = 4): string {
+export function mkRunes(x: number, y: number, w: number, _h: number, color: string, count: number = 4): string {
   let r = '';
   const runeChars = ['\u16B1','\u16A0','\u16A2','\u16A6','\u16A8','\u16B2','\u16B7','\u16B9','\u16BA','\u16C1','\u16C3','\u16C7','\u16C8','\u16C9','\u16CA','\u16CF'];
   for(let i=0;i<count;i++){
@@ -812,7 +812,7 @@ function wepUnarmedSpec(level: number, acc: string, sf: string, id: string): str
   return s;
 }
 
-function wepUnarmedWildSpec(level: number, acc: string, sf: string, id: string): string {
+function wepUnarmedWildSpec(level: number, _acc: string, sf: string, id: string): string {
   const ux=95, uy=68;
   let s='';
   for(let i=0;i<3;i++){
@@ -843,7 +843,7 @@ function wepUnarmedWildSpec(level: number, acc: string, sf: string, id: string):
 // ============================================================
 // STORMWIGHT SPIRIT WEAPONS
 // ============================================================
-function wepBorenSpirit(level: number, acc: string, sf: string, id: string): string {
+function wepBorenSpirit(level: number, _acc: string, _sf: string, id: string): string {
   const bx=92, by=60;
   const clawL=16+level*3;
   const clawW=3+level*0.4;
@@ -893,7 +893,7 @@ function wepBorenSpirit(level: number, acc: string, sf: string, id: string): str
   return s;
 }
 
-function wepCorvenSpirit(level: number, acc: string, sf: string, id: string): string {
+function wepCorvenSpirit(level: number, _acc: string, _sf: string, id: string): string {
   const cx=92, cy=60;
   const fireOrange='#ff6a00', fireRed='#ff2200', fireYellow='#ffaa00';
   let s='';
@@ -938,7 +938,7 @@ function wepCorvenSpirit(level: number, acc: string, sf: string, id: string): st
   return s;
 }
 
-function wepRadenSpirit(level: number, acc: string, sf: string, id: string): string {
+function wepRadenSpirit(level: number, _acc: string, _sf: string, id: string): string {
   const rx=92, ry=60;
   const corruptGreen='#4aff4a', corruptPurple='#9932cc', sicklyGreen='#88dd44';
   let s='';
@@ -995,7 +995,7 @@ function wepRadenSpirit(level: number, acc: string, sf: string, id: string): str
   return s;
 }
 
-function wepVukenSpirit(level: number, acc: string, sf: string, id: string): string {
+function wepVukenSpirit(level: number, _acc: string, _sf: string, id: string): string {
   const vx=92, vy=60;
   const elecBlue='#00aaff', elecWhite='#ccffff', elecBright='#44ddff';
   let s='';

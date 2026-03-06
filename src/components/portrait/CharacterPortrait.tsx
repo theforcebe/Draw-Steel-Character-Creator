@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import type { CharacterData } from '../../types/character';
-import { ANCESTRY_ID_MAP, getTier, ANCESTRY_DEFAULTS } from './model-data';
 import type { ColorOverride } from './model-data';
 import { renderAncestryModel } from './ancestry-renderers';
 import { ensureEnhancedModelCss } from './model-css';
