@@ -3,6 +3,7 @@ import { getCharacterSkills } from '../../engine/skill-mapper';
 import { CharacterPortrait } from '../portrait/CharacterPortrait';
 import { CLASS_RESOURCES } from '../../types/character';
 import classFeaturesData from '../../data/class-features.json';
+import { useTreasureStats } from '../../hooks/useTreasureStats';
 
 interface ClassFeature {
   name: string;
@@ -45,7 +46,8 @@ function Row({ label, value }: { label: string; value: string | number | null | 
 
 export function PlaySheet() {
   const character = useCharacterStore((s) => s.character);
-  const stats = character.computedStats;
+  const { stats: treasureStats, treasureBonuses } = useTreasureStats();
+  const stats = treasureStats ?? character.computedStats;
   const classChoice = character.classChoice;
   const allSkills = getCharacterSkills(character);
 
@@ -92,25 +94,34 @@ export function PlaySheet() {
       </div>
 
       {/* Stats Grid */}
-      {stats && (
-        <div className="grid grid-cols-4 gap-2">
-          {[
-            { label: 'Stamina', value: stats.stamina },
-            { label: 'Winded', value: stats.winded },
-            { label: 'Recovery', value: stats.recoveryValue },
-            { label: 'Recoveries', value: stats.recoveries },
-            { label: 'Speed', value: stats.speed },
-            { label: 'Stability', value: stats.stability },
-            { label: 'Size', value: stats.size },
-            { label: 'Echelon', value: stats.echelon },
-          ].map((s) => (
-            <div key={s.label} className="flex flex-col items-center gap-0.5 rounded-xl bg-surface-light/30 border border-gold/5 py-2">
-              <span className="font-heading text-base font-bold text-gold-light">{s.value}</span>
-              <span className="font-heading text-[0.5rem] uppercase tracking-wider text-gold-muted">{s.label}</span>
-            </div>
-          ))}
-        </div>
-      )}
+      {stats && (() => {
+        const tb = treasureBonuses;
+        const statItems: { label: string; value: string | number; bonus?: number }[] = [
+          { label: 'Stamina', value: stats.stamina, bonus: tb.stamina || undefined },
+          { label: 'Winded', value: stats.winded },
+          { label: 'Recovery', value: stats.recoveryValue },
+          { label: 'Recoveries', value: stats.recoveries },
+          { label: 'Speed', value: stats.speed, bonus: tb.speed || undefined },
+          { label: 'Stability', value: stats.stability, bonus: tb.stability || undefined },
+          { label: 'Size', value: stats.size },
+          { label: 'Echelon', value: stats.echelon },
+        ];
+        return (
+          <div className="grid grid-cols-4 gap-2">
+            {statItems.map((s) => (
+              <div key={s.label} className="flex flex-col items-center gap-0.5 rounded-xl bg-surface-light/30 border border-gold/5 py-2">
+                <div className="flex items-baseline gap-0.5">
+                  <span className="font-heading text-base font-bold text-gold-light">{s.value}</span>
+                  {s.bonus != null && s.bonus > 0 && (
+                    <span className="font-heading text-[0.45rem] text-emerald-400">+{s.bonus}</span>
+                  )}
+                </div>
+                <span className="font-heading text-[0.5rem] uppercase tracking-wider text-gold-muted">{s.label}</span>
+              </div>
+            ))}
+          </div>
+        );
+      })()}
 
       {/* Characteristics */}
       {classChoice?.characteristics && (

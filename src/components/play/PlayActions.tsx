@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useCharacterStore } from '../../stores/character-store';
+import { useTreasureStats } from '../../hooks/useTreasureStats';
 import abilitiesData from '../../data/abilities.json';
 import classFeaturesData from '../../data/class-features.json';
 import kitsData from '../../data/kits.json';
@@ -214,12 +215,14 @@ function matchesFilter(type: string, filter: ActionCategory): boolean {
 export function PlayActions() {
   const character = useCharacterStore((s) => s.character);
   const classChoice = character.classChoice;
+  const { treasureBonuses } = useTreasureStats();
   const [filter, setFilter] = useState<ActionCategory>('all');
   const [expandedStandard, setExpandedStandard] = useState(false);
   const [expandedClassFeatures, setExpandedClassFeatures] = useState(false);
   const [expandedAbilities, setExpandedAbilities] = useState(false);
   const [expandedKit, setExpandedKit] = useState(false);
   const [expandedTraits, setExpandedTraits] = useState(false);
+  const [expandedTreasures, setExpandedTreasures] = useState(false);
 
   // Group character abilities by action type
   const abilityGroups = useMemo(() => {
@@ -708,6 +711,51 @@ export function PlayActions() {
                       )}
                     </div>
                   )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Treasure Passive Effects */}
+      {treasureBonuses.passiveEffects.length > 0 && (filter === 'all' || filter === 'Triggered action') && (
+        <div className="card px-4 py-3">
+          <button
+            type="button"
+            onClick={() => setExpandedTreasures(!expandedTreasures)}
+            className="w-full flex items-center justify-between group"
+          >
+            <h3 className="font-heading text-xs uppercase tracking-wider text-gold">
+              Treasure Effects
+            </h3>
+            <span className="w-6 h-6 flex items-center justify-center rounded-lg border border-gold/20 bg-gold/5 text-gold font-heading text-sm group-hover:border-gold/40 group-hover:bg-gold/10 transition-all">
+              {expandedTreasures ? '\u2212' : '+'}
+            </span>
+          </button>
+
+          {expandedTreasures && (
+            <div className="mt-3 flex flex-col gap-1.5">
+              {treasureBonuses.passiveEffects.map(({ source, effects }) => (
+                <div
+                  key={source}
+                  className="px-3 py-2.5 rounded-xl bg-surface-light/20 border border-gold/5"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="font-heading text-xs text-gold-light font-semibold">
+                      {source}
+                    </span>
+                    <span className="shrink-0 px-2 py-0.5 rounded-full text-[0.5rem] font-heading font-semibold tracking-wider uppercase bg-purple-900/30 text-purple-400/80">
+                      Treasure
+                    </span>
+                  </div>
+                  <ul className="mt-1 flex flex-col gap-0.5">
+                    {effects.map((effect, i) => (
+                      <li key={i} className="font-body text-[0.6rem] text-cream-dark/50 pl-1.5 border-l border-gold/10 leading-relaxed">
+                        {effect}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               ))}
             </div>

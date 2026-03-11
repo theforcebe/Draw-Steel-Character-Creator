@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCharacterStore } from '../../stores/character-store';
 import { usePlayStore } from '../../stores/play-store';
 import type { InitiativeEntry } from '../../stores/play-store';
@@ -8,11 +8,17 @@ import {
   CLASS_RESOURCES,
 } from '../../types/character';
 import type { Condition } from '../../types/character';
+import { useTreasureStats } from '../../hooks/useTreasureStats';
 
-function StatBox({ label, value }: { label: string; value: number | string }) {
+function StatBox({ label, value, bonus }: { label: string; value: number | string; bonus?: number }) {
   return (
     <div className="flex flex-col items-center gap-0.5 px-3 py-2 rounded-xl bg-surface-light/50 border border-gold/8">
-      <span className="font-heading text-lg font-bold text-gold-light">{value}</span>
+      <div className="flex items-baseline gap-0.5">
+        <span className="font-heading text-lg font-bold text-gold-light">{value}</span>
+        {bonus != null && bonus > 0 && (
+          <span className="font-heading text-[0.5rem] text-emerald-400">+{bonus}</span>
+        )}
+      </div>
       <span className="font-heading text-[0.55rem] uppercase tracking-wider text-gold-muted">
         {label}
       </span>
@@ -222,12 +228,29 @@ export function PlayCombat() {
   const character = useCharacterStore((s) => s.character);
   const playStore = usePlayStore();
   const playState = playStore.getActiveState();
+  const { stats: treasureStats, treasureBonuses } = useTreasureStats();
+
+  // Sync max stats when treasure bonuses change (equip/unequip)
+  useEffect(() => {
+    if (!playState || !treasureStats) return;
+    if (
+      treasureStats.stamina !== playState.maxStamina ||
+      treasureStats.recoveries !== playState.maxRecoveries ||
+      treasureStats.recoveryValue !== playState.recoveryValue
+    ) {
+      playStore.syncMaxStats(
+        treasureStats.stamina,
+        treasureStats.recoveries,
+        treasureStats.recoveryValue,
+      );
+    }
+  }, [treasureStats?.stamina, treasureStats?.recoveries, treasureStats?.recoveryValue]);
 
   if (!playState) return null;
 
   const classId = character.classChoice?.classId ?? '';
   const resourceName = CLASS_RESOURCES[classId] ?? 'Resource';
-  const stats = character.computedStats;
+  const stats = treasureStats ?? character.computedStats;
   const characteristics = character.classChoice?.characteristics;
 
   const staminaPercent = playState.maxStamina > 0
@@ -375,8 +398,8 @@ export function PlayCombat() {
 
       {/* ── Quick Stats ── */}
       <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-        <StatBox label="Speed" value={stats?.speed ?? 5} />
-        <StatBox label="Stability" value={stats?.stability ?? 0} />
+        <StatBox label="Speed" value={stats?.speed ?? 5} bonus={treasureBonuses.speed || undefined} />
+        <StatBox label="Stability" value={stats?.stability ?? 0} bonus={treasureBonuses.stability || undefined} />
         <StatBox label="Size" value={stats?.size ?? '1M'} />
         {characteristics && (
           <>
@@ -395,6 +418,47 @@ export function PlayCombat() {
           </>
         )}
       </div>
+
+      {/* ── Treasure Bonuses (if any equipped) ── */}
+      {(treasureBonuses.weaponDamage > 0 || treasureBonuses.implementDamage > 0 ||
+        treasureBonuses.unarmedDamage > 0 || treasureBonuses.extraDamage.length > 0 ||
+        treasureBonuses.meleeDistance > 0 || treasureBonuses.rangedDistance > 0) && (
+        <div className="card px-4 py-2.5">
+          <h3 className="font-heading text-[0.55rem] uppercase tracking-wider text-gold-muted mb-1.5">Treasure Bonuses</h3>
+          <div className="flex flex-wrap gap-1.5">
+            {treasureBonuses.weaponDamage > 0 && (
+              <span className="px-2 py-0.5 rounded-full text-[0.5rem] font-heading uppercase tracking-wider text-emerald-400 bg-emerald-900/20 border border-emerald-500/20">
+                +{treasureBonuses.weaponDamage} Weapon Dmg
+              </span>
+            )}
+            {treasureBonuses.implementDamage > 0 && (
+              <span className="px-2 py-0.5 rounded-full text-[0.5rem] font-heading uppercase tracking-wider text-emerald-400 bg-emerald-900/20 border border-emerald-500/20">
+                +{treasureBonuses.implementDamage} Implement Dmg
+              </span>
+            )}
+            {treasureBonuses.unarmedDamage > 0 && (
+              <span className="px-2 py-0.5 rounded-full text-[0.5rem] font-heading uppercase tracking-wider text-emerald-400 bg-emerald-900/20 border border-emerald-500/20">
+                +{treasureBonuses.unarmedDamage} Unarmed Dmg
+              </span>
+            )}
+            {treasureBonuses.extraDamage.map((ed) => (
+              <span key={`${ed.source}-${ed.type}`} className="px-2 py-0.5 rounded-full text-[0.5rem] font-heading uppercase tracking-wider text-purple-400 bg-purple-900/20 border border-purple-500/20">
+                +{ed.value} {ed.type}
+              </span>
+            ))}
+            {treasureBonuses.meleeDistance > 0 && (
+              <span className="px-2 py-0.5 rounded-full text-[0.5rem] font-heading uppercase tracking-wider text-sky-400 bg-sky-900/20 border border-sky-500/20">
+                +{treasureBonuses.meleeDistance} Melee Dist
+              </span>
+            )}
+            {treasureBonuses.rangedDistance > 0 && (
+              <span className="px-2 py-0.5 rounded-full text-[0.5rem] font-heading uppercase tracking-wider text-sky-400 bg-sky-900/20 border border-sky-500/20">
+                +{treasureBonuses.rangedDistance} Ranged Dist
+              </span>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* ── Surges ── */}
       <div className="card px-4 py-3">

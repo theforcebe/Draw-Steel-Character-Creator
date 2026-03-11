@@ -37,6 +37,12 @@ interface ComplicationBonuses {
   stability?: number;
 }
 
+interface TreasureBonusParams {
+  stamina?: number;
+  speed?: number;
+  stability?: number;
+}
+
 interface ComputeAllParams {
   level: number;
   ancestryId: string | null;
@@ -46,6 +52,7 @@ interface ComputeAllParams {
   classKitOptionId?: string | null;
   selectedTraits: { name: string; cost: number }[];
   complicationBonuses?: ComplicationBonuses;
+  treasureBonuses?: TreasureBonusParams;
 }
 
 // ---------------------------------------------------------------------------
@@ -304,7 +311,7 @@ function resolveSize(ancestry: AncestryEntry, formerLifeAncestry?: AncestryEntry
  * choices. Returns `null` if a required piece of data (class) is missing.
  */
 export function computeAllStats(params: ComputeAllParams): ComputedStats | null {
-  const { level, ancestryId, formerLifeAncestryId, classId, kitId, classKitOptionId, selectedTraits, complicationBonuses } = params;
+  const { level, ancestryId, formerLifeAncestryId, classId, kitId, classKitOptionId, selectedTraits, complicationBonuses, treasureBonuses } = params;
 
   // A class is required to compute stats
   if (classId == null) {
@@ -361,12 +368,17 @@ export function computeAllStats(params: ComputeAllParams): ComputedStats | null 
   const compRecoveries = complicationBonuses?.recoveries ?? 0;
   const compStability = complicationBonuses?.stability ?? 0;
 
+  // Treasure bonuses
+  const tStamina = treasureBonuses?.stamina ?? 0;
+  const tSpeed = treasureBonuses?.speed ?? 0;
+  const tStability = treasureBonuses?.stability ?? 0;
+
   // Stamina & derived
   const stamina = getStamina({
     classBaseStamina: classStats.baseStamina,
     classStaminaPerLevel: classStats.staminaPerLevel,
     kitStaminaBonus,
-    ancestryStaminaBonus: ancestryStaminaBonus + compStamina,
+    ancestryStaminaBonus: ancestryStaminaBonus + compStamina + tStamina,
     level,
   });
 
@@ -382,13 +394,13 @@ export function computeAllStats(params: ComputeAllParams): ComputedStats | null 
   // Speed
   const speed = getSpeed({
     ancestryBaseSpeed,
-    kitSpeedBonus,
+    kitSpeedBonus: kitSpeedBonus + tSpeed,
     classSpeedBonus: classStats.speedBonus,
   });
 
   // Stability
   const stability = getStability({
-    kitStabilityBonus,
+    kitStabilityBonus: kitStabilityBonus + tStability,
     ancestryStabilityBonus: ancestryStabilityBonus + compStability,
   });
 

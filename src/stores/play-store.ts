@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Condition } from '../types/character';
+import { getConflictingItems } from '../engine/treasure-effects';
 
 export interface InventoryItem {
   id: string;
@@ -11,6 +12,9 @@ export interface InventoryItem {
   maxCharges?: number;
   isEquipped?: boolean;
   notes?: string;
+  treasureId?: string;     // links to treasures.json for effect lookup
+  subcategory?: string;    // 'weapon' | 'armor' | 'implement' | 'other'
+  keywords?: string;       // treasure keywords
 }
 
 export interface InitiativeEntry {
@@ -97,6 +101,12 @@ interface PlayStore {
   takeRespite: () => void;
   catchBreath: () => void;
   updateMaxStats: (
+    maxStamina: number,
+    maxRecoveries: number,
+    recoveryValue: number,
+  ) => void;
+  /** Adjust max stats without resetting current values (for treasure equip/unequip) */
+  syncMaxStats: (
     maxStamina: number,
     maxRecoveries: number,
     recoveryValue: number,
@@ -293,6 +303,16 @@ export const usePlayStore = create<PlayStore>()(
             usedRecoveries: 0,
           })),
 
+        syncMaxStats: (maxStamina, maxRecoveries, recoveryValue) =>
+          updateActive((s) => ({
+            ...s,
+            maxStamina,
+            maxRecoveries,
+            recoveryValue,
+            // Clamp current stamina to new max without resetting
+            currentStamina: Math.min(s.currentStamina, maxStamina),
+          })),
+
         deletePlayState: (characterId) => {
           const { states, activeCharacterId } = get();
           const newStates = { ...states };
@@ -327,12 +347,33 @@ export const usePlayStore = create<PlayStore>()(
           })),
 
         toggleEquip: (itemId) =>
-          updateActive((s) => ({
-            ...s,
-            inventory: (s.inventory ?? []).map((i) =>
-              i.id === itemId ? { ...i, isEquipped: !i.isEquipped } : i,
-            ),
-          })),
+          updateActive((s) => {
+            const inventory = s.inventory ?? [];
+            const item = inventory.find((i) => i.id === itemId);
+            if (!item) return s;
+
+            const willEquip = !item.isEquipped;
+
+            if (willEquip && item.treasureId) {
+              // Auto-unequip conflicting slot items
+              const conflictIds = new Set(getConflictingItems(item.treasureId, inventory));
+              return {
+                ...s,
+                inventory: inventory.map((i) => {
+                  if (i.id === itemId) return { ...i, isEquipped: true };
+                  if (conflictIds.has(i.id)) return { ...i, isEquipped: false };
+                  return i;
+                }),
+              };
+            }
+
+            return {
+              ...s,
+              inventory: inventory.map((i) =>
+                i.id === itemId ? { ...i, isEquipped: willEquip } : i,
+              ),
+            };
+          }),
 
         updateItemNotes: (itemId, notes) =>
           updateActive((s) => ({

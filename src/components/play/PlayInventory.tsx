@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { usePlayStore } from '../../stores/play-store';
+import { useCharacterStore } from '../../stores/character-store';
 import type { InventoryItem } from '../../stores/play-store';
 import treasuresData from '../../data/treasures.json';
+import { getTreasureEffectAtLevel } from '../../engine/treasure-effects';
 
 interface TreasureEntry {
   id: string;
@@ -32,6 +34,7 @@ const CATEGORY_COLORS: Record<string, string> = {
 export function PlayInventory() {
   const playStore = usePlayStore();
   const playState = playStore.getActiveState();
+  const characterLevel = useCharacterStore((s) => s.character.level);
   const [showCatalog, setShowCatalog] = useState(false);
   const [catalogFilter, setCatalogFilter] = useState<string>('all');
   const [catalogSearch, setCatalogSearch] = useState('');
@@ -56,6 +59,9 @@ export function PlayInventory() {
       charges: treasure.category === 'consumable' ? 1 : undefined,
       maxCharges: treasure.category === 'consumable' ? 1 : undefined,
       isEquipped: false,
+      treasureId: treasure.id,
+      subcategory: treasure.subcategory,
+      keywords: treasure.keywords,
     };
     playStore.addInventoryItem(item);
   }
@@ -242,10 +248,49 @@ export function PlayInventory() {
                     </button>
                   </div>
                 </div>
+                {/* Active effects summary for equipped items */}
+                {item.isEquipped && item.treasureId && (() => {
+                  const effect = getTreasureEffectAtLevel(item.treasureId, characterLevel);
+                  if (!effect) return null;
+                  const bonuses: string[] = [];
+                  if (effect.stamina) bonuses.push(`+${effect.stamina} Stamina`);
+                  if (effect.speed) bonuses.push(`+${effect.speed} Speed`);
+                  if (effect.stability) bonuses.push(`+${effect.stability} Stability`);
+                  if (effect.damage) bonuses.push(`+${effect.damage} Damage`);
+                  if (effect.extraDamage && effect.extraDamageType) bonuses.push(`+${effect.extraDamage} ${effect.extraDamageType}`);
+                  if (effect.meleeDistance) bonuses.push(`+${effect.meleeDistance} Melee Distance`);
+                  if (effect.rangedDistance) bonuses.push(`+${effect.rangedDistance} Ranged Distance`);
+                  if (bonuses.length === 0) return null;
+                  return (
+                    <div className="flex flex-wrap gap-1 mt-1.5">
+                      {bonuses.map((b) => (
+                        <span key={b} className="px-1.5 py-0.5 rounded text-[0.45rem] font-heading uppercase tracking-wider text-emerald-400 bg-emerald-900/20 border border-emerald-500/20">
+                          {b}
+                        </span>
+                      ))}
+                    </div>
+                  );
+                })()}
                 {expandedItem === item.id && (
-                  <p className="font-body text-[0.6rem] text-cream-dark/50 mt-2 leading-relaxed">
-                    {item.description}
-                  </p>
+                  <div className="mt-2">
+                    <p className="font-body text-[0.6rem] text-cream-dark/50 leading-relaxed">
+                      {item.description}
+                    </p>
+                    {/* Passive effects list */}
+                    {item.treasureId && (() => {
+                      const effect = getTreasureEffectAtLevel(item.treasureId, characterLevel);
+                      if (!effect?.passiveEffects?.length) return null;
+                      return (
+                        <ul className="mt-1.5 flex flex-col gap-0.5">
+                          {effect.passiveEffects.map((pe, i) => (
+                            <li key={i} className="font-body text-[0.5rem] text-gold-muted/70 pl-1.5 border-l border-gold/10">
+                              {pe}
+                            </li>
+                          ))}
+                        </ul>
+                      );
+                    })()}
+                  </div>
                 )}
               </div>
             ))}
