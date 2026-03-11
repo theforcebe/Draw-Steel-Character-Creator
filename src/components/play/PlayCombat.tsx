@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { useCharacterStore } from '../../stores/character-store';
 import { usePlayStore } from '../../stores/play-store';
+import type { InitiativeEntry } from '../../stores/play-store';
 import {
   CONDITIONS,
   CONDITION_DESCRIPTIONS,
@@ -45,6 +47,174 @@ function AdjustButton({
     >
       {children}
     </button>
+  );
+}
+
+function InitiativeTracker() {
+  const playStore = usePlayStore();
+  const playState = playStore.getActiveState();
+  const character = useCharacterStore((s) => s.character);
+  const [showAdd, setShowAdd] = useState(false);
+  const [newName, setNewName] = useState('');
+  const [newInit, setNewInit] = useState('');
+
+  if (!playState) return null;
+
+  const entries = playState.initiative ?? [];
+
+  function handleAdd() {
+    const name = newName.trim() || 'Unnamed';
+    const init = parseInt(newInit, 10) || 0;
+    const entry: InitiativeEntry = {
+      id: `init-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      name,
+      initiative: init,
+      isPlayer: false,
+      isActive: entries.length === 0,
+    };
+    playStore.addInitiativeEntry(entry);
+    setNewName('');
+    setNewInit('');
+    setShowAdd(false);
+  }
+
+  function handleAddSelf() {
+    const name = character.name || 'Hero';
+    const entry: InitiativeEntry = {
+      id: `init-self-${Date.now()}`,
+      name,
+      initiative: 0,
+      isPlayer: true,
+      isActive: entries.length === 0,
+    };
+    playStore.addInitiativeEntry(entry);
+  }
+
+  return (
+    <div className="card px-4 py-3">
+      <div className="flex items-center justify-between mb-2">
+        <h3 className="font-heading text-xs uppercase tracking-wider text-gold">Initiative</h3>
+        <div className="flex gap-1.5">
+          {entries.length > 0 && (
+            <button
+              type="button"
+              onClick={() => playStore.nextInitiative()}
+              className="font-heading text-[0.55rem] uppercase tracking-wider text-gold-muted hover:text-gold transition-all px-2 py-1 rounded-lg border border-gold/10 hover:border-gold/30"
+            >
+              Next Turn
+            </button>
+          )}
+          {entries.length > 0 && (
+            <button
+              type="button"
+              onClick={() => playStore.clearInitiative()}
+              className="font-heading text-[0.55rem] uppercase tracking-wider text-crimson/60 hover:text-crimson transition-all px-2 py-1 rounded-lg border border-crimson/10 hover:border-crimson/30"
+            >
+              Clear
+            </button>
+          )}
+        </div>
+      </div>
+
+      {entries.length > 0 ? (
+        <div className="flex flex-col gap-1 mb-2">
+          {entries.map((entry) => (
+            <div
+              key={entry.id}
+              className={[
+                'flex items-center gap-2 px-3 py-1.5 rounded-xl transition-all',
+                entry.isActive
+                  ? 'bg-gold/10 border border-gold/25 shadow-[0_0_12px_rgba(212,168,67,0.1)]'
+                  : 'bg-surface-light/20 border border-gold/5',
+              ].join(' ')}
+            >
+              <span className={[
+                'font-heading text-sm font-bold w-8 text-center',
+                entry.isActive ? 'text-gold' : 'text-gold-muted',
+              ].join(' ')}>
+                {entry.initiative}
+              </span>
+              <span className={[
+                'flex-1 font-heading text-xs tracking-wide truncate',
+                entry.isPlayer ? 'text-gold-light' : 'text-cream-dark/70',
+                entry.isActive ? 'font-semibold' : '',
+              ].join(' ')}>
+                {entry.name}
+                {entry.isPlayer && (
+                  <span className="ml-1 text-[0.5rem] text-gold/50 uppercase">(you)</span>
+                )}
+              </span>
+              {entry.isActive && (
+                <span className="shrink-0 w-2 h-2 rounded-full bg-gold animate-pulse" />
+              )}
+              <button
+                type="button"
+                onClick={() => playStore.removeInitiativeEntry(entry.id)}
+                className="shrink-0 text-[0.6rem] text-crimson/40 hover:text-crimson transition-all px-1"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="font-body text-[0.65rem] text-cream-dark/30 mb-2">
+          No initiative order set. Add combatants to start tracking turns.
+        </p>
+      )}
+
+      {showAdd ? (
+        <div className="flex items-center gap-2 mt-1">
+          <input
+            type="text"
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            placeholder="Name"
+            className="flex-1 px-2 py-1.5 rounded-lg bg-surface-light/20 border border-gold/10 text-cream-dark/80 font-body text-xs placeholder:text-cream-dark/30 focus:outline-none focus:border-gold/30"
+          />
+          <input
+            type="number"
+            value={newInit}
+            onChange={(e) => setNewInit(e.target.value)}
+            placeholder="Init"
+            className="w-14 px-2 py-1.5 rounded-lg bg-surface-light/20 border border-gold/10 text-cream-dark/80 font-body text-xs text-center placeholder:text-cream-dark/30 focus:outline-none focus:border-gold/30"
+          />
+          <button
+            type="button"
+            onClick={handleAdd}
+            className="px-2 py-1.5 rounded-lg bg-gold/10 border border-gold/20 font-heading text-[0.55rem] uppercase tracking-wider text-gold hover:bg-gold/20 transition-all"
+          >
+            Add
+          </button>
+          <button
+            type="button"
+            onClick={() => { setShowAdd(false); setNewName(''); setNewInit(''); }}
+            className="px-1.5 py-1.5 text-[0.55rem] text-cream-dark/40 hover:text-cream-dark/60 transition-all"
+          >
+            ×
+          </button>
+        </div>
+      ) : (
+        <div className="flex gap-2 mt-1">
+          {!entries.some((e) => e.isPlayer) && (
+            <button
+              type="button"
+              onClick={handleAddSelf}
+              className="font-heading text-[0.55rem] uppercase tracking-wider text-gold-muted hover:text-gold transition-all px-2 py-1 rounded-lg border border-gold/10 hover:border-gold/30"
+            >
+              + Add Self
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => setShowAdd(true)}
+            className="font-heading text-[0.55rem] uppercase tracking-wider text-gold-muted hover:text-gold transition-all px-2 py-1 rounded-lg border border-gold/10 hover:border-gold/30"
+          >
+            + Add Combatant
+          </button>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -245,6 +415,9 @@ export function PlayCombat() {
         </div>
       </div>
 
+      {/* ── Initiative Tracker ── */}
+      <InitiativeTracker />
+
       {/* ── Conditions ── */}
       <div className="card px-4 py-3">
         <div className="flex items-center justify-between mb-3">
@@ -282,6 +455,24 @@ export function PlayCombat() {
             );
           })}
         </div>
+        {/* Active condition descriptions */}
+        {playState.activeConditions.length > 0 && (
+          <div className="mt-3 flex flex-col gap-2">
+            {playState.activeConditions.map((condition) => (
+              <div
+                key={`desc-${condition}`}
+                className="px-3 py-2 rounded-xl bg-crimson/5 border border-crimson/15"
+              >
+                <span className="font-heading text-[0.6rem] uppercase tracking-wider text-crimson font-semibold">
+                  {condition}
+                </span>
+                <p className="font-body text-[0.6rem] text-cream-dark/60 mt-0.5 leading-relaxed">
+                  {CONDITION_DESCRIPTIONS[condition as Condition]}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* ── Rest Actions ── */}

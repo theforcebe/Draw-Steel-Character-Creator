@@ -105,20 +105,41 @@ export function SubclassStep() {
   }
 
   const className = classId.charAt(0).toUpperCase() + classId.slice(1);
+  const isConduit = classId === 'conduit';
+  const secondDomainId = classChoice.secondDomainId;
+
+  function handleSelectSecondDomain(domainId: string) {
+    if (!classChoice) return;
+    // Can't pick the same as first domain
+    if (domainId === classChoice.subclassId) return;
+    setClassChoice({ ...classChoice, secondDomainId: domainId });
+  }
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
       {/* Header */}
       <div className="mb-8 text-center">
         <h2 className="gold-text font-heading text-3xl tracking-wide sm:text-4xl">
-          Choose Your Subclass
+          {isConduit ? 'Choose Your Domains' : 'Choose Your Subclass'}
         </h2>
         <p className="font-body mt-2 text-lg text-cream-dark/80">
-          {classId === 'conduit'
-            ? `Select a domain for your ${className}. In a future update you will choose two domains.`
+          {isConduit
+            ? `Select two domains for your ${className}. Your domains determine your divine features and abilities.`
             : `Select a specialization for your ${className}.`}
         </p>
       </div>
+
+      {/* Conduit: First Domain */}
+      {isConduit && (
+        <h3 className="font-heading text-lg text-gold-light mb-3 tracking-wide">
+          First Domain
+          {selectedSubId && (
+            <span className="ml-2 text-sm text-cream-dark/60">
+              ({subclasses.find((s) => s.id === selectedSubId)?.name ?? selectedSubId})
+            </span>
+          )}
+        </h3>
+      )}
 
       {/* Subclass grid */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -152,6 +173,41 @@ export function SubclassStep() {
           </ParchmentCard>
         ))}
       </div>
+
+      {/* Conduit: Second Domain */}
+      {isConduit && selectedSubId && (
+        <div className="mt-8">
+          <h3 className="font-heading text-lg text-gold-light mb-3 tracking-wide">
+            Second Domain
+            {secondDomainId && (
+              <span className="ml-2 text-sm text-cream-dark/60">
+                ({subclasses.find((s) => s.id === secondDomainId)?.name ?? secondDomainId})
+              </span>
+            )}
+          </h3>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {subclasses
+              .filter((sub) => sub.id !== selectedSubId)
+              .map((sub) => (
+                <ParchmentCard
+                  key={`second-${sub.id}`}
+                  selected={secondDomainId === sub.id}
+                  onClick={() => handleSelectSecondDomain(sub.id)}
+                  hoverable
+                  compact
+                  className="flex flex-col"
+                >
+                  <h3 className="font-heading text-xl font-semibold text-gold-light">
+                    {sub.name}
+                  </h3>
+                  <p className="font-body mt-2 flex-1 text-sm leading-relaxed text-cream-dark/70">
+                    {sub.description}
+                  </p>
+                </ParchmentCard>
+              ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

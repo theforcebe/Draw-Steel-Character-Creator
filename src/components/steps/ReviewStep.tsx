@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { useCharacterStore } from '../../stores/character-store';
 import { usePlayStore } from '../../stores/play-store';
 import { ParchmentCard } from '../ui/ParchmentCard';
-import { exportCharacterPdf, exportAbilityCardsPdf } from '../../engine/pdf-exporter';
-import { exportCombatReferencePdf } from '../../engine/combat-reference-pdf';
-import { BattleCardsView } from '../battle/BattleCardsView';
+/* PDF exporters are loaded dynamically to keep pdf-lib out of the initial bundle */
+const LazyBattleCardsView = lazy(() =>
+  import('../battle/BattleCardsView').then((m) => ({ default: m.BattleCardsView }))
+);
 import { getCharacterSkills } from '../../engine/skill-mapper';
 import { saveCharacter, updateSavedCharacter } from '../../engine/character-storage';
 import { CharacterPortrait } from '../portrait/CharacterPortrait';
@@ -15,10 +16,12 @@ import type { CharacterData } from '../../types/character';
 
 interface ClassFeature {
   name: string;
-  type: string;
+  type?: string;
   description: string;
   level: number;
+  subclass?: string;
   subclass_effects?: Record<string, string>;
+  feature_type?: string;
 }
 interface ClassFeaturesEntry {
   resource_name: string;
@@ -77,6 +80,7 @@ function ExportButtons({ character }: { character: CharacterData }) {
   async function handleExportSheet() {
     setExporting(true);
     try {
+      const { exportCharacterPdf } = await import('../../engine/pdf-exporter');
       await exportCharacterPdf(character);
     } catch (err) {
       alert(`Export failed: ${err instanceof Error ? err.message : String(err)}`);
@@ -88,6 +92,7 @@ function ExportButtons({ character }: { character: CharacterData }) {
   async function handleExportCards() {
     setExportingCards(true);
     try {
+      const { exportAbilityCardsPdf } = await import('../../engine/pdf-exporter');
       await exportAbilityCardsPdf(character);
     } catch (err) {
       alert(`Export failed: ${err instanceof Error ? err.message : String(err)}`);
@@ -99,6 +104,7 @@ function ExportButtons({ character }: { character: CharacterData }) {
   async function handleExportCombatRef() {
     setExportingRef(true);
     try {
+      const { exportCombatReferencePdf } = await import('../../engine/combat-reference-pdf');
       await exportCombatReferencePdf();
     } catch (err) {
       alert(`Export failed: ${err instanceof Error ? err.message : String(err)}`);
@@ -127,6 +133,7 @@ function ExportButtons({ character }: { character: CharacterData }) {
       formerLifeAncestryId: character.formerLifeAncestryId,
       classId: character.classChoice?.classId ?? null,
       kitId: character.classChoice?.kitId ?? null,
+      classKitOptionId: character.classChoice?.classKitOptionId ?? null,
       selectedTraits: character.selectedTraits,
       complicationBonuses: compBonuses,
     });
@@ -227,7 +234,9 @@ export function ReviewStep() {
 
   const classLabel = character.classChoice?.classId ? formatId(character.classChoice.classId) : null;
   const subclassLabel = character.classChoice?.subclassId
-    ? formatId(character.classChoice.subclassId)
+    ? character.classChoice.secondDomainId
+      ? `${formatId(character.classChoice.subclassId)} + ${formatId(character.classChoice.secondDomainId)}`
+      : formatId(character.classChoice.subclassId)
     : null;
 
   const traits = character.selectedTraits;
@@ -271,7 +280,13 @@ export function ReviewStep() {
       </div>
 
       {activeTab === 'battleCards' ? (
-        <BattleCardsView />
+        <Suspense fallback={
+          <div className="flex items-center justify-center py-12">
+            <div className="inline-block w-6 h-6 border-2 border-gold/30 border-t-gold rounded-full animate-spin" />
+          </div>
+        }>
+          <LazyBattleCardsView />
+        </Suspense>
       ) : (
       <div className="max-w-3xl mx-auto w-full flex flex-col gap-5">
         {/* Hero Identity */}
@@ -389,6 +404,9 @@ export function ReviewStep() {
           {character.classChoice?.kitId && (
             <DetailRow label="Kit" value={formatId(character.classChoice.kitId)} />
           )}
+          {character.classChoice?.classKitOptionId && !character.classChoice?.kitId && (
+            <DetailRow label="Class Option" value={formatId(character.classChoice.classKitOptionId)} />
+          )}
           {character.classChoice?.subclassSkill && (
             <DetailRow label="Subclass Skill" value={character.classChoice.subclassSkill} />
           )}
@@ -398,7 +416,11 @@ export function ReviewStep() {
         {character.classChoice?.classId && classFeatures[character.classChoice.classId] && (() => {
           const cc = character.classChoice!;
           const cf = classFeatures[cc.classId];
-          const features = cf.features.filter((f) => f.level <= character.level);
+          const features = cf.features.filter((f) => {
+            if (f.level > character.level) return false;
+            if (f.subclass && cc.subclassId && f.subclass.toLowerCase() !== cc.subclassId.toLowerCase()) return false;
+            return true;
+          });
           return (
             <ParchmentCard>
               <SectionHeading>Class Features</SectionHeading>
@@ -425,7 +447,7 @@ export function ReviewStep() {
                     <div className="flex items-center gap-2">
                       <span className="font-heading text-sm text-gold-light">{f.name}</span>
                       <span className="text-[0.6rem] font-heading uppercase tracking-wider text-cream-dark/40">
-                        {f.type}
+                        {f.type ?? (f.subclass ? f.subclass : 'Feature')}
                       </span>
                     </div>
                     <p className="font-body text-xs text-cream-dark/60 mt-0.5">{f.description}</p>

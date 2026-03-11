@@ -2,6 +2,25 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Condition } from '../types/character';
 
+export interface InventoryItem {
+  id: string;
+  name: string;
+  category: string;       // 'artifact' | 'consumable' | 'leveled' | 'trinket'
+  description: string;
+  charges?: number;        // for consumables with charges
+  maxCharges?: number;
+  isEquipped?: boolean;
+  notes?: string;
+}
+
+export interface InitiativeEntry {
+  id: string;
+  name: string;
+  initiative: number;
+  isPlayer: boolean;
+  isActive: boolean;
+}
+
 export interface PlayCharacterState {
   currentStamina: number;
   maxStamina: number;
@@ -14,6 +33,13 @@ export interface PlayCharacterState {
   victories: number;
   activeConditions: Condition[];
   notes: string;
+  inventory: InventoryItem[];
+  // Initiative tracker
+  initiative: InitiativeEntry[];
+  // Ability usage tracking (ability names used this encounter)
+  usedAbilities: string[];
+  // Earned title IDs
+  earnedTitles: string[];
 }
 
 function createDefaultPlayState(
@@ -33,6 +59,10 @@ function createDefaultPlayState(
     victories: 0,
     activeConditions: [],
     notes: '',
+    inventory: [],
+    initiative: [],
+    usedAbilities: [],
+    earnedTitles: [],
   };
 }
 
@@ -72,6 +102,29 @@ interface PlayStore {
     recoveryValue: number,
   ) => void;
   deletePlayState: (characterId: string) => void;
+
+  // Inventory actions
+  addInventoryItem: (item: InventoryItem) => void;
+  removeInventoryItem: (itemId: string) => void;
+  useCharge: (itemId: string) => void;
+  toggleEquip: (itemId: string) => void;
+  updateItemNotes: (itemId: string, notes: string) => void;
+
+  // Initiative actions
+  addInitiativeEntry: (entry: InitiativeEntry) => void;
+  removeInitiativeEntry: (id: string) => void;
+  setActiveInitiative: (id: string) => void;
+  nextInitiative: () => void;
+  clearInitiative: () => void;
+  updateInitiativeOrder: (entries: InitiativeEntry[]) => void;
+
+  // Ability usage actions
+  toggleAbilityUsed: (abilityName: string) => void;
+  resetUsedAbilities: () => void;
+
+  // Title actions
+  addTitle: (titleId: string) => void;
+  removeTitle: (titleId: string) => void;
 }
 
 export const usePlayStore = create<PlayStore>()(
@@ -97,7 +150,14 @@ export const usePlayStore = create<PlayStore>()(
         getActiveState: () => {
           const { activeCharacterId, states } = get();
           if (!activeCharacterId) return null;
-          return states[activeCharacterId] ?? null;
+          const state = states[activeCharacterId];
+          if (!state) return null;
+          // Backward compat: ensure new fields exist for old play states
+          if (!state.inventory) state.inventory = [];
+          if (!state.initiative) state.initiative = [];
+          if (!state.usedAbilities) state.usedAbilities = [];
+          if (!state.earnedTitles) state.earnedTitles = [];
+          return state;
         },
 
         initPlayState: (characterId, maxStamina, maxRecoveries, recoveryValue) => {
@@ -210,6 +270,7 @@ export const usePlayStore = create<PlayStore>()(
             heroicResource: 0,
             surges: 0,
             activeConditions: [],
+            usedAbilities: [],
           })),
 
         catchBreath: () =>
@@ -241,6 +302,114 @@ export const usePlayStore = create<PlayStore>()(
             activeCharacterId: activeCharacterId === characterId ? null : activeCharacterId,
           });
         },
+
+        // Inventory actions
+        addInventoryItem: (item) =>
+          updateActive((s) => ({
+            ...s,
+            inventory: [...(s.inventory ?? []), item],
+          })),
+
+        removeInventoryItem: (itemId) =>
+          updateActive((s) => ({
+            ...s,
+            inventory: (s.inventory ?? []).filter((i) => i.id !== itemId),
+          })),
+
+        useCharge: (itemId) =>
+          updateActive((s) => ({
+            ...s,
+            inventory: (s.inventory ?? []).map((i) =>
+              i.id === itemId && i.charges != null && i.charges > 0
+                ? { ...i, charges: i.charges - 1 }
+                : i,
+            ),
+          })),
+
+        toggleEquip: (itemId) =>
+          updateActive((s) => ({
+            ...s,
+            inventory: (s.inventory ?? []).map((i) =>
+              i.id === itemId ? { ...i, isEquipped: !i.isEquipped } : i,
+            ),
+          })),
+
+        updateItemNotes: (itemId, notes) =>
+          updateActive((s) => ({
+            ...s,
+            inventory: (s.inventory ?? []).map((i) =>
+              i.id === itemId ? { ...i, notes } : i,
+            ),
+          })),
+
+        // Initiative actions
+        addInitiativeEntry: (entry) =>
+          updateActive((s) => ({
+            ...s,
+            initiative: [...(s.initiative ?? []), entry]
+              .sort((a, b) => b.initiative - a.initiative),
+          })),
+
+        removeInitiativeEntry: (id) =>
+          updateActive((s) => ({
+            ...s,
+            initiative: (s.initiative ?? []).filter((e) => e.id !== id),
+          })),
+
+        setActiveInitiative: (id) =>
+          updateActive((s) => ({
+            ...s,
+            initiative: (s.initiative ?? []).map((e) => ({
+              ...e,
+              isActive: e.id === id,
+            })),
+          })),
+
+        nextInitiative: () =>
+          updateActive((s) => {
+            const entries = s.initiative ?? [];
+            if (entries.length === 0) return s;
+            const activeIdx = entries.findIndex((e) => e.isActive);
+            const nextIdx = activeIdx < 0 ? 0 : (activeIdx + 1) % entries.length;
+            return {
+              ...s,
+              initiative: entries.map((e, i) => ({ ...e, isActive: i === nextIdx })),
+            };
+          }),
+
+        clearInitiative: () =>
+          updateActive((s) => ({ ...s, initiative: [] })),
+
+        updateInitiativeOrder: (entries) =>
+          updateActive((s) => ({ ...s, initiative: entries })),
+
+        // Ability usage actions
+        toggleAbilityUsed: (abilityName) =>
+          updateActive((s) => {
+            const used = s.usedAbilities ?? [];
+            return {
+              ...s,
+              usedAbilities: used.includes(abilityName)
+                ? used.filter((n) => n !== abilityName)
+                : [...used, abilityName],
+            };
+          }),
+
+        resetUsedAbilities: () =>
+          updateActive((s) => ({ ...s, usedAbilities: [] })),
+
+        // Title actions
+        addTitle: (titleId) =>
+          updateActive((s) => ({
+            ...s,
+            earnedTitles: [...(s.earnedTitles ?? []), titleId],
+          })),
+
+        removeTitle: (titleId) =>
+          updateActive((s) => ({
+            ...s,
+            earnedTitles: (s.earnedTitles ?? []).filter((t) => t !== titleId),
+          })),
       };
     },
     { name: 'draw-steel-play-states' },

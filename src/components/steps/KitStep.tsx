@@ -1,16 +1,18 @@
 import { useCharacterStore } from '../../stores/character-store';
 import { ParchmentCard } from '../ui/ParchmentCard';
 import kitsData from '../../data/kits.json';
+import { CLASS_KIT_SYSTEMS } from '../../data/class-kit-options';
+import type { ClassKitOption } from '../../data/class-kit-options';
 
 // Fury uses kits only with berserker/reaver subclass
 const FURY_KIT_SUBCLASSES = ['berserker', 'reaver'];
 
-// Classes that do NOT use kits
+// Classes that do NOT use standard kits
 const NO_KIT_CLASSES: Record<string, string> = {
   conduit: 'Prayer',
   elementalist: 'Enchantment',
   null: 'Psionic Augmentation',
-  talent: 'Portfolio',
+  talent: 'Augmentation',
   summoner: "Summoner's Kit (Level 3)",
 };
 
@@ -164,6 +166,105 @@ function KitCard({
   );
 }
 
+function ClassKitOptionCard({
+  option,
+  selected,
+  onSelect,
+}: {
+  option: ClassKitOption;
+  selected: boolean;
+  onSelect: () => void;
+}) {
+  const bonuses: { label: string; value: string }[] = [];
+  if (option.staminaPerEchelon != null) {
+    bonuses.push({ label: 'Stamina', value: `+${option.staminaPerEchelon}/ech` });
+  } else if (option.stamina != null) {
+    bonuses.push({ label: 'Stamina', value: `+${option.stamina}` });
+  }
+  if (option.speed != null) bonuses.push({ label: 'Speed', value: `+${option.speed}` });
+  if (option.stability != null) bonuses.push({ label: 'Stability', value: `+${option.stability}` });
+  if (option.disengage != null) bonuses.push({ label: 'Disengage', value: `+${option.disengage}` });
+  if (option.damage != null) bonuses.push({ label: 'Damage', value: `+${option.damage}` });
+  if (option.distance != null) bonuses.push({ label: 'Distance', value: `+${option.distance}` });
+
+  return (
+    <ParchmentCard
+      selected={selected}
+      onClick={onSelect}
+      hoverable
+      className="flex flex-col gap-3"
+    >
+      <h3 className="font-heading text-lg text-gold tracking-wide">{option.name}</h3>
+      <p className="font-body text-sm text-cream-dark/70 leading-relaxed">{option.description}</p>
+
+      {bonuses.length > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {bonuses.map((b) => (
+            <span
+              key={b.label}
+              className="px-2 py-0.5 rounded-full bg-gold/10 text-gold-light text-xs font-heading border border-gold/20"
+            >
+              {b.label} {b.value}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {option.damageNote && (
+        <p className="font-body text-[0.65rem] text-cream-dark/50 italic">
+          Damage applies to: {option.damageNote}
+        </p>
+      )}
+      {option.distanceNote && (
+        <p className="font-body text-[0.65rem] text-cream-dark/50 italic">
+          Distance applies to: {option.distanceNote}
+        </p>
+      )}
+      {option.equipmentNote && (
+        <div className="flex flex-wrap gap-2 text-xs font-body">
+          <span className="px-2 py-0.5 rounded bg-surface-light text-cream-dark/80 border border-gold-dark/10">
+            {option.equipmentNote}
+          </span>
+        </div>
+      )}
+    </ParchmentCard>
+  );
+}
+
+function ClassKitOptionSelection({
+  system,
+  selectedId,
+  onSelect,
+}: {
+  system: { systemName: string; description: string; options: ClassKitOption[] };
+  selectedId: string;
+  onSelect: (id: string) => void;
+}) {
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="text-center">
+        <h2 className="font-heading text-2xl text-gold tracking-wide">
+          Choose Your {system.systemName}
+        </h2>
+        <p className="font-body text-cream-dark/60 mt-2 max-w-lg mx-auto">
+          {system.description}
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {system.options.map((option) => (
+          <ClassKitOptionCard
+            key={option.id}
+            option={option}
+            selected={selectedId === option.id}
+            onSelect={() => onSelect(option.id)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function TacticianKitSelection() {
   const classChoice = useCharacterStore((s) => s.character.classChoice);
   const setClassChoice = useCharacterStore((s) => s.setClassChoice);
@@ -271,15 +372,28 @@ export function KitStep() {
 
   // No-kit classes: conduit, elementalist, null, talent, summoner
   if (classId in NO_KIT_CLASSES) {
-    const altName = NO_KIT_CLASSES[classId];
+    const system = CLASS_KIT_SYSTEMS[classId];
+
+    // Summoner has no options yet
+    if (!system) {
+      const altName = NO_KIT_CLASSES[classId];
+      return (
+        <div className="flex flex-col items-center justify-center gap-4 py-16">
+          <h2 className="font-heading text-2xl text-gold tracking-wide">{altName}</h2>
+          <p className="font-body text-cream-dark/60 text-center max-w-md">
+            This class uses <strong className="text-gold-light">{altName}</strong> instead of kits.
+            Coming soon...
+          </p>
+        </div>
+      );
+    }
+
     return (
-      <div className="flex flex-col items-center justify-center gap-4 py-16">
-        <h2 className="font-heading text-2xl text-gold tracking-wide">{altName}</h2>
-        <p className="font-body text-cream-dark/60 text-center max-w-md">
-          This class uses <strong className="text-gold-light">{altName}</strong> instead of kits.
-          Coming soon...
-        </p>
-      </div>
+      <ClassKitOptionSelection
+        system={system}
+        selectedId={classChoice.classKitOptionId ?? ''}
+        onSelect={(optionId) => setClassChoice({ ...classChoice, classKitOptionId: optionId })}
+      />
     );
   }
 

@@ -38,6 +38,8 @@ export function validateStep(
 
     case 'subclass':
       if (!character.classChoice?.subclassId) return { valid: false, message: 'Please select a subclass.' };
+      if (character.classChoice.classId === 'conduit' && !character.classChoice.secondDomainId)
+        return { valid: false, message: 'Conduits must choose two domains.' };
       return { valid: true, message: '' };
 
     case 'characteristics': {
@@ -48,9 +50,20 @@ export function validateStep(
       return { valid: true, message: '' };
     }
 
-    case 'kit':
+    case 'kit': {
+      const NO_KIT_CLASSES = ['conduit', 'elementalist', 'null', 'talent', 'summoner'];
+      const cId = character.classChoice?.classId;
+      if (cId && NO_KIT_CLASSES.includes(cId)) {
+        // Summoner has no options yet
+        if (cId === 'summoner') return { valid: true, message: '' };
+        // Other no-kit classes need a classKitOptionId
+        if (!character.classChoice?.classKitOptionId)
+          return { valid: false, message: 'Please select your class option.' };
+        return { valid: true, message: '' };
+      }
       if (!character.classChoice?.kitId) return { valid: false, message: 'Please select a kit.' };
       return { valid: true, message: '' };
+    }
 
     case 'abilities': {
       // Tactician's signature ability comes from their kit, not the abilities list

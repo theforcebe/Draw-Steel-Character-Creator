@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { WizardLayout } from './components/wizard/WizardLayout';
 import { useCharacterStore } from './stores/character-store';
 import { WelcomeStep } from './components/steps/WelcomeStep';
@@ -14,7 +15,24 @@ import { ComplicationStep } from './components/steps/ComplicationStep';
 import { DetailsStep } from './components/steps/DetailsStep';
 import { ModelStep } from './components/steps/ModelStep';
 import { ReviewStep } from './components/steps/ReviewStep';
-import { PlayMode } from './components/play/PlayMode';
+
+/* ── Lazy-loaded: Play Mode is only needed after character creation ── */
+const LazyPlayMode = lazy(() =>
+  import('./components/play/PlayMode').then((m) => ({ default: m.PlayMode }))
+);
+
+function PlayModeLoadingFallback() {
+  return (
+    <div className="flex h-screen items-center justify-center">
+      <div className="text-center">
+        <div className="inline-block w-8 h-8 border-2 border-gold/30 border-t-gold rounded-full animate-spin mb-4" />
+        <p className="font-heading text-sm uppercase tracking-wider text-gold-muted">
+          Loading Play Mode...
+        </p>
+      </div>
+    </div>
+  );
+}
 
 function StepRouter() {
   const currentStep = useCharacterStore((s) => s.currentStep);
@@ -57,7 +75,11 @@ export function App() {
   const mode = useCharacterStore((s) => s.mode);
 
   if (mode === 'play') {
-    return <PlayMode />;
+    return (
+      <Suspense fallback={<PlayModeLoadingFallback />}>
+        <LazyPlayMode />
+      </Suspense>
+    );
   }
 
   return (

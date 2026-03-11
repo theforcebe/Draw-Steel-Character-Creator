@@ -66,10 +66,12 @@ const ancestries = (ancestriesData as Record<string, unknown>).ancestries as Rec
 
 interface ClassFeature {
   name: string;
-  type: string;
+  type?: string;
   description: string;
   level: number;
+  subclass?: string;
   subclass_effects?: Record<string, string>;
+  feature_type?: string;
 }
 
 interface ClassFeaturesEntry {
@@ -310,12 +312,15 @@ export function PlayActions() {
     const level = character.level ?? 1;
     return classFeaturesForClass.features.filter((f) => {
       if (f.level > level) return false;
+      // Filter out features for other subclasses
+      if (f.subclass && subclassId && f.subclass.toLowerCase() !== subclassId.toLowerCase()) return false;
+      const fType = f.type ?? 'Passive';
       if (filter === 'all') return true;
       if (filter === 'Triggered action') {
-        return f.type.includes('Triggered') || f.type.includes('triggered');
+        return fType.includes('Triggered') || fType.includes('triggered');
       }
-      if (filter === 'Main action') return f.type === 'Main action';
-      if (filter === 'Maneuver') return f.type === 'Maneuver' || f.type === 'Free maneuver';
+      if (filter === 'Main action') return fType === 'Main action';
+      if (filter === 'Maneuver') return fType === 'Maneuver' || fType === 'Free maneuver';
       return false;
     });
   }, [classFeaturesForClass, character.level, filter]);
@@ -468,16 +473,16 @@ export function PlayActions() {
                     <span
                       className={[
                         'shrink-0 px-2 py-0.5 rounded-full text-[0.5rem] font-heading font-semibold tracking-wider uppercase',
-                        feature.type.includes('triggered') || feature.type.includes('Triggered')
+                        (feature.type ?? '').includes('triggered') || (feature.type ?? '').includes('Triggered')
                           ? 'bg-amber-900/30 text-amber-400/80'
-                          : feature.type === 'Passive'
+                          : !feature.type || feature.type === 'Passive'
                             ? 'bg-blue-900/30 text-blue-400/80'
                             : feature.type === 'Free maneuver'
                               ? 'bg-emerald-900/30 text-emerald-400/80'
                               : 'bg-gold/15 text-gold',
                       ].join(' ')}
                     >
-                      {feature.type}
+                      {feature.type ?? (feature.subclass ? `${feature.subclass}` : 'Feature')}
                     </span>
                   </div>
                   <p className="font-body text-[0.65rem] text-cream-dark/50 mt-1 leading-relaxed">

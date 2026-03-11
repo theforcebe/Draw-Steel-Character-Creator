@@ -7,7 +7,18 @@ import { getComplicationStatBonuses } from '../../engine/complication-stats';
 import { updateSavedCharacter } from '../../engine/character-storage';
 import { LevelUpModal } from './LevelUpModal';
 import abilitiesData from '../../data/abilities.json';
+import titlesData from '../../data/titles.json';
 import type { RawAbility } from '../../engine/ability-resolver';
+
+interface TitleEntry {
+  id: string;
+  name: string;
+  echelon: number;
+  prerequisite: string;
+  effect: string;
+  flavor?: string;
+  special?: string;
+}
 
 interface ClassAbilities {
   resource: string;
@@ -54,6 +65,7 @@ function recalcAndSave(playStore: ReturnType<typeof usePlayStore.getState>, play
     formerLifeAncestryId: char.formerLifeAncestryId,
     classId: char.classChoice?.classId ?? null,
     kitId: char.classChoice?.kitId ?? null,
+    classKitOptionId: char.classChoice?.classKitOptionId ?? null,
     selectedTraits: char.selectedTraits,
     complicationBonuses: compBonuses,
   });
@@ -335,6 +347,9 @@ export function PlayProgression() {
         </div>
       )}
 
+      {/* ── Titles ── */}
+      <TitleSection echelon={echelon} />
+
       {/* Level Up Modal */}
       {showLevelUp && (
         <LevelUpModal
@@ -342,6 +357,171 @@ export function PlayProgression() {
           onComplete={handleLevelUpComplete}
         />
       )}
+    </div>
+  );
+}
+
+const allTitles = (titlesData as { titles: TitleEntry[] }).titles;
+
+function TitleSection({ echelon }: { echelon: number }) {
+  const playStore = usePlayStore();
+  const playState = playStore.getActiveState();
+  const [expandedTitle, setExpandedTitle] = useState<string | null>(null);
+  const [filterEchelon, setFilterEchelon] = useState<number | 'all'>('all');
+
+  if (!playState) return null;
+
+  const earnedTitles = playState.earnedTitles ?? [];
+  const filteredTitles = allTitles.filter((t) => {
+    if (filterEchelon !== 'all' && t.echelon !== filterEchelon) return false;
+    return true;
+  });
+
+  const earnedList = allTitles.filter((t) => earnedTitles.includes(t.id));
+
+  return (
+    <div className="card px-4 py-3">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="font-heading text-xs uppercase tracking-wider text-gold">
+          Titles ({earnedTitles.length} earned)
+        </h3>
+      </div>
+
+      {/* Earned Titles */}
+      {earnedList.length > 0 && (
+        <div className="mb-3">
+          <span className="font-heading text-[0.55rem] uppercase tracking-wider text-gold-muted">
+            Earned
+          </span>
+          <div className="flex flex-col gap-1 mt-1">
+            {earnedList.map((title) => (
+              <div
+                key={`earned-${title.id}`}
+                className="flex items-center justify-between px-3 py-2 rounded-xl bg-gold/8 border border-gold/20"
+              >
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="shrink-0 px-1.5 py-0.5 rounded text-[0.45rem] font-heading uppercase tracking-wider bg-gold/15 text-gold border border-gold/25">
+                    E{title.echelon}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setExpandedTitle(expandedTitle === title.id ? null : title.id)}
+                    className="font-heading text-xs text-gold-light hover:text-gold transition-all text-left truncate"
+                  >
+                    {title.name}
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => playStore.removeTitle(title.id)}
+                  className="shrink-0 px-1.5 py-0.5 rounded text-[0.5rem] text-crimson/50 hover:text-crimson border border-crimson/10 hover:border-crimson/30 transition-all"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Echelon filter */}
+      <div className="flex items-center gap-1 mb-2 flex-wrap">
+        <span className="font-heading text-[0.55rem] uppercase tracking-wider text-gold-muted mr-1">
+          Browse:
+        </span>
+        {(['all', 1, 2, 3, 4] as const).map((e) => (
+          <button
+            key={e}
+            type="button"
+            onClick={() => setFilterEchelon(e)}
+            className={[
+              'px-2 py-0.5 rounded-full text-[0.5rem] font-heading uppercase tracking-wider transition-all',
+              filterEchelon === e
+                ? 'bg-gold/20 text-gold border border-gold/30'
+                : 'text-cream-dark/40 border border-gold/5 hover:border-gold/15',
+            ].join(' ')}
+          >
+            {e === 'all' ? 'All' : `Echelon ${e}`}
+          </button>
+        ))}
+      </div>
+
+      {/* Title List */}
+      <div className="flex flex-col gap-1 max-h-80 overflow-y-auto">
+        {filteredTitles.map((title) => {
+          const isEarned = earnedTitles.includes(title.id);
+          const isExpanded = expandedTitle === title.id;
+          const isAvailable = title.echelon <= echelon;
+
+          return (
+            <div key={title.id}>
+              <div
+                className={[
+                  'flex items-center gap-2 px-2 py-1.5 rounded-lg transition-all',
+                  isEarned ? 'bg-gold/8' : isAvailable ? 'hover:bg-gold/5' : 'opacity-40',
+                ].join(' ')}
+              >
+                <span className={[
+                  'shrink-0 px-1.5 py-0.5 rounded text-[0.45rem] font-heading uppercase tracking-wider border',
+                  title.echelon <= echelon
+                    ? 'text-gold bg-gold/10 border-gold/20'
+                    : 'text-cream-dark/30 bg-surface-light/20 border-gold/5',
+                ].join(' ')}>
+                  E{title.echelon}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setExpandedTitle(isExpanded ? null : title.id)}
+                  className="flex-1 font-heading text-[0.6rem] text-cream-dark/70 hover:text-gold-light transition-all text-left truncate"
+                >
+                  {title.name}
+                </button>
+                {!isEarned && isAvailable && (
+                  <button
+                    type="button"
+                    onClick={() => playStore.addTitle(title.id)}
+                    className="shrink-0 text-[0.5rem] text-gold/30 hover:text-gold/60 font-heading transition-all"
+                  >
+                    +EARN
+                  </button>
+                )}
+                {isEarned && (
+                  <span className="shrink-0 text-[0.5rem] text-gold font-heading">Earned</span>
+                )}
+              </div>
+              {isExpanded && (
+                <div className="px-3 py-2 mx-2 mb-1 rounded-lg bg-surface-light/10 border border-gold/8">
+                  {title.flavor && (
+                    <p className="font-body text-[0.55rem] text-cream-dark/40 italic mb-1.5">
+                      &ldquo;{title.flavor}&rdquo;
+                    </p>
+                  )}
+                  <p className="font-body text-[0.55rem] text-cream-dark/50 mb-1">
+                    <span className="font-heading text-[0.5rem] text-gold-muted uppercase tracking-wider">
+                      Prerequisite:{' '}
+                    </span>
+                    {title.prerequisite}
+                  </p>
+                  <p className="font-body text-[0.55rem] text-cream-dark/60 leading-relaxed whitespace-pre-line">
+                    <span className="font-heading text-[0.5rem] text-gold-muted uppercase tracking-wider">
+                      Effect:{' '}
+                    </span>
+                    {title.effect}
+                  </p>
+                  {title.special && (
+                    <p className="font-body text-[0.55rem] text-crimson/70 mt-1">
+                      <span className="font-heading text-[0.5rem] text-crimson/50 uppercase tracking-wider">
+                        Special:{' '}
+                      </span>
+                      {title.special}
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

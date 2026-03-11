@@ -38,6 +38,7 @@ export function CharacterPreview() {
     formerLifeAncestryId: character.formerLifeAncestryId,
     classId: character.classChoice?.classId ?? null,
     kitId: character.classChoice?.kitId ?? null,
+    classKitOptionId: character.classChoice?.classKitOptionId ?? null,
     selectedTraits: character.selectedTraits,
     complicationBonuses: getComplicationStatBonuses(character.complication, character.level),
   });

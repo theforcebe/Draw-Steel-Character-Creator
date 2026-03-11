@@ -4,23 +4,28 @@
  */
 
 export const SKILL_GROUPS: Record<string, string[]> = {
-  crafting: ['Blacksmithing', 'Carpentry', 'Cooking', 'Fletching'],
+  crafting: [
+    'Alchemy', 'Architecture', 'Blacksmithing', 'Carpentry', 'Cooking',
+    'Fletching', 'Forgery', 'Jewelry', 'Mechanics', 'Tailoring',
+  ],
   exploration: [
     'Climb', 'Drive', 'Endurance', 'Gymnastics', 'Heal',
     'Jump', 'Lift', 'Navigate', 'Ride', 'Swim',
   ],
   interpersonal: [
-    'Brag', 'Empathize', 'Flirt', 'Handle Animals', 'Intimidate',
-    'Lead', 'Music', 'Perform', 'Persuade', 'Read Person',
+    'Brag', 'Empathize', 'Flirt', 'Gamble', 'Handle Animals',
+    'Interrogate', 'Intimidate', 'Lead', 'Lie', 'Music',
+    'Perform', 'Persuade', 'Read Person',
   ],
   intrigue: [
-    'Alertness', 'Criminal Underworld', 'Disguise', 'Eavesdrop',
-    'Interrogate', 'Lie', 'Pick Lock', 'Pick Pocket', 'Search',
-    'Sneak', 'Track',
+    'Alertness', 'Conceal Object', 'Disguise', 'Eavesdrop',
+    'Escape Artist', 'Hide', 'Pick Lock', 'Pick Pocket',
+    'Sabotage', 'Search', 'Sneak', 'Track',
   ],
   lore: [
-    'Culture', 'History', 'Magic', 'Monsters', 'Nature',
-    'Religion', 'Rumors', 'Society', 'Strategy', 'Timescape',
+    'Criminal Underworld', 'Culture', 'History', 'Magic', 'Monsters',
+    'Nature', 'Psionics', 'Religion', 'Rumors', 'Society',
+    'Strategy', 'Timescape',
   ],
 };
 

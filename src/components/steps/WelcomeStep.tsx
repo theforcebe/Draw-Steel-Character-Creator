@@ -119,6 +119,7 @@ export function WelcomeStep() {
       formerLifeAncestryId: data.formerLifeAncestryId,
       classId: data.classChoice?.classId ?? null,
       kitId: data.classChoice?.kitId ?? null,
+      classKitOptionId: data.classChoice?.classKitOptionId ?? null,
       selectedTraits: data.selectedTraits,
       complicationBonuses: compBonuses,
     });

@@ -77,6 +77,8 @@ export interface ClassChoice {
   heroicAbilities: string[];
   kitId?: string;
   secondKitId?: string;
+  classKitOptionId?: string;  // For no-kit classes: prayer/enchantment/augmentation ID
+  secondDomainId?: string;    // For Conduit: second domain choice
 }
 
 export interface ComplicationChoice {
@@ -178,15 +180,15 @@ export const CONDITIONS: Condition[] = [
 ];
 
 export const CONDITION_DESCRIPTIONS: Record<Condition, string> = {
-  bleeding: 'When you use a main action, triggered action, or roll using Might/Agility, lose 1d6 + level stamina after. Cannot be prevented.',
-  dazed: "Can only do one thing on your turn: main action, maneuver, or move action. Can't use triggered actions or free maneuvers.",
-  frightened: "Bane on rolls against fear source. Source's rolls against you gain edge. Can't willingly move closer to source.",
-  grabbed: "Speed 0. Can't be force moved (except by grabber). Bane on abilities that don't target grabber.",
-  prone: 'Your strikes take a bane. Melee abilities against you gain edge. Crawling costs +1 square per square. Cannot climb, jump, swim, or fly.',
-  restrained: "Speed 0. Can't stand up or be force moved. Bane on ability rolls and Might/Agility tests. Abilities against you gain edge. Teleporting ends this.",
-  slowed: 'Speed becomes 2 (unless already lower). Cannot shift.',
-  taunted: "Double bane on ability rolls for abilities that don't target the taunter (requires line of effect).",
-  weakened: 'Bane on all power rolls.',
+  bleeding: 'Whenever you use a main action, use a triggered action, or make a test or ability roll using Might or Agility, you lose Stamina equal to 1d6 + your level after the action or roll is resolved. This Stamina loss can\'t be prevented in any way, and only happens once per action.',
+  dazed: 'You can do only one thing on your turn: use a main action, use a maneuver, or use a move action. You can\'t use triggered actions, free triggered actions, or free maneuvers.',
+  frightened: 'Any ability roll you make against the source of your fear takes a bane. If that source is a creature, their ability rolls against you gain an edge. You can\'t willingly move closer to the source of your fear if you know their location. If you gain the frightened condition from one source while already frightened by a different source, the new condition replaces the old one.',
+  grabbed: 'You have speed 0 and can\'t be force moved except by the creature, object, or effect that has you grabbed. You can\'t use the Knockback maneuver and take a bane on abilities that don\'t target what has you grabbed. If the grabber moves, they bring you with them. If the grabber\'s size equals or is less than yours, their speed is halved. A creature can grab only creatures of their size or smaller (Might 2+ can grab larger up to their Might score). Unless otherwise indicated, a creature can grab only one creature at a time. Teleporting or being force moved apart ends this condition.',
+  prone: 'You are flat on the ground. Any strike you make takes a bane, and melee abilities used against you gain an edge. You must crawl to move along the ground, which costs 1 additional square per square crawled. You can\'t climb, jump, swim, or fly. If you are climbing, flying, or jumping when knocked prone, you fall. You can stand up using the Stand Up maneuver.',
+  restrained: 'You have speed 0, can\'t use the Stand Up maneuver, and can\'t be force moved. You take a bane on ability rolls and on Might and Agility tests, and abilities used against you gain an edge. If you teleport while restrained, this condition ends.',
+  slowed: 'You have speed 2 unless your speed is already lower, and you can\'t shift.',
+  taunted: 'You have a double bane on ability rolls for any ability that doesn\'t target the creature who taunted you, as long as you have line of effect to that creature. If you gain the taunted condition from one source while already taunted by a different source, the new condition replaces the old one.',
+  weakened: 'You take a bane on power rolls.',
 };
 
 export const ABILITY_GRANT_LEVELS = [2, 3, 5, 6, 8, 9] as const;

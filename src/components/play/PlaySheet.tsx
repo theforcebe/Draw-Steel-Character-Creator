@@ -6,10 +6,12 @@ import classFeaturesData from '../../data/class-features.json';
 
 interface ClassFeature {
   name: string;
-  type: string;
+  type?: string;
   description: string;
   level: number;
+  subclass?: string;
   subclass_effects?: Record<string, string>;
+  feature_type?: string;
 }
 interface ClassFeaturesEntry {
   resource_name: string;
@@ -132,13 +134,13 @@ export function PlaySheet() {
       {classChoice && (
         <Section title="Class">
           <Row label="Class" value={formatId(classChoice.classId)} />
-          <Row label="Subclass" value={classChoice.subclassId ? formatId(classChoice.subclassId) : null} />
+          <Row label="Subclass" value={classChoice.subclassId ? (classChoice.secondDomainId ? `${formatId(classChoice.subclassId)} + ${formatId(classChoice.secondDomainId)}` : formatId(classChoice.subclassId)) : null} />
           {resourceName && <Row label="Resource" value={resourceName} />}
           <Row label="Signature" value={classChoice.signatureAbilityName} />
           {classChoice.heroicAbilities.length > 0 && (
             <Row label="Heroic" value={classChoice.heroicAbilities.join(', ')} />
           )}
-          <Row label="Kit" value={classChoice.kitId ? formatId(classChoice.kitId) : null} />
+          <Row label="Kit" value={classChoice.kitId ? formatId(classChoice.kitId) : classChoice.classKitOptionId ? formatId(classChoice.classKitOptionId) : null} />
           {classChoice.subclassSkill && <Row label="Subclass Skill" value={classChoice.subclassSkill} />}
         </Section>
       )}
@@ -146,7 +148,12 @@ export function PlaySheet() {
       {/* Class Features */}
       {classChoice?.classId && classFeatures[classChoice.classId] && (() => {
         const cf = classFeatures[classChoice.classId];
-        const features = cf.features.filter((f) => f.level <= character.level);
+        const features = cf.features.filter((f) => {
+          if (f.level > character.level) return false;
+          // Filter out features for other subclasses
+          if (f.subclass && classChoice.subclassId && f.subclass.toLowerCase() !== classChoice.subclassId.toLowerCase()) return false;
+          return true;
+        });
         return (
           <Section title="Class Features">
             <div className="mb-1.5">
@@ -172,7 +179,7 @@ export function PlaySheet() {
                   <div className="flex items-center gap-1.5">
                     <span className="font-heading text-[0.65rem] text-gold-light">{f.name}</span>
                     <span className="text-[0.5rem] font-heading uppercase tracking-wider text-cream-dark/30">
-                      {f.type}
+                      {f.type ?? (f.subclass ? f.subclass : 'Feature')}
                     </span>
                   </div>
                   <p className="font-body text-[0.55rem] text-cream-dark/50 mt-0.5 leading-relaxed">{f.description}</p>

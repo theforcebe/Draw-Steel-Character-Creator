@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useCharacterStore } from '../../stores/character-store';
+import { usePlayStore } from '../../stores/play-store';
 import abilitiesData from '../../data/abilities.json';
 import { resolveAbility } from '../../engine/ability-resolver';
 import type { RawAbility, ResolvedAbility } from '../../engine/ability-resolver';
@@ -20,17 +21,33 @@ function costSortKey(cost: string): number {
   return match ? parseInt(match[1], 10) : 99;
 }
 
-function AbilityPlayCard({ ability }: { ability: ResolvedAbility }) {
+function AbilityPlayCard({
+  ability,
+  isUsed,
+  onToggleUsed,
+}: {
+  ability: ResolvedAbility;
+  isUsed: boolean;
+  onToggleUsed: () => void;
+}) {
   const hasPowerRoll = ability.powerRoll && ability.tier1;
   const costLabel = ability.cost === 'Signature' ? 'Signature' : ability.cost;
 
   return (
-    <div className="card px-4 py-3 flex flex-col gap-2">
+    <div className={[
+      'card px-4 py-3 flex flex-col gap-2 transition-all',
+      isUsed ? 'opacity-40' : '',
+    ].join(' ')}>
       {/* Header */}
       <div className="flex items-start justify-between gap-2">
-        <h4 className="font-heading text-sm text-gold tracking-wide leading-tight">
+        <button
+          type="button"
+          onClick={onToggleUsed}
+          className="font-heading text-sm text-gold tracking-wide leading-tight text-left hover:text-gold-light transition-all"
+        >
+          {isUsed && <span className="text-cream-dark/40 mr-1">✓</span>}
           {ability.name}
-        </h4>
+        </button>
         <span
           className={[
             'shrink-0 px-2 py-0.5 rounded-full text-[0.6rem] font-heading font-semibold tracking-wider uppercase whitespace-nowrap',
@@ -109,6 +126,9 @@ function AbilityPlayCard({ ability }: { ability: ResolvedAbility }) {
 export function PlayAbilities() {
   const character = useCharacterStore((s) => s.character);
   const classChoice = character.classChoice;
+  const playStore = usePlayStore();
+  const playState = playStore.getActiveState();
+  const usedAbilities = playState?.usedAbilities ?? [];
 
   const resolvedAbilities = useMemo(() => {
     if (!classChoice) return [];
@@ -161,12 +181,28 @@ export function PlayAbilities() {
         <h2 className="font-heading text-sm uppercase tracking-wider text-gold">
           Abilities
         </h2>
-        <span className="badge">{resourceName}</span>
+        <div className="flex items-center gap-2">
+          {usedAbilities.length > 0 && (
+            <button
+              type="button"
+              onClick={() => playStore.resetUsedAbilities()}
+              className="font-heading text-[0.55rem] uppercase tracking-wider text-gold-muted hover:text-gold transition-all px-2 py-1 rounded-lg border border-gold/10 hover:border-gold/30"
+            >
+              Reset All
+            </button>
+          )}
+          <span className="badge">{resourceName}</span>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {resolvedAbilities.map((ability) => (
-          <AbilityPlayCard key={ability.name} ability={ability} />
+          <AbilityPlayCard
+            key={ability.name}
+            ability={ability}
+            isUsed={usedAbilities.includes(ability.name)}
+            onToggleUsed={() => playStore.toggleAbilityUsed(ability.name)}
+          />
         ))}
       </div>
     </div>

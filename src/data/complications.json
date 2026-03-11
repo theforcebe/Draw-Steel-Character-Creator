@@ -12,7 +12,7 @@
     },
     {
       "name": "Animal Form",
-      "benefit": "As a maneuver, you take the form of a specific animal of size 1T. You retain all your other statistics aside from your size, but you can't talk or use main actions, and the only maneuvers you can use are Escape Grab, Hide, and Stand Up. Based on the animal you can turn into, you might be able to burrow or fly, or to automatically climb or swim at full speed while moving. If your animal form doesn't provide such additional movement, you have a +2 bonus to speed. Unless you use this benefit again, you return to your true form at the start of your next turn.",
+      "benefit": "As a maneuver, you take the form of a specific animal of size 1T. You retain all your other statistics aside from your size, but you can't talk or use actions, and the only maneuvers you can use are Escape Grab, Hide, and Stand Up. Based on the animal you can turn into, you might be able to burrow or fly, or to automatically climb or swim at full speed while moving. If your animal form doesn't provide such additional movement, you have a +2 bonus to speed. Unless you use this benefit again, you return to your true form at the start of your next turn.",
       "drawback": "At the start of any turn while you are winded, the Director can spend 1 Malice to force you to take your animal form. Once the Director has done so, they can't do so again until you have finished a respite."
     },
     {
@@ -338,7 +338,7 @@
     },
     {
       "name": "Raised by Beasts",
-      "benefit": "You have the Handle Animals skill (from the interpersonal skill group). Additionally, choose a type of animal related to the animals who helped you. You gain an edge on tests that use the Handle Animals skill when interacting with animals of this type. You can also communicate with animals of this type as if you shared a language, and animals of this type aren't initially hostile to you unless they're supernaturally compelled to be.",
+      "benefit": "You have the Handle Animals skill (from the interpersonal skill group). Additionally, choose a type of animal related to the animals who helped you, such as wolf. You gain an edge on tests that use the Handle Animals skill when interacting with animals of this type. You can also communicate with animals of this type as if you shared a language, and animals of this type aren't initially hostile to you unless they're supernaturally compelled to be.",
       "drawback": "You don't have a culture (see Culture in Chapter 4: Background), though you can speak Caelian."
     },
     {

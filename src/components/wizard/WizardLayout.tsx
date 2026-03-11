@@ -4,7 +4,7 @@ import { usePlayStore } from '../../stores/play-store';
 import type { WizardStepId } from '../../types/character';
 import { GoldButton } from '../ui/GoldButton';
 import { validateStep } from '../../engine/step-validation';
-import { exportCharacterPdf, exportAbilityCardsPdf } from '../../engine/pdf-exporter';
+/* PDF exporters are loaded dynamically to keep pdf-lib out of the initial bundle */
 import {
   getSavedCharacters,
   deleteCharacter,
@@ -123,6 +123,7 @@ function SavedCharactersModal({
         formerLifeAncestryId: data.formerLifeAncestryId,
         classId: data.classChoice?.classId ?? null,
         kitId: data.classChoice?.kitId ?? null,
+        classKitOptionId: data.classChoice?.classKitOptionId ?? null,
         selectedTraits: data.selectedTraits,
         complicationBonuses: compBonuses,
       });
@@ -305,6 +306,7 @@ export function WizardLayout({ children }: WizardLayoutProps) {
   async function handleExport() {
     setExporting(true);
     try {
+      const { exportCharacterPdf } = await import('../../engine/pdf-exporter');
       await exportCharacterPdf(character);
     } catch (err) {
       alert(`Export failed: ${err instanceof Error ? err.message : String(err)}`);
@@ -316,6 +318,7 @@ export function WizardLayout({ children }: WizardLayoutProps) {
   async function handleExportCards() {
     setExportingCards(true);
     try {
+      const { exportAbilityCardsPdf } = await import('../../engine/pdf-exporter');
       await exportAbilityCardsPdf(character);
     } catch (err) {
       alert(`Export failed: ${err instanceof Error ? err.message : String(err)}`);
@@ -344,6 +347,7 @@ export function WizardLayout({ children }: WizardLayoutProps) {
       formerLifeAncestryId: character.formerLifeAncestryId,
       classId: character.classChoice?.classId ?? null,
       kitId: character.classChoice?.kitId ?? null,
+      classKitOptionId: character.classChoice?.classKitOptionId ?? null,
       selectedTraits: character.selectedTraits,
       complicationBonuses: compBonuses,
     });

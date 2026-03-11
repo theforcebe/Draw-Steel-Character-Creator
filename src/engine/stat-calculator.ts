@@ -1,6 +1,7 @@
 import type { ComputedStats } from '../types/character';
 import ancestriesData from '../data/ancestries.json';
 import kitsData from '../data/kits.json';
+import { getClassKitOptionBonuses } from '../data/class-kit-options';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -42,6 +43,7 @@ interface ComputeAllParams {
   formerLifeAncestryId?: string | null;
   classId: string | null;
   kitId: string | null;
+  classKitOptionId?: string | null;
   selectedTraits: { name: string; cost: number }[];
   complicationBonuses?: ComplicationBonuses;
 }
@@ -302,7 +304,7 @@ function resolveSize(ancestry: AncestryEntry, formerLifeAncestry?: AncestryEntry
  * choices. Returns `null` if a required piece of data (class) is missing.
  */
 export function computeAllStats(params: ComputeAllParams): ComputedStats | null {
-  const { level, ancestryId, formerLifeAncestryId, classId, kitId, selectedTraits, complicationBonuses } = params;
+  const { level, ancestryId, formerLifeAncestryId, classId, kitId, classKitOptionId, selectedTraits, complicationBonuses } = params;
 
   // A class is required to compute stats
   if (classId == null) {
@@ -341,7 +343,12 @@ export function computeAllStats(params: ComputeAllParams): ComputedStats | null 
   const size = ancestry != null ? resolveSize(ancestry, formerLifeAncestry) : '1M';
 
   // Kit bonuses (optional — zeroes when no kit is selected)
-  const kit = kitId != null ? getKitBonuses(kitId) : { stamina: null, speed: null, stability: null };
+  // For no-kit classes, use classKitOptionId instead of kitId
+  const kit = classKitOptionId && classId
+    ? getClassKitOptionBonuses(classId, classKitOptionId)
+    : kitId != null
+      ? getKitBonuses(kitId)
+      : { stamina: null, speed: null, stability: null };
   const kitStaminaBonus = kit.stamina ?? 0;
   const kitSpeedBonus = kit.speed ?? 0;
   const kitStabilityBonus = kit.stability ?? 0;

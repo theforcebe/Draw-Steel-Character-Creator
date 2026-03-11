@@ -379,6 +379,7 @@ export async function exportCharacterPdf(character: CharacterData): Promise<void
     formerLifeAncestryId: character.formerLifeAncestryId,
     classId: character.classChoice?.classId ?? null,
     kitId: character.classChoice?.kitId ?? null,
+    classKitOptionId: character.classChoice?.classKitOptionId ?? null,
     selectedTraits: character.selectedTraits,
     complicationBonuses: getComplicationStatBonuses(character.complication, character.level),
   });
@@ -393,7 +394,12 @@ export async function exportCharacterPdf(character: CharacterData): Promise<void
   safeSetText(form, 'Level', String(character.level));
   safeSetText(form, 'Ancestry', character.ancestryId ? formatId(character.ancestryId) : '');
   safeSetText(form, 'Class', classId ? formatId(classId) : '');
-  safeSetText(form, 'Subclass', character.classChoice?.subclassId ? formatId(character.classChoice.subclassId) : '');
+  const subclassDisplay = character.classChoice?.subclassId
+    ? character.classChoice.secondDomainId
+      ? `${formatId(character.classChoice.subclassId)} + ${formatId(character.classChoice.secondDomainId)}`
+      : formatId(character.classChoice.subclassId)
+    : '';
+  safeSetText(form, 'Subclass', subclassDisplay);
   safeSetText(form, 'Career', character.career?.careerId ? formatId(character.career.careerId) : '');
 
   // --- Characteristics ---
@@ -442,7 +448,9 @@ export async function exportCharacterPdf(character: CharacterData): Promise<void
   }
 
   // --- Equipment & Modifiers ---
-  const kitName = kit?.name ?? (character.classChoice?.kitId ? formatId(character.classChoice.kitId) : '');
+  const kitName = (kit?.name
+    ?? (character.classChoice?.kitId ? formatId(character.classChoice.kitId) : ''))
+    || (character.classChoice?.classKitOptionId ? formatId(character.classChoice.classKitOptionId) : '');
   const weapons = kit?.equipment?.weapons ?? [];
   const weaponLabel = weapons.map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(', ');
 
@@ -565,12 +573,16 @@ export async function exportCharacterPdf(character: CharacterData): Promise<void
   }
 
   // Add detailed class features from class-features.json
-  const cfData = classId ? (classFeaturesData as { classes: Record<string, { resource_name: string; resource_generation: string[]; features: { name: string; type: string; description: string; level: number; subclass_effects?: Record<string, string> }[] }> }).classes[classId] : null;
+  const cfData = classId ? (classFeaturesData as { classes: Record<string, { resource_name: string; resource_generation: string[]; features: { name: string; type?: string; description: string; level: number; subclass?: string; subclass_effects?: Record<string, string> }[] }> }).classes[classId] : null;
   if (cfData) {
     classFeatLines.push('');
     for (const feature of cfData.features) {
       if (feature.level > character.level) continue;
-      let line = `${feature.name} (${feature.type}): ${feature.description}`;
+      // Filter out features for other subclasses
+      if (feature.subclass && character.classChoice?.subclassId &&
+          feature.subclass.toLowerCase() !== character.classChoice.subclassId.toLowerCase()) continue;
+      const fType = feature.type ?? 'Feature';
+      let line = `${feature.name} (${fType}): ${feature.description}`;
       if (feature.subclass_effects && character.classChoice?.subclassId) {
         const match = Object.entries(feature.subclass_effects).find(
           ([key]) => key.toLowerCase() === character.classChoice!.subclassId.toLowerCase(),
@@ -671,7 +683,9 @@ export async function exportCharacterPdf(character: CharacterData): Promise<void
   if (cfData) {
     for (const feature of cfData.features) {
       if (feature.level > character.level) continue;
-      const ft = feature.type.toLowerCase();
+      if (feature.subclass && character.classChoice?.subclassId &&
+          feature.subclass.toLowerCase() !== character.classChoice.subclassId.toLowerCase()) continue;
+      const ft = (feature.type ?? '').toLowerCase();
       if (ft.includes('triggered') || ft === 'free maneuver') {
         let line = `${feature.name} (${feature.type}) - ${feature.description}`;
         if (feature.subclass_effects && character.classChoice?.subclassId) {

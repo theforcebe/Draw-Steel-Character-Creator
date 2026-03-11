@@ -9,6 +9,7 @@ import { PlayAbilities } from './PlayAbilities';
 import { PlayActions } from './PlayActions';
 import { PlaySheet } from './PlaySheet';
 import { PlayProgression } from './PlayProgression';
+import { PlayInventory } from './PlayInventory';
 
 class TabErrorBoundary extends Component<{ children: ReactNode; onReset: () => void }, { error: Error | null }> {
   state: { error: Error | null } = { error: null };
@@ -36,12 +37,13 @@ class TabErrorBoundary extends Component<{ children: ReactNode; onReset: () => v
   }
 }
 
-type PlayTab = 'combat' | 'actions' | 'abilities' | 'sheet' | 'progress';
+type PlayTab = 'combat' | 'actions' | 'abilities' | 'inventory' | 'sheet' | 'progress';
 
 const TABS: { id: PlayTab; label: string; icon: string }[] = [
   { id: 'combat', label: 'Combat', icon: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z' },
   { id: 'actions', label: 'Actions', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
   { id: 'abilities', label: 'Abilities', icon: 'M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5' },
+  { id: 'inventory', label: 'Loot', icon: 'M21 8l-2-4H5L3 8m18 0v10a2 2 0 01-2 2H5a2 2 0 01-2-2V8m18 0H3m9 4v4m-2-2h4' },
   { id: 'sheet', label: 'Sheet', icon: 'M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z M14 2v6h6 M16 13H8 M16 17H8 M10 9H8' },
   { id: 'progress', label: 'Progress', icon: 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z' },
 ];
@@ -246,6 +248,7 @@ export function PlayMode() {
             {activeTab === 'combat' && <PlayCombat />}
             {activeTab === 'actions' && <PlayActions />}
             {activeTab === 'abilities' && <PlayAbilities />}
+            {activeTab === 'inventory' && <PlayInventory />}
             {activeTab === 'sheet' && <PlaySheet />}
             {activeTab === 'progress' && <PlayProgression />}
           </TabErrorBoundary>

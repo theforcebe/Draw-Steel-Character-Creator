@@ -69,6 +69,7 @@ export function LevelUpModal({ onClose, onComplete }: LevelUpModalProps) {
     formerLifeAncestryId: character.formerLifeAncestryId,
     classId: classChoice?.classId ?? null,
     kitId: classChoice?.kitId ?? null,
+    classKitOptionId: classChoice?.classKitOptionId ?? null,
     selectedTraits: character.selectedTraits,
     complicationBonuses: compBonuses,
   });
