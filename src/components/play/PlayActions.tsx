@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useCharacterStore } from '../../stores/character-store';
 import { useTreasureStats } from '../../hooks/useTreasureStats';
+import { FormattedGameText } from './FormattedGameText';
 import abilitiesData from '../../data/abilities.json';
 import classFeaturesData from '../../data/class-features.json';
 import kitsData from '../../data/kits.json';
@@ -489,9 +490,7 @@ export function PlayActions() {
                       {feature.type ?? (feature.subclass ? `${feature.subclass}` : 'Feature')}
                     </span>
                   </div>
-                  <p className="font-body text-[0.65rem] text-cream-dark/50 mt-1 leading-relaxed">
-                    {feature.description}
-                  </p>
+                  <FormattedGameText text={feature.description} className="font-body text-[0.65rem] text-cream-dark/50 mt-1 leading-relaxed" />
                   {feature.subclass_effects && subclassId && (() => {
                     const match = Object.entries(feature.subclass_effects).find(
                       ([key]) => key.toLowerCase() === subclassId.toLowerCase(),
@@ -502,9 +501,7 @@ export function PlayActions() {
                         <p className="font-heading text-[0.6rem] text-amber-400/80 uppercase tracking-wider mb-1 font-semibold">
                           {match[0]}
                         </p>
-                        <p className="font-body text-[0.65rem] text-cream-dark/70 leading-relaxed">
-                          {match[1]}
-                        </p>
+                        <FormattedGameText text={match[1]} className="font-body text-[0.65rem] text-cream-dark/70 leading-relaxed" />
                       </div>
                     );
                   })()}
@@ -688,9 +685,7 @@ export function PlayActions() {
                       {trait.type}
                     </span>
                   </div>
-                  <p className="font-body text-[0.6rem] text-cream-dark/50 mt-1 leading-relaxed">
-                    {trait.description}
-                  </p>
+                  <FormattedGameText text={trait.description} className="font-body text-[0.65rem] text-cream-dark/50 mt-1 leading-relaxed" />
                   {trait.hasAbility && trait.ability && (
                     <div className="mt-2 px-2 py-2 rounded-lg bg-surface/30 border border-gold/5">
                       <div className="flex flex-wrap gap-x-2 text-[0.65rem] font-body text-cream-dark/40">
