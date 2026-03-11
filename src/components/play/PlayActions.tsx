@@ -159,9 +159,19 @@ const STANDARD_ACTIONS: {
         description: 'Stand up from prone, ending that condition. You can also use this to make an adjacent prone creature stand up.',
       },
       {
-        name: 'Drink Potion',
+        name: 'Make or Assist a Test',
         type: 'Maneuver',
-        description: 'Drink a potion you have equipped or give one to an adjacent willing creature.',
+        description: 'Make a test as a maneuver in combat (e.g., pick a lock, lift a portcullis). Assisting another creature\'s test is also a maneuver. Complex tests may require a main action; trivial ones (like recalling lore) are free maneuvers. The Director decides.',
+      },
+      {
+        name: 'Search for Hidden Creatures',
+        type: 'Maneuver',
+        description: 'Attempt to locate creatures hidden from you (see Hide and Sneak rules).',
+      },
+      {
+        name: 'Use Consumable',
+        type: 'Maneuver',
+        description: 'Activate a consumable treasure such as a potion. You can administer it to yourself or to a willing adjacent creature.',
       },
     ],
   },
@@ -178,6 +188,11 @@ const STANDARD_ACTIONS: {
         type: 'Move action',
         description:
           'Shift 1 square. Shifting does not provoke opportunity attacks. You can\'t shift into difficult terrain.',
+      },
+      {
+        name: 'Ride',
+        type: 'Move action',
+        description: 'While mounted, cause your mount to move up to its speed, or have your mount use Disengage as a free triggered action. Usable once per round. This movement can be broken up with your maneuver and main action.',
       },
     ],
   },
@@ -225,6 +240,7 @@ export function PlayActions() {
   const [expandedTraits, setExpandedTraits] = useState(false);
   const [expandedTreasures, setExpandedTreasures] = useState(false);
   const [expandedReference, setExpandedReference] = useState(false);
+  const [expandedMechanics, setExpandedMechanics] = useState(false);
 
   // Group character abilities by action type
   const abilityGroups = useMemo(() => {
@@ -915,6 +931,157 @@ export function PlayActions() {
                 </p>
                 <p className="font-body text-[0.65rem] text-cream-dark/50 col-span-2">
                   <span className="text-gold-light/70 font-semibold">Stability:</span> Reduces forced movement by your stability value (min 0)
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Game Mechanics Reference */}
+      <div className="card px-4 py-3">
+        <button
+          type="button"
+          onClick={() => setExpandedMechanics(!expandedMechanics)}
+          className="w-full flex items-center justify-between group"
+        >
+          <div className="flex items-center gap-2">
+            <h3 className="font-heading text-xs uppercase tracking-wider text-gold">
+              Game Mechanics Reference
+            </h3>
+            <span className="shrink-0 px-2 py-0.5 rounded-full text-[0.55rem] font-heading font-semibold tracking-wider uppercase bg-teal-900/30 text-teal-400/80">
+              Reference
+            </span>
+          </div>
+          <span className="w-6 h-6 flex items-center justify-center rounded-lg border border-gold/20 bg-gold/5 text-gold font-heading text-sm group-hover:border-gold/40 group-hover:bg-gold/10 transition-all">
+            {expandedMechanics ? '\u2212' : '+'}
+          </span>
+        </button>
+
+        {expandedMechanics && (
+          <div className="mt-3 flex flex-col gap-3">
+            {/* Saving Throws */}
+            <div className="px-3 py-2.5 rounded-xl bg-surface-light/20 border border-gold/5">
+              <p className="font-heading text-xs text-gold-light font-semibold mb-1.5">
+                Saving Throws
+              </p>
+              <div className="flex flex-col gap-1">
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">What:</span> A d10 roll to shake off ongoing effects. Represents luck, not skill.
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">When:</span> At the end of each of your turns, for each effect marked {"\""}(save ends){"\""}.
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">(save ends):</span> Roll 1d10 at end of your turn. On a <span className="text-teal-400/80 font-semibold">6+</span>, the effect ends. On 5 or lower, it continues.
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">(EoT):</span> Effect ends at end of target{"'"}s next turn automatically (no roll needed).
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">Hero Token:</span> Spend 1 hero token when you fail a saving throw to succeed instead.
+                </p>
+              </div>
+            </div>
+
+            {/* Dying & Death */}
+            <div className="px-3 py-2.5 rounded-xl bg-surface-light/20 border border-gold/5">
+              <p className="font-heading text-xs text-gold-light font-semibold mb-1.5">
+                Dying & Death
+              </p>
+              <div className="flex flex-col gap-1">
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">Dying:</span> When your Stamina is 0 or lower, you are <span className="text-red-400/80 font-semibold">dying</span>.
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">While Dying:</span> You are <span className="text-red-400/80">bleeding</span> (can{"'"}t be removed until no longer dying). Can{"'"}t use Catch Breath. You can still act normally otherwise.
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">Allies Can Help:</span> Allies can use the <span className="text-teal-400/80 font-semibold">Heal</span> main action on an adjacent creature{'\u2014'}the target spends a Recovery to regain Stamina, or makes a saving throw vs. one (save ends) effect.
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">Death:</span> When your Stamina reaches the <span className="text-red-400/80 font-semibold">negative of your winded value</span>, you die. Death is permanent without a special item (e.g., Scroll of Resurrection).
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">Hero Token:</span> Spend 2 hero tokens on your turn or after taking damage to regain Stamina equal to your recovery value (no action required).
+                </p>
+              </div>
+            </div>
+
+            {/* Surge Spending */}
+            <div className="px-3 py-2.5 rounded-xl bg-surface-light/20 border border-gold/5">
+              <p className="font-heading text-xs text-gold-light font-semibold mb-1.5">
+                Surge Spending
+              </p>
+              <div className="flex flex-col gap-1">
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">Earning Surges:</span> Many abilities grant surges during combat. You can also spend 1 hero token to gain 2 surges.
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">Extra Damage:</span> When you deal rolled damage, spend up to <span className="text-teal-400/80 font-semibold">3 surges</span> to deal extra damage to one target. Each surge = <span className="text-teal-400/80 font-semibold">+damage equal to your highest characteristic score</span>.
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">Increase Potency:</span> When targeting creatures with a potency ability, spend <span className="text-teal-400/80 font-semibold">2 surges</span> to increase potency by 1 for one target. Can{"'"}t increase by more than 1 via surges (but can spend more surges for additional targets).
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">Lost After Combat:</span> Surges disappear when spent. Any remaining surges are lost at the end of combat.
+                </p>
+              </div>
+            </div>
+
+            {/* Potency Reference */}
+            <div className="px-3 py-2.5 rounded-xl bg-surface-light/20 border border-gold/5">
+              <p className="font-heading text-xs text-gold-light font-semibold mb-1.5">
+                Potency Reference
+              </p>
+              <div className="flex flex-col gap-1">
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">Strong:</span> Your highest characteristic score
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">Average:</span> Your highest characteristic score {'\u2212'} 1
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">Weak:</span> Your highest characteristic score {'\u2212'} 2
+                </p>
+                <p className="font-body text-[0.65rem] text-teal-400/60 pl-2 border-l border-teal-400/20 mt-1">
+                  <span className="text-teal-400/80 font-semibold">Abbreviations:</span> M=Might, A=Agility, R=Reason, I=Intuition, P=Presence {'\u2022'} w=weak, v=average, s=strong
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10 mt-1">
+                  <span className="text-gold-light/70 font-semibold">How to Read:</span> {"\""}P {'<'} w{"\""} means {"\""}if the target{"'"}s Presence is less than your weak potency value, they suffer the effect.{"\""} If the target{"'"}s characteristic is equal to or higher, they resist.
+                </p>
+              </div>
+            </div>
+
+            {/* Distance & Area Definitions */}
+            <div className="px-3 py-2.5 rounded-xl bg-surface-light/20 border border-gold/5">
+              <p className="font-heading text-xs text-gold-light font-semibold mb-1.5">
+                Distance & Area Definitions
+              </p>
+              <div className="grid grid-cols-2 gap-x-3 gap-y-1">
+                <p className="font-body text-[0.65rem] text-cream-dark/50">
+                  <span className="text-gold-light/70 font-semibold">Melee X:</span> Contact range; X = max squares. Adjacent enemies only for Melee 1.
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50">
+                  <span className="text-gold-light/70 font-semibold">Ranged X:</span> X = max distance in squares. Bane on ranged strikes if enemy is adjacent.
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50">
+                  <span className="text-gold-light/70 font-semibold">Self:</span> Originates from you, often affects only you.
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50">
+                  <span className="text-gold-light/70 font-semibold">X burst:</span> Radius X centered on you. Instant effect on targets in area.
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50">
+                  <span className="text-gold-light/70 font-semibold">X cube:</span> Each side = X squares. Placed within ability range.
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50">
+                  <span className="text-gold-light/70 font-semibold">A x B line:</span> A = length, B = width/height in squares. Must be straight.
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50">
+                  <span className="text-gold-light/70 font-semibold">X wall:</span> X squares making a wall. Each square shares a side. Blocks line of effect.
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50">
+                  <span className="text-gold-light/70 font-semibold">X aura:</span> Radius X around you. Moves with you for the duration.
                 </p>
               </div>
             </div>

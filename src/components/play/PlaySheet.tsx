@@ -3,7 +3,10 @@ import { getCharacterSkills } from '../../engine/skill-mapper';
 import { CharacterPortrait } from '../portrait/CharacterPortrait';
 import { CLASS_RESOURCES } from '../../types/character';
 import classFeaturesData from '../../data/class-features.json';
+import complicationsData from '../../data/complications.json';
+import perksData from '../../data/perks.json';
 import { useTreasureStats } from '../../hooks/useTreasureStats';
+import { getComplicationStatBonuses } from '../../engine/complication-stats';
 import { FormattedGameText } from './FormattedGameText';
 
 interface ClassFeature {
@@ -21,6 +24,30 @@ interface ClassFeaturesEntry {
   features: ClassFeature[];
 }
 const classFeatures = (classFeaturesData as { classes: Record<string, ClassFeaturesEntry> }).classes;
+
+interface ComplicationEntry {
+  name: string;
+  benefit: string;
+  drawback: string;
+}
+const complications = (complicationsData as { complications: ComplicationEntry[] }).complications;
+
+interface PerkEntry {
+  name: string;
+  type: string;
+  description: string;
+}
+const allPerks: PerkEntry[] = Object.values(
+  (perksData as { perks: Record<string, PerkEntry[]> }).perks,
+).flat();
+
+function findComplication(name: string): ComplicationEntry | undefined {
+  return complications.find((c) => c.name === name);
+}
+
+function findPerk(name: string): PerkEntry | undefined {
+  return allPerks.find((p) => p.name === name);
+}
 
 function formatId(id: string): string {
   return id.replace(/([A-Z])/g, ' $1').replace(/^./, (c) => c.toUpperCase()).trim();
@@ -235,19 +262,77 @@ export function PlaySheet() {
       )}
 
       {/* Career */}
-      {character.career && (
-        <Section title="Career">
-          <Row label="Career" value={formatId(character.career.careerId)} />
-          <Row label="Perk" value={character.career.perkName} />
-        </Section>
-      )}
+      {character.career && (() => {
+        const perk = character.career.perkName ? findPerk(character.career.perkName) : undefined;
+        return (
+          <Section title="Career">
+            <Row label="Career" value={formatId(character.career.careerId)} />
+            <Row label="Perk" value={character.career.perkName} />
+            {perk && (
+              <div className="mt-1.5 px-2.5 py-2 rounded-lg bg-surface-light/10 border border-gold/8">
+                <span className="font-heading text-[0.55rem] uppercase tracking-wider text-gold-muted/60">
+                  Perk Benefit
+                </span>
+                <FormattedGameText
+                  text={perk.description}
+                  className="font-body text-[0.65rem] text-cream-dark/55 mt-0.5 leading-relaxed"
+                />
+              </div>
+            )}
+          </Section>
+        );
+      })()}
 
       {/* Complication */}
-      {character.complication && (
-        <Section title="Complication">
-          <Row label="Name" value={character.complication.name} />
-        </Section>
-      )}
+      {character.complication && (() => {
+        const comp = findComplication(character.complication.name);
+        const bonuses = getComplicationStatBonuses(character.complication, character.level);
+        const statParts: string[] = [];
+        if (bonuses.stamina) statParts.push(`+${bonuses.stamina} Stamina`);
+        if (bonuses.recoveries) statParts.push(`+${bonuses.recoveries} Recoveries`);
+        if (bonuses.stability) statParts.push(`+${bonuses.stability} Stability`);
+        if (bonuses.renown) statParts.push(`+${bonuses.renown} Renown`);
+        if (bonuses.wealth) statParts.push(`+${bonuses.wealth} Wealth`);
+
+        return (
+          <Section title="Complication">
+            <Row label="Name" value={character.complication.name} />
+            {statParts.length > 0 && (
+              <div className="mt-1 flex flex-wrap gap-1">
+                {statParts.map((s) => (
+                  <span key={s} className="badge text-[0.55rem] bg-emerald-500/10 text-emerald-300 border-emerald-500/20">
+                    {s}
+                  </span>
+                ))}
+              </div>
+            )}
+            {comp && (
+              <div className="mt-2 flex flex-col gap-2">
+                {/* Benefit */}
+                <div className="px-2.5 py-2 rounded-lg bg-emerald-500/5 border border-emerald-500/15">
+                  <span className="font-heading text-[0.55rem] uppercase tracking-wider text-emerald-400/70">
+                    Benefit
+                  </span>
+                  <FormattedGameText
+                    text={comp.benefit}
+                    className="font-body text-[0.65rem] text-emerald-200/60 mt-0.5 leading-relaxed"
+                  />
+                </div>
+                {/* Drawback */}
+                <div className="px-2.5 py-2 rounded-lg bg-red-500/5 border border-red-500/15">
+                  <span className="font-heading text-[0.55rem] uppercase tracking-wider text-red-400/70">
+                    Drawback
+                  </span>
+                  <FormattedGameText
+                    text={comp.drawback}
+                    className="font-body text-[0.65rem] text-red-200/60 mt-0.5 leading-relaxed"
+                  />
+                </div>
+              </div>
+            )}
+          </Section>
+        );
+      })()}
 
       {/* Skills */}
       {allSkills.length > 0 && (
