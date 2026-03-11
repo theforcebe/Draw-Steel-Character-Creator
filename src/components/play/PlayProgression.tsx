@@ -6,6 +6,7 @@ import { computeAllStats, getEchelon } from '../../engine/stat-calculator';
 import { getComplicationStatBonuses } from '../../engine/complication-stats';
 import { updateSavedCharacter } from '../../engine/character-storage';
 import { LevelUpModal } from './LevelUpModal';
+import { FormattedGameText } from './FormattedGameText';
 import abilitiesData from '../../data/abilities.json';
 import titlesData from '../../data/titles.json';
 import type { RawAbility } from '../../engine/ability-resolver';
@@ -223,7 +224,7 @@ export function PlayProgression() {
             <span className="font-heading text-3xl font-bold text-gold-light">
               {playState.victories}
             </span>
-            <span className="font-heading text-[0.55rem] uppercase tracking-wider text-gold-muted">
+            <span className="font-heading text-[0.6rem] uppercase tracking-wider text-gold-muted">
               victories
             </span>
           </div>
@@ -390,7 +391,7 @@ function TitleSection({ echelon }: { echelon: number }) {
       {/* Earned Titles */}
       {earnedList.length > 0 && (
         <div className="mb-3">
-          <span className="font-heading text-[0.55rem] uppercase tracking-wider text-gold-muted">
+          <span className="font-heading text-[0.6rem] uppercase tracking-wider text-gold-muted">
             Earned
           </span>
           <div className="flex flex-col gap-1 mt-1">
@@ -400,7 +401,7 @@ function TitleSection({ echelon }: { echelon: number }) {
                 className="flex items-center justify-between px-3 py-2 rounded-xl bg-gold/8 border border-gold/20"
               >
                 <div className="flex items-center gap-2 min-w-0">
-                  <span className="shrink-0 px-1.5 py-0.5 rounded text-[0.45rem] font-heading uppercase tracking-wider bg-gold/15 text-gold border border-gold/25">
+                  <span className="shrink-0 px-1.5 py-0.5 rounded text-[0.5rem] font-heading uppercase tracking-wider bg-gold/15 text-gold border border-gold/25">
                     E{title.echelon}
                   </span>
                   <button
@@ -426,7 +427,7 @@ function TitleSection({ echelon }: { echelon: number }) {
 
       {/* Echelon filter */}
       <div className="flex items-center gap-1 mb-2 flex-wrap">
-        <span className="font-heading text-[0.55rem] uppercase tracking-wider text-gold-muted mr-1">
+        <span className="font-heading text-[0.6rem] uppercase tracking-wider text-gold-muted mr-1">
           Browse:
         </span>
         {(['all', 1, 2, 3, 4] as const).map((e) => (
@@ -435,7 +436,7 @@ function TitleSection({ echelon }: { echelon: number }) {
             type="button"
             onClick={() => setFilterEchelon(e)}
             className={[
-              'px-2 py-0.5 rounded-full text-[0.5rem] font-heading uppercase tracking-wider transition-all',
+              'px-2 py-0.5 rounded-full text-[0.55rem] font-heading uppercase tracking-wider transition-all',
               filterEchelon === e
                 ? 'bg-gold/20 text-gold border border-gold/30'
                 : 'text-cream-dark/40 border border-gold/5 hover:border-gold/15',
@@ -462,7 +463,7 @@ function TitleSection({ echelon }: { echelon: number }) {
                 ].join(' ')}
               >
                 <span className={[
-                  'shrink-0 px-1.5 py-0.5 rounded text-[0.45rem] font-heading uppercase tracking-wider border',
+                  'shrink-0 px-1.5 py-0.5 rounded text-[0.5rem] font-heading uppercase tracking-wider border',
                   title.echelon <= echelon
                     ? 'text-gold bg-gold/10 border-gold/20'
                     : 'text-cream-dark/30 bg-surface-light/20 border-gold/5',
@@ -492,25 +493,25 @@ function TitleSection({ echelon }: { echelon: number }) {
               {isExpanded && (
                 <div className="px-3 py-2 mx-2 mb-1 rounded-lg bg-surface-light/10 border border-gold/8">
                   {title.flavor && (
-                    <p className="font-body text-[0.55rem] text-cream-dark/40 italic mb-1.5">
+                    <p className="font-body text-[0.65rem] text-cream-dark/40 italic mb-1.5">
                       &ldquo;{title.flavor}&rdquo;
                     </p>
                   )}
-                  <p className="font-body text-[0.55rem] text-cream-dark/50 mb-1">
-                    <span className="font-heading text-[0.5rem] text-gold-muted uppercase tracking-wider">
+                  <p className="font-body text-[0.65rem] text-cream-dark/50 mb-1">
+                    <span className="font-heading text-[0.55rem] text-gold-muted uppercase tracking-wider">
                       Prerequisite:{' '}
                     </span>
                     {title.prerequisite}
                   </p>
-                  <p className="font-body text-[0.55rem] text-cream-dark/60 leading-relaxed whitespace-pre-line">
-                    <span className="font-heading text-[0.5rem] text-gold-muted uppercase tracking-wider">
+                  <div className="font-body text-[0.65rem] text-cream-dark/60 leading-relaxed">
+                    <span className="font-heading text-[0.55rem] text-gold-muted uppercase tracking-wider">
                       Effect:{' '}
                     </span>
-                    {title.effect}
-                  </p>
+                    <FormattedGameText text={title.effect} className="mt-0.5" />
+                  </div>
                   {title.special && (
-                    <p className="font-body text-[0.55rem] text-crimson/70 mt-1">
-                      <span className="font-heading text-[0.5rem] text-crimson/50 uppercase tracking-wider">
+                    <p className="font-body text-[0.65rem] text-crimson/70 mt-1">
+                      <span className="font-heading text-[0.55rem] text-crimson/50 uppercase tracking-wider">
                         Special:{' '}
                       </span>
                       {title.special}

@@ -4,6 +4,7 @@ import { useCharacterStore } from '../../stores/character-store';
 import type { InventoryItem } from '../../stores/play-store';
 import treasuresData from '../../data/treasures.json';
 import { getTreasureEffectAtLevel } from '../../engine/treasure-effects';
+import { FormattedGameText } from './FormattedGameText';
 
 interface TreasureEntry {
   id: string;
@@ -147,7 +148,7 @@ export function PlayInventory() {
                   className="flex items-start gap-2 px-2 py-1.5 rounded-lg hover:bg-gold/5 text-left transition-all group"
                 >
                   <span className={[
-                    'shrink-0 px-1.5 py-0.5 rounded text-[0.45rem] font-heading uppercase tracking-wider border',
+                    'shrink-0 px-1.5 py-0.5 rounded text-[0.5rem] font-heading uppercase tracking-wider border',
                     CATEGORY_COLORS[treasure.category] ?? 'text-cream-dark/40 bg-surface-light/20 border-gold/10',
                   ].join(' ')}>
                     {treasure.category === 'consumable' ? (treasure.echelon ? `E${treasure.echelon.charAt(0)}` : 'C') :
@@ -160,7 +161,7 @@ export function PlayInventory() {
                       {treasure.name}
                     </span>
                     {treasure.keywords && (
-                      <span className="font-body text-[0.45rem] text-cream-dark/30 ml-1">
+                      <span className="font-body text-[0.5rem] text-cream-dark/30 ml-1">
                         {treasure.keywords}
                       </span>
                     )}
@@ -198,7 +199,7 @@ export function PlayInventory() {
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-2 flex-1 min-w-0">
                     <span className={[
-                      'shrink-0 px-1.5 py-0.5 rounded text-[0.45rem] font-heading uppercase tracking-wider border',
+                      'shrink-0 px-1.5 py-0.5 rounded text-[0.5rem] font-heading uppercase tracking-wider border',
                       CATEGORY_COLORS[item.category] ?? 'text-cream-dark/40 bg-surface-light/20 border-gold/10',
                     ].join(' ')}>
                       {(CATEGORY_LABELS[item.category] ?? item.category).substring(0, 3)}
@@ -264,7 +265,7 @@ export function PlayInventory() {
                   return (
                     <div className="flex flex-wrap gap-1 mt-1.5">
                       {bonuses.map((b) => (
-                        <span key={b} className="px-1.5 py-0.5 rounded text-[0.45rem] font-heading uppercase tracking-wider text-emerald-400 bg-emerald-900/20 border border-emerald-500/20">
+                        <span key={b} className="px-1.5 py-0.5 rounded text-[0.5rem] font-heading uppercase tracking-wider text-emerald-400 bg-emerald-900/20 border border-emerald-500/20">
                           {b}
                         </span>
                       ))}
@@ -273,9 +274,7 @@ export function PlayInventory() {
                 })()}
                 {expandedItem === item.id && (
                   <div className="mt-2">
-                    <p className="font-body text-[0.6rem] text-cream-dark/50 leading-relaxed">
-                      {item.description}
-                    </p>
+                    <FormattedGameText text={item.description} className="font-body text-[0.65rem] text-cream-dark/50 leading-relaxed" />
                     {/* Passive effects list */}
                     {item.treasureId && (() => {
                       const effect = getTreasureEffectAtLevel(item.treasureId, characterLevel);
@@ -283,7 +282,7 @@ export function PlayInventory() {
                       return (
                         <ul className="mt-1.5 flex flex-col gap-0.5">
                           {effect.passiveEffects.map((pe, i) => (
-                            <li key={i} className="font-body text-[0.5rem] text-gold-muted/70 pl-1.5 border-l border-gold/10">
+                            <li key={i} className="font-body text-[0.65rem] text-gold-muted/70 pl-1.5 border-l border-gold/10">
                               {pe}
                             </li>
                           ))}

@@ -21,7 +21,7 @@ function StatBox({ label, value, bonus }: { label: string; value: number | strin
       <div className="flex items-baseline gap-0.5">
         <span className="font-heading text-lg font-bold text-gold-light">{value}</span>
         {bonus != null && bonus > 0 && (
-          <span className="font-heading text-[0.5rem] text-emerald-400">+{bonus}</span>
+          <span className="font-heading text-[0.55rem] text-emerald-400">+{bonus}</span>
         )}
       </div>
       <span className="font-heading text-[0.55rem] uppercase tracking-wider text-gold-muted">
@@ -145,7 +145,7 @@ function EquippedGearSection({ items, characterLevel }: { items: InventoryItem[]
                 {/* Item header row */}
                 <div className="flex items-center gap-2">
                   <span className={[
-                    'shrink-0 px-1.5 py-0.5 rounded text-[0.45rem] font-heading uppercase tracking-wider border',
+                    'shrink-0 px-1.5 py-0.5 rounded text-[0.5rem] font-heading uppercase tracking-wider border',
                     SLOT_COLORS[slot] ?? SLOT_COLORS.other,
                   ].join(' ')}>
                     {SLOT_LABELS[slot] ?? 'Gear'}
@@ -156,7 +156,7 @@ function EquippedGearSection({ items, characterLevel }: { items: InventoryItem[]
                   {bonuses.length > 0 && (
                     <div className="shrink-0 flex gap-1">
                       {bonuses.slice(0, 3).map((b) => (
-                        <span key={b} className="text-[0.45rem] font-heading text-emerald-400/80 bg-emerald-900/15 px-1 py-0.5 rounded">
+                        <span key={b} className="text-[0.5rem] font-heading text-emerald-400/80 bg-emerald-900/15 px-1 py-0.5 rounded">
                           {b}
                         </span>
                       ))}

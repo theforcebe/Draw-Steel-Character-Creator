@@ -223,6 +223,7 @@ export function PlayActions() {
   const [expandedKit, setExpandedKit] = useState(false);
   const [expandedTraits, setExpandedTraits] = useState(false);
   const [expandedTreasures, setExpandedTreasures] = useState(false);
+  const [expandedReference, setExpandedReference] = useState(false);
 
   // Group character abilities by action type
   const abilityGroups = useMemo(() => {
@@ -405,7 +406,7 @@ export function PlayActions() {
                         <span className="font-heading text-xs text-gold-light font-semibold">
                           {action.name}
                         </span>
-                        <span className="text-[0.5rem] font-heading uppercase tracking-wider text-cream-dark/30">
+                        <span className="text-[0.55rem] font-heading uppercase tracking-wider text-cream-dark/30">
                           {action.type}
                         </span>
                       </div>
@@ -446,7 +447,7 @@ export function PlayActions() {
                     <span className="font-heading text-xs text-gold-light font-semibold">
                       {classFeaturesForClass.resource_name} Generation
                     </span>
-                    <span className="shrink-0 px-2 py-0.5 rounded-full text-[0.5rem] font-heading font-semibold tracking-wider uppercase bg-gold/15 text-gold">
+                    <span className="shrink-0 px-2 py-0.5 rounded-full text-[0.55rem] font-heading font-semibold tracking-wider uppercase bg-gold/15 text-gold">
                       Resource
                     </span>
                   </div>
@@ -475,7 +476,7 @@ export function PlayActions() {
                     </span>
                     <span
                       className={[
-                        'shrink-0 px-2 py-0.5 rounded-full text-[0.5rem] font-heading font-semibold tracking-wider uppercase',
+                        'shrink-0 px-2 py-0.5 rounded-full text-[0.55rem] font-heading font-semibold tracking-wider uppercase',
                         (feature.type ?? '').includes('triggered') || (feature.type ?? '').includes('Triggered')
                           ? 'bg-amber-900/30 text-amber-400/80'
                           : !feature.type || feature.type === 'Passive'
@@ -498,7 +499,7 @@ export function PlayActions() {
                     if (!match) return null;
                     return (
                       <div className="mt-2 px-3 py-2 rounded-xl bg-amber-900/15 border border-amber-500/20">
-                        <p className="font-heading text-[0.55rem] text-amber-400/80 uppercase tracking-wider mb-1 font-semibold">
+                        <p className="font-heading text-[0.6rem] text-amber-400/80 uppercase tracking-wider mb-1 font-semibold">
                           {match[0]}
                         </p>
                         <p className="font-body text-[0.65rem] text-cream-dark/70 leading-relaxed">
@@ -537,7 +538,7 @@ export function PlayActions() {
                   <span className="font-heading text-xs text-gold-light font-semibold">
                     {kitAbility.name}
                   </span>
-                  <span className="shrink-0 px-2 py-0.5 rounded-full text-[0.5rem] font-heading font-semibold tracking-wider uppercase bg-gold/15 text-gold">
+                  <span className="shrink-0 px-2 py-0.5 rounded-full text-[0.55rem] font-heading font-semibold tracking-wider uppercase bg-gold/15 text-gold">
                     Kit
                   </span>
                 </div>
@@ -554,14 +555,14 @@ export function PlayActions() {
                 {kitAbility.keywords.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-1">
                     {kitAbility.keywords.map((kw) => (
-                      <span key={kw} className="text-[0.5rem] font-heading uppercase tracking-wider text-gold-muted/60 bg-gold/5 px-1.5 py-0.5 rounded">
+                      <span key={kw} className="text-[0.55rem] font-heading uppercase tracking-wider text-gold-muted/60 bg-gold/5 px-1.5 py-0.5 rounded">
                         {kw}
                       </span>
                     ))}
                   </div>
                 )}
                 {kitAbility.powerRoll && (
-                  <p className="font-heading text-[0.55rem] text-gold-muted mt-1">
+                  <p className="font-heading text-[0.6rem] text-gold-muted mt-1">
                     Power Roll + {kitAbility.powerRoll}
                   </p>
                 )}
@@ -617,7 +618,7 @@ export function PlayActions() {
                         </span>
                         <span
                           className={[
-                            'shrink-0 px-2 py-0.5 rounded-full text-[0.5rem] font-heading font-semibold tracking-wider uppercase',
+                            'shrink-0 px-2 py-0.5 rounded-full text-[0.55rem] font-heading font-semibold tracking-wider uppercase',
                             ability.cost === 'Signature'
                               ? 'bg-gold/15 text-gold'
                               : 'bg-crimson/15 text-crimson',
@@ -631,7 +632,7 @@ export function PlayActions() {
                         <span>{ability.target}</span>
                       </div>
                       {ability.powerRoll && (
-                        <p className="font-heading text-[0.55rem] text-gold-muted mt-1">
+                        <p className="font-heading text-[0.6rem] text-gold-muted mt-1">
                           {ability.powerRoll}
                         </p>
                       )}
@@ -683,7 +684,7 @@ export function PlayActions() {
                     <span className="font-heading text-xs text-gold-light font-semibold">
                       {trait.name}
                     </span>
-                    <span className="shrink-0 px-2 py-0.5 rounded-full text-[0.5rem] font-heading font-semibold tracking-wider uppercase bg-emerald-900/30 text-emerald-400/80">
+                    <span className="shrink-0 px-2 py-0.5 rounded-full text-[0.55rem] font-heading font-semibold tracking-wider uppercase bg-emerald-900/30 text-emerald-400/80">
                       {trait.type}
                     </span>
                   </div>
@@ -692,20 +693,20 @@ export function PlayActions() {
                   </p>
                   {trait.hasAbility && trait.ability && (
                     <div className="mt-2 px-2 py-2 rounded-lg bg-surface/30 border border-gold/5">
-                      <div className="flex flex-wrap gap-x-2 text-[0.55rem] font-body text-cream-dark/40">
+                      <div className="flex flex-wrap gap-x-2 text-[0.65rem] font-body text-cream-dark/40">
                         <span>{trait.ability.type}</span>
                         <span>{trait.ability.distance}</span>
                         <span>{trait.ability.target}</span>
                       </div>
                       {trait.ability.tier1 && (
-                        <div className="mt-1 text-[0.55rem] font-body text-cream-dark/40 flex flex-col gap-0.5">
+                        <div className="mt-1 text-[0.65rem] font-body text-cream-dark/40 flex flex-col gap-0.5">
                           <span>11-: {trait.ability.tier1}</span>
                           <span>12+: {trait.ability.tier2}</span>
                           <span className="text-gold-light/80">17+: {trait.ability.tier3}</span>
                         </div>
                       )}
                       {trait.ability.effect && (
-                        <p className="font-body text-[0.55rem] text-cream-dark/40 mt-1">
+                        <p className="font-body text-[0.65rem] text-cream-dark/40 mt-1">
                           Effect: {trait.ability.effect}
                         </p>
                       )}
@@ -745,7 +746,7 @@ export function PlayActions() {
                     <span className="font-heading text-xs text-gold-light font-semibold">
                       {source}
                     </span>
-                    <span className="shrink-0 px-2 py-0.5 rounded-full text-[0.5rem] font-heading font-semibold tracking-wider uppercase bg-purple-900/30 text-purple-400/80">
+                    <span className="shrink-0 px-2 py-0.5 rounded-full text-[0.55rem] font-heading font-semibold tracking-wider uppercase bg-purple-900/30 text-purple-400/80">
                       Treasure
                     </span>
                   </div>
@@ -762,6 +763,169 @@ export function PlayActions() {
           )}
         </div>
       )}
+
+      {/* Combat Rules Reference */}
+      <div className="card px-4 py-3">
+        <button
+          type="button"
+          onClick={() => setExpandedReference(!expandedReference)}
+          className="w-full flex items-center justify-between group"
+        >
+          <div className="flex items-center gap-2">
+            <h3 className="font-heading text-xs uppercase tracking-wider text-gold">
+              Combat Rules Reference
+            </h3>
+            <span className="shrink-0 px-2 py-0.5 rounded-full text-[0.55rem] font-heading font-semibold tracking-wider uppercase bg-teal-900/30 text-teal-400/80">
+              Reference
+            </span>
+          </div>
+          <span className="w-6 h-6 flex items-center justify-center rounded-lg border border-gold/20 bg-gold/5 text-gold font-heading text-sm group-hover:border-gold/40 group-hover:bg-gold/10 transition-all">
+            {expandedReference ? '\u2212' : '+'}
+          </span>
+        </button>
+
+        {expandedReference && (
+          <div className="mt-3 flex flex-col gap-3">
+            {/* Action Economy */}
+            <div className="px-3 py-2.5 rounded-xl bg-surface-light/20 border border-gold/5">
+              <p className="font-heading text-xs text-gold-light font-semibold mb-1.5">
+                Action Economy
+              </p>
+              <p className="font-body text-[0.65rem] text-teal-400/80 font-semibold mb-1.5">
+                Your Turn: 1 Move + 1 Main Action + 1 Maneuver + Free Actions
+              </p>
+              <div className="flex flex-col gap-1">
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">Move:</span> Move up to your speed
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">Main Action:</span> Free Strike, Charge, Defend, Heal, or use a class ability
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">Maneuver:</span> Aid Attack, Catch Breath, Escape Grab, Grab, Knockback, Hide, Stand Up, Drink Potion
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">Free Actions:</span> Talk, interact with objects, opportunity attacks
+                </p>
+              </div>
+            </div>
+
+            {/* Condition Quick Reference */}
+            <div className="px-3 py-2.5 rounded-xl bg-surface-light/20 border border-gold/5">
+              <p className="font-heading text-xs text-gold-light font-semibold mb-1.5">
+                Condition Quick Reference
+              </p>
+              <div className="grid grid-cols-1 gap-1">
+                <div className="flex gap-1.5 items-start">
+                  <span className="font-heading text-[0.6rem] text-red-400/80 uppercase tracking-wider w-[4.5rem] shrink-0 pt-0.5">Bleeding</span>
+                  <span className="font-body text-[0.65rem] text-cream-dark/50">Lose 1d6 + level Stamina after each main action, triggered action, or M/A roll. Can{"'"}t be prevented.</span>
+                </div>
+                <div className="flex gap-1.5 items-start">
+                  <span className="font-heading text-[0.6rem] text-yellow-400/80 uppercase tracking-wider w-[4.5rem] shrink-0 pt-0.5">Dazed</span>
+                  <span className="font-body text-[0.65rem] text-cream-dark/50">Can only do ONE thing on your turn: main action, maneuver, or move. No triggered/free actions.</span>
+                </div>
+                <div className="flex gap-1.5 items-start">
+                  <span className="font-heading text-[0.6rem] text-purple-400/80 uppercase tracking-wider w-[4.5rem] shrink-0 pt-0.5">Frightened</span>
+                  <span className="font-body text-[0.65rem] text-cream-dark/50">Bane vs. fear source; they get edge vs. you. Can{"'"}t move closer to source.</span>
+                </div>
+                <div className="flex gap-1.5 items-start">
+                  <span className="font-heading text-[0.6rem] text-orange-400/80 uppercase tracking-wider w-[4.5rem] shrink-0 pt-0.5">Grabbed</span>
+                  <span className="font-body text-[0.65rem] text-cream-dark/50">Speed 0. Bane on abilities not targeting grabber. Can{"'"}t Knockback. Teleport ends it.</span>
+                </div>
+                <div className="flex gap-1.5 items-start">
+                  <span className="font-heading text-[0.6rem] text-amber-400/80 uppercase tracking-wider w-[4.5rem] shrink-0 pt-0.5">Prone</span>
+                  <span className="font-body text-[0.65rem] text-cream-dark/50">Strikes take bane; melee vs. you gets edge. Crawl costs +1/sq. Can{"'"}t jump/climb/fly.</span>
+                </div>
+                <div className="flex gap-1.5 items-start">
+                  <span className="font-heading text-[0.6rem] text-rose-400/80 uppercase tracking-wider w-[4.5rem] shrink-0 pt-0.5">Restrained</span>
+                  <span className="font-body text-[0.65rem] text-cream-dark/50">Speed 0. Bane on ability rolls and M/A tests. Abilities vs. you get edge. Teleport ends it.</span>
+                </div>
+                <div className="flex gap-1.5 items-start">
+                  <span className="font-heading text-[0.6rem] text-blue-400/80 uppercase tracking-wider w-[4.5rem] shrink-0 pt-0.5">Slowed</span>
+                  <span className="font-body text-[0.65rem] text-cream-dark/50">Speed becomes 2 (unless already lower). Can{"'"}t shift.</span>
+                </div>
+                <div className="flex gap-1.5 items-start">
+                  <span className="font-heading text-[0.6rem] text-pink-400/80 uppercase tracking-wider w-[4.5rem] shrink-0 pt-0.5">Taunted</span>
+                  <span className="font-body text-[0.65rem] text-cream-dark/50">Double bane on abilities not targeting taunter (if you have line of effect to them).</span>
+                </div>
+                <div className="flex gap-1.5 items-start">
+                  <span className="font-heading text-[0.6rem] text-emerald-400/80 uppercase tracking-wider w-[4.5rem] shrink-0 pt-0.5">Weakened</span>
+                  <span className="font-body text-[0.65rem] text-cream-dark/50">Bane on all power rolls.</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Movement Rules */}
+            <div className="px-3 py-2.5 rounded-xl bg-surface-light/20 border border-gold/5">
+              <p className="font-heading text-xs text-gold-light font-semibold mb-1.5">
+                Movement Rules
+              </p>
+              <div className="flex flex-col gap-1">
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">Walk/Advance:</span> Move up to your speed. Can break up movement with maneuver and action.
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">Shift (Disengage):</span> Move 1 square without provoking opportunity attacks. Can{"'"}t shift into difficult terrain.
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">Jump:</span> Horizontal = M or A score squares (min 1). Height = 1 square. Test for extra distance.
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">Climb/Swim:</span> Costs 2 squares of movement per square. Full speed if you have climb/swim speed.
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">Fly:</span> Full speed through air. Falls if knocked prone or speed becomes 0 (unless hover).
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">Teleport:</span> Instantaneous, ignores obstacles. Must have line of effect to destination. Ends grabbed/restrained.
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">Forced Movement:</span> Push/Pull/Slide. Doesn{"'"}t provoke opportunity attacks. Reduced by stability.
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50 pl-2 border-l border-gold/10">
+                  <span className="text-gold-light/70 font-semibold">Falling:</span> 2 damage per square fallen (max 50), land prone. Reduce height by Agility score.
+                </p>
+              </div>
+            </div>
+
+            {/* Key Combat Terms */}
+            <div className="px-3 py-2.5 rounded-xl bg-surface-light/20 border border-gold/5">
+              <p className="font-heading text-xs text-gold-light font-semibold mb-1.5">
+                Key Combat Terms
+              </p>
+              <div className="grid grid-cols-2 gap-x-3 gap-y-1">
+                <p className="font-body text-[0.65rem] text-cream-dark/50">
+                  <span className="text-gold-light/70 font-semibold">Edge:</span> Roll 2d10, take higher
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50">
+                  <span className="text-gold-light/70 font-semibold">Bane:</span> Roll 2d10, take lower
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50">
+                  <span className="text-gold-light/70 font-semibold">Tier 1:</span> 11 or less
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50">
+                  <span className="text-gold-light/70 font-semibold">Tier 2:</span> 12{'\u2013'}16
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50">
+                  <span className="text-gold-light/70 font-semibold">Tier 3:</span> 17+
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50">
+                  <span className="text-gold-light/70 font-semibold">Critical:</span> Natural 19{'\u2013'}20 on 2d10
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50">
+                  <span className="text-gold-light/70 font-semibold">Adjacent:</span> Within 1 sq (incl. diagonals)
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50">
+                  <span className="text-gold-light/70 font-semibold">Line of Effect:</span> Unblocked path to target
+                </p>
+                <p className="font-body text-[0.65rem] text-cream-dark/50 col-span-2">
+                  <span className="text-gold-light/70 font-semibold">Stability:</span> Reduces forced movement by your stability value (min 0)
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
 
       {filteredAbilities.length === 0 && filteredStandard.length === 0 && !showClassFeatures && !showKit && !showTraits && (
         <div className="text-center py-8">

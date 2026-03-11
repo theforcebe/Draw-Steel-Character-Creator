@@ -4,6 +4,7 @@ import { CharacterPortrait } from '../portrait/CharacterPortrait';
 import { CLASS_RESOURCES } from '../../types/character';
 import classFeaturesData from '../../data/class-features.json';
 import { useTreasureStats } from '../../hooks/useTreasureStats';
+import { FormattedGameText } from './FormattedGameText';
 
 interface ClassFeature {
   name: string;
@@ -113,10 +114,10 @@ export function PlaySheet() {
                 <div className="flex items-baseline gap-0.5">
                   <span className="font-heading text-base font-bold text-gold-light">{s.value}</span>
                   {s.bonus != null && s.bonus > 0 && (
-                    <span className="font-heading text-[0.45rem] text-emerald-400">+{s.bonus}</span>
+                    <span className="font-heading text-[0.5rem] text-emerald-400">+{s.bonus}</span>
                   )}
                 </div>
-                <span className="font-heading text-[0.5rem] uppercase tracking-wider text-gold-muted">{s.label}</span>
+                <span className="font-heading text-[0.55rem] uppercase tracking-wider text-gold-muted">{s.label}</span>
               </div>
             ))}
           </div>
@@ -132,7 +133,7 @@ export function PlaySheet() {
                 <span className="font-heading text-lg font-bold text-gold-light">
                   {val >= 0 ? `+${val}` : val}
                 </span>
-                <span className="font-heading text-[0.55rem] uppercase tracking-wider text-gold-muted">
+                <span className="font-heading text-[0.6rem] uppercase tracking-wider text-gold-muted">
                   {key}
                 </span>
               </div>
@@ -168,12 +169,12 @@ export function PlaySheet() {
         return (
           <Section title="Class Features">
             <div className="mb-1.5">
-              <span className="font-heading text-[0.55rem] uppercase tracking-wider text-gold-muted">
+              <span className="font-heading text-[0.6rem] uppercase tracking-wider text-gold-muted">
                 {cf.resource_name} Generation
               </span>
               <ul className="mt-0.5 flex flex-col gap-0.5">
                 {cf.resource_generation.map((rule, i) => (
-                  <li key={i} className="font-body text-[0.55rem] text-cream-dark/60 pl-1.5 border-l border-gold/10">
+                  <li key={i} className="font-body text-[0.65rem] text-cream-dark/60 pl-1.5 border-l border-gold/10">
                     {rule}
                   </li>
                 ))}
@@ -189,13 +190,13 @@ export function PlaySheet() {
                 <div key={f.name} className="py-1 border-b border-gold/5 last:border-b-0">
                   <div className="flex items-center gap-1.5">
                     <span className="font-heading text-[0.65rem] text-gold-light">{f.name}</span>
-                    <span className="text-[0.5rem] font-heading uppercase tracking-wider text-cream-dark/30">
+                    <span className="text-[0.55rem] font-heading uppercase tracking-wider text-cream-dark/30">
                       {f.type ?? (f.subclass ? f.subclass : 'Feature')}
                     </span>
                   </div>
-                  <p className="font-body text-[0.55rem] text-cream-dark/50 mt-0.5 leading-relaxed">{f.description}</p>
+                  <FormattedGameText text={f.description} className="font-body text-[0.65rem] text-cream-dark/50 mt-0.5 leading-relaxed" />
                   {subMatch && (
-                    <p className="font-body text-[0.55rem] text-gold-muted/70 mt-0.5 pl-1.5 border-l border-gold/10">
+                    <p className="font-body text-[0.65rem] text-gold-muted/70 mt-0.5 pl-1.5 border-l border-gold/10">
                       {subMatch[0]}: {subMatch[1]}
                     </p>
                   )}
@@ -215,7 +216,7 @@ export function PlaySheet() {
         {character.selectedTraits.length > 0 && (
           <div className="mt-1 flex flex-wrap gap-1">
             {character.selectedTraits.map((t, i) => (
-              <span key={`${t.name}-${i}`} className="badge text-[0.55rem]">
+              <span key={`${t.name}-${i}`} className="badge text-[0.6rem]">
                 {t.previousLifeTrait || t.name}
               </span>
             ))}
@@ -253,7 +254,7 @@ export function PlaySheet() {
         <Section title="Skills">
           <div className="flex flex-wrap gap-1">
             {allSkills.sort().map((s) => (
-              <span key={s} className="badge text-[0.55rem]">{s}</span>
+              <span key={s} className="badge text-[0.6rem]">{s}</span>
             ))}
           </div>
         </Section>
@@ -264,7 +265,7 @@ export function PlaySheet() {
         <Section title="Languages">
           <div className="flex flex-wrap gap-1">
             {[...langs].map((l) => (
-              <span key={l} className="badge text-[0.55rem]">{l}</span>
+              <span key={l} className="badge text-[0.6rem]">{l}</span>
             ))}
           </div>
           {forgotten && (
