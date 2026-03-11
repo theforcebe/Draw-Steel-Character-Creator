@@ -369,12 +369,14 @@ function TitleSection({ echelon }: { echelon: number }) {
   const playState = playStore.getActiveState();
   const [expandedTitle, setExpandedTitle] = useState<string | null>(null);
   const [filterEchelon, setFilterEchelon] = useState<number | 'all'>('all');
+  const [titleSearch, setTitleSearch] = useState('');
 
   if (!playState) return null;
 
   const earnedTitles = playState.earnedTitles ?? [];
   const filteredTitles = allTitles.filter((t) => {
     if (filterEchelon !== 'all' && t.echelon !== filterEchelon) return false;
+    if (titleSearch && !t.name.toLowerCase().includes(titleSearch.toLowerCase())) return false;
     return true;
   });
 
@@ -446,6 +448,15 @@ function TitleSection({ echelon }: { echelon: number }) {
           </button>
         ))}
       </div>
+
+      {/* Search */}
+      <input
+        type="text"
+        value={titleSearch}
+        onChange={(e) => setTitleSearch(e.target.value)}
+        placeholder="Search titles..."
+        className="w-full px-3 py-1.5 rounded-lg bg-surface-light/20 border border-gold/10 text-cream-dark/80 font-body text-xs placeholder:text-cream-dark/30 focus:outline-none focus:border-gold/30 mb-2"
+      />
 
       {/* Title List */}
       <div className="flex flex-col gap-1 max-h-80 overflow-y-auto">
