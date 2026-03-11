@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useCharacterStore } from '../../stores/character-store';
 import { usePlayStore } from '../../stores/play-store';
-import type { InitiativeEntry } from '../../stores/play-store';
+import type { InitiativeEntry, InventoryItem } from '../../stores/play-store';
 import {
   CONDITIONS,
   CONDITION_DESCRIPTIONS,
@@ -9,6 +9,11 @@ import {
 } from '../../types/character';
 import type { Condition } from '../../types/character';
 import { useTreasureStats } from '../../hooks/useTreasureStats';
+import { getTreasureEffects, getTreasureEffectAtLevel } from '../../engine/treasure-effects';
+
+// ---------------------------------------------------------------------------
+// Shared UI components
+// ---------------------------------------------------------------------------
 
 function StatBox({ label, value, bonus }: { label: string; value: number | string; bonus?: number }) {
   return (
@@ -55,6 +60,139 @@ function AdjustButton({
     </button>
   );
 }
+
+// ---------------------------------------------------------------------------
+// Slot labels & icons for equipped gear display
+// ---------------------------------------------------------------------------
+
+const SLOT_LABELS: Record<string, string> = {
+  armor: 'Armor',
+  shield: 'Shield',
+  weapon: 'Weapon',
+  implement: 'Implement',
+  ring: 'Ring',
+  hands: 'Hands',
+  feet: 'Feet',
+  neck: 'Neck',
+  other: 'Accessory',
+};
+
+const SLOT_COLORS: Record<string, string> = {
+  armor: 'text-sky-300 bg-sky-900/25 border-sky-500/20',
+  shield: 'text-sky-300 bg-sky-900/25 border-sky-500/20',
+  weapon: 'text-red-300 bg-red-900/25 border-red-500/20',
+  implement: 'text-purple-300 bg-purple-900/25 border-purple-500/20',
+  ring: 'text-amber-300 bg-amber-900/25 border-amber-500/20',
+  hands: 'text-orange-300 bg-orange-900/25 border-orange-500/20',
+  feet: 'text-emerald-300 bg-emerald-900/25 border-emerald-500/20',
+  neck: 'text-rose-300 bg-rose-900/25 border-rose-500/20',
+  other: 'text-gold-muted bg-gold/5 border-gold/15',
+};
+
+const SLOT_ORDER = ['armor', 'shield', 'weapon', 'implement', 'hands', 'feet', 'neck', 'ring', 'other'];
+
+function EquippedGearSection({ items, characterLevel }: { items: InventoryItem[]; characterLevel: number }) {
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  // Sort items by slot order
+  const sortedItems = [...items].sort((a, b) => {
+    const slotA = a.treasureId ? (getTreasureEffects(a.treasureId)?.slot ?? 'other') : 'other';
+    const slotB = b.treasureId ? (getTreasureEffects(b.treasureId)?.slot ?? 'other') : 'other';
+    return SLOT_ORDER.indexOf(slotA) - SLOT_ORDER.indexOf(slotB);
+  });
+
+  if (sortedItems.length === 0) return null;
+
+  return (
+    <div className="card px-4 py-3">
+      <h3 className="font-heading text-xs uppercase tracking-wider text-gold mb-2.5">
+        Equipped Gear
+      </h3>
+      <div className="flex flex-col gap-1.5">
+        {sortedItems.map((item) => {
+          const entry = item.treasureId ? getTreasureEffects(item.treasureId) : null;
+          const effect = item.treasureId ? getTreasureEffectAtLevel(item.treasureId, characterLevel) : null;
+          const slot = entry?.slot ?? 'other';
+          const isExpanded = expandedId === item.id;
+
+          // Build compact bonus summary
+          const bonuses: string[] = [];
+          if (effect) {
+            if (effect.stamina) bonuses.push(`+${effect.stamina} HP`);
+            if (effect.speed) bonuses.push(`+${effect.speed} Spd`);
+            if (effect.stability) bonuses.push(`+${effect.stability} Stb`);
+            if (effect.damage) bonuses.push(`+${effect.damage} Dmg`);
+            if (effect.extraDamage && effect.extraDamageType) {
+              bonuses.push(`+${effect.extraDamage} ${effect.extraDamageType}`);
+            }
+            if (effect.meleeDistance) bonuses.push(`+${effect.meleeDistance} Reach`);
+            if (effect.rangedDistance) bonuses.push(`+${effect.rangedDistance} Range`);
+          }
+
+          return (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => setExpandedId(isExpanded ? null : item.id)}
+              className="w-full text-left"
+            >
+              <div className={[
+                'px-3 py-2 rounded-xl border transition-all',
+                isExpanded
+                  ? 'bg-gold/6 border-gold/15'
+                  : 'bg-surface-light/20 border-gold/5 hover:border-gold/12',
+              ].join(' ')}>
+                {/* Item header row */}
+                <div className="flex items-center gap-2">
+                  <span className={[
+                    'shrink-0 px-1.5 py-0.5 rounded text-[0.45rem] font-heading uppercase tracking-wider border',
+                    SLOT_COLORS[slot] ?? SLOT_COLORS.other,
+                  ].join(' ')}>
+                    {SLOT_LABELS[slot] ?? 'Gear'}
+                  </span>
+                  <span className="flex-1 font-heading text-[0.65rem] text-gold-light truncate">
+                    {item.name}
+                  </span>
+                  {bonuses.length > 0 && (
+                    <div className="shrink-0 flex gap-1">
+                      {bonuses.slice(0, 3).map((b) => (
+                        <span key={b} className="text-[0.45rem] font-heading text-emerald-400/80 bg-emerald-900/15 px-1 py-0.5 rounded">
+                          {b}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Expanded detail: passive effects */}
+                {isExpanded && effect?.passiveEffects && effect.passiveEffects.length > 0 && (
+                  <ul className="mt-2 flex flex-col gap-0.5 pl-1">
+                    {effect.passiveEffects.map((pe, i) => (
+                      <li key={i} className="font-body text-[0.55rem] text-cream-dark/50 pl-2 border-l border-gold/10 leading-relaxed">
+                        {pe}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                {/* Expanded detail: custom items without treasure effects */}
+                {isExpanded && !effect && item.description && (
+                  <p className="mt-2 font-body text-[0.55rem] text-cream-dark/45 leading-relaxed">
+                    {item.description.length > 200 ? item.description.slice(0, 200) + '...' : item.description}
+                  </p>
+                )}
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Initiative Tracker
+// ---------------------------------------------------------------------------
 
 function InitiativeTracker() {
   const playStore = usePlayStore();
@@ -224,13 +362,19 @@ function InitiativeTracker() {
   );
 }
 
+// ---------------------------------------------------------------------------
+// Main Combat Tab
+// ---------------------------------------------------------------------------
+
 export function PlayCombat() {
   const character = useCharacterStore((s) => s.character);
   const playStore = usePlayStore();
   const playState = playStore.getActiveState();
   const { stats: treasureStats, treasureBonuses } = useTreasureStats();
 
-  // Sync max stats when treasure bonuses change (equip/unequip)
+  // Background sync: keep play store max stats aligned with treasure-aware computed stats.
+  // Display values use treasureStats directly (no lag), but store needs syncing
+  // so that adjustStamina/useRecovery clamping is correct.
   useEffect(() => {
     if (!playState || !treasureStats) return;
     if (
@@ -250,15 +394,25 @@ export function PlayCombat() {
 
   const classId = character.classChoice?.classId ?? '';
   const resourceName = CLASS_RESOURCES[classId] ?? 'Resource';
-  const stats = treasureStats ?? character.computedStats;
   const characteristics = character.classChoice?.characteristics;
 
-  const staminaPercent = playState.maxStamina > 0
-    ? (playState.currentStamina / playState.maxStamina) * 100
+  // Use treasure-aware stats directly for display (no 1-frame lag)
+  const maxStamina = treasureStats?.stamina ?? playState.maxStamina;
+  const maxRecoveries = treasureStats?.recoveries ?? playState.maxRecoveries;
+  const recoveryValue = treasureStats?.recoveryValue ?? playState.recoveryValue;
+  const speed = treasureStats?.speed ?? 5;
+  const stability = treasureStats?.stability ?? 0;
+  const size = treasureStats?.size ?? '1M';
+
+  const staminaPercent = maxStamina > 0
+    ? (playState.currentStamina / maxStamina) * 100
     : 0;
-  const isWinded = playState.currentStamina <= Math.floor(playState.maxStamina / 2);
+  const isWinded = playState.currentStamina <= Math.floor(maxStamina / 2);
   const isDying = playState.currentStamina === 0;
-  const remainingRecoveries = playState.maxRecoveries - playState.usedRecoveries;
+  const remainingRecoveries = maxRecoveries - playState.usedRecoveries;
+
+  // Equipped items for gear showcase
+  const equippedItems = (playState.inventory ?? []).filter((i) => i.isEquipped);
 
   return (
     <div className="flex flex-col gap-4">
@@ -282,7 +436,7 @@ export function PlayCombat() {
             style={{ left: '50%' }}
           />
           <div
-            className="absolute top-0 left-1/2 -translate-x-1/2 -top-0 z-10 font-heading text-[0.5rem] text-gold/40 uppercase tracking-wider"
+            className="absolute left-1/2 -translate-x-1/2 z-10 font-heading text-[0.5rem] text-gold/40 uppercase tracking-wider"
             style={{ top: '1px' }}
           >
             winded
@@ -292,7 +446,7 @@ export function PlayCombat() {
           <div
             className="absolute inset-y-0 left-0 transition-all duration-300 rounded-xl"
             style={{
-              width: `${staminaPercent}%`,
+              width: `${Math.min(staminaPercent, 100)}%`,
               background: isWinded
                 ? 'linear-gradient(90deg, #8b1a25, #c42b3a)'
                 : 'linear-gradient(90deg, #2e7d32, #4caf50)',
@@ -304,10 +458,10 @@ export function PlayCombat() {
             <div
               className="absolute inset-y-0 transition-all duration-300 rounded-r-xl opacity-60"
               style={{
-                left: `${staminaPercent}%`,
+                left: `${Math.min(staminaPercent, 100)}%`,
                 width: `${Math.min(
-                  (playState.temporaryStamina / playState.maxStamina) * 100,
-                  100 - staminaPercent,
+                  (playState.temporaryStamina / maxStamina) * 100,
+                  100 - Math.min(staminaPercent, 100),
                 )}%`,
                 background: 'linear-gradient(90deg, #1565c0, #42a5f5)',
               }}
@@ -321,7 +475,10 @@ export function PlayCombat() {
               {playState.temporaryStamina > 0 && (
                 <span className="text-blue-300 text-sm"> +{playState.temporaryStamina}</span>
               )}
-              <span className="text-cream-dark/60 text-sm"> / {playState.maxStamina}</span>
+              <span className="text-cream-dark/60 text-sm"> / {maxStamina}</span>
+              {treasureBonuses.stamina > 0 && (
+                <span className="text-emerald-400/70 text-[0.55rem]"> (+{treasureBonuses.stamina})</span>
+              )}
             </span>
           </div>
         </div>
@@ -362,7 +519,7 @@ export function PlayCombat() {
                 {remainingRecoveries}
               </span>
               <span className="font-heading text-sm text-gold-muted">
-                /{playState.maxRecoveries}
+                /{maxRecoveries}
               </span>
             </div>
             <button
@@ -375,7 +532,7 @@ export function PlayCombat() {
             </button>
           </div>
           <p className="font-body text-[0.65rem] text-cream-dark/40 mt-1">
-            +{playState.recoveryValue} stamina per recovery
+            +{recoveryValue} stamina per recovery
           </p>
         </div>
 
@@ -398,9 +555,9 @@ export function PlayCombat() {
 
       {/* ── Quick Stats ── */}
       <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-        <StatBox label="Speed" value={stats?.speed ?? 5} bonus={treasureBonuses.speed || undefined} />
-        <StatBox label="Stability" value={stats?.stability ?? 0} bonus={treasureBonuses.stability || undefined} />
-        <StatBox label="Size" value={stats?.size ?? '1M'} />
+        <StatBox label="Speed" value={speed} bonus={treasureBonuses.speed || undefined} />
+        <StatBox label="Stability" value={stability} bonus={treasureBonuses.stability || undefined} />
+        <StatBox label="Size" value={size} />
         {characteristics && (
           <>
             <div className="col-span-3 sm:col-span-2 grid grid-cols-5 gap-2 mt-1 sm:mt-0">
@@ -419,12 +576,15 @@ export function PlayCombat() {
         )}
       </div>
 
-      {/* ── Treasure Bonuses (if any equipped) ── */}
+      {/* ── Equipped Gear ── */}
+      <EquippedGearSection items={equippedItems} characterLevel={character.level} />
+
+      {/* ── Aggregate Treasure Combat Bonuses ── */}
       {(treasureBonuses.weaponDamage > 0 || treasureBonuses.implementDamage > 0 ||
         treasureBonuses.unarmedDamage > 0 || treasureBonuses.extraDamage.length > 0 ||
         treasureBonuses.meleeDistance > 0 || treasureBonuses.rangedDistance > 0) && (
         <div className="card px-4 py-2.5">
-          <h3 className="font-heading text-[0.55rem] uppercase tracking-wider text-gold-muted mb-1.5">Treasure Bonuses</h3>
+          <h3 className="font-heading text-[0.55rem] uppercase tracking-wider text-gold-muted mb-1.5">Combat Bonuses from Gear</h3>
           <div className="flex flex-wrap gap-1.5">
             {treasureBonuses.weaponDamage > 0 && (
               <span className="px-2 py-0.5 rounded-full text-[0.5rem] font-heading uppercase tracking-wider text-emerald-400 bg-emerald-900/20 border border-emerald-500/20">
